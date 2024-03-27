@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductDTO {
 
-    private String productName;
-    private Integer productPrice;
-    private Integer productQuantity;
+    private String name;
+    private Integer price;
+    private Integer quantity;
     private ProductStatus productStatus;
 
     public enum ProductStatus {

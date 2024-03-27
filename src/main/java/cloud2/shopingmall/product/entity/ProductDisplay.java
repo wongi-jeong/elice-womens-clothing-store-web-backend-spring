@@ -18,9 +18,9 @@ public class ProductDisplay extends BaseEntity {
     private Long id;
 
     @Column
-    private String productDisplayName;
+    private String name;
 
     @Column
-    private String productDescription;
+    private String description;
 
 }
