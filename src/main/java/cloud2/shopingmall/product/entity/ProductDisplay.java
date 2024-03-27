@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,4 +27,11 @@ public class ProductDisplay extends BaseEntity {
 
     @Column
     private String imageUrl;
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
+    private List<ProductDisplayImage> productDisplayImages;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
+    private List<Product> products;
 }

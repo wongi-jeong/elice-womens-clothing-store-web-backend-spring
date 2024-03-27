@@ -21,18 +21,29 @@ public class Product {
 
     @Column
     private Integer price;
-
+    @Column
+    private Size size;
+    @Column
+    private Color color;
     @Column
     private Integer quantity;
 
     @Column
     private ProductStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_display_id")
     private ProductDisplay productDisplay;
 
     public enum ProductStatus {
+        ONE, TWO, THREE;
+    }
+
+    public enum Size {
+        ONE, TWO, THREE;
+    }
+
+    public enum Color {
         ONE, TWO, THREE;
     }
 }
