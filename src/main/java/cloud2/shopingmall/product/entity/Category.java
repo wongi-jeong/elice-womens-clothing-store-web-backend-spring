@@ -15,9 +15,14 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String categoryName;
 
-    @Column
+    @Column(nullable = false)
     private Integer categoryRank;
+
+    public Category(String categoryName, Integer categoryRank) {
+        this.categoryName = categoryName;
+        this.categoryRank = categoryRank;
+    }
 }
