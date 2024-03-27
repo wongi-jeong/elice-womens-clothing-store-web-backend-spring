@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,6 +23,9 @@ public class Category {
 
     @Column(nullable = false)
     private Integer categoryRank;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<Category> categories = new ArrayList<>();
 
     public Category(String categoryName, Integer categoryRank) {
         this.categoryName = categoryName;
