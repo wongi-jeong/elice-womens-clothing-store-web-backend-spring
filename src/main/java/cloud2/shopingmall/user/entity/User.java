@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User extends BaseEntity {
 
     @Id

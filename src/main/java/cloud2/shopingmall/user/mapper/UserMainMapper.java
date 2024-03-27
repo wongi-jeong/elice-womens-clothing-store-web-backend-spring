@@ -14,10 +14,12 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface UserMainMapper {
 
+    @Mapper(componentModel = "spring")
     interface UserMapper extends EntityMapper<User, UserDTO> {
 
     }
 
+    @Mapper(componentModel = "spring")
     interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO> {
 
     }
