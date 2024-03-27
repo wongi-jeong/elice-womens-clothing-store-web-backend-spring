@@ -35,6 +35,14 @@ public class Product {
     @JoinColumn(name = "product_display_id")
     private ProductDisplay productDisplay;
 
+    public Product(String name, Size size, Color color, Integer quantity, ProductStatus status){
+        this.name = name;
+        this.size = size;
+        this.color = color;
+        this.quantity = quantity;
+        this.status = status;
+    }
+
     public enum ProductStatus {
         ONE, TWO, THREE;
     }
@@ -46,4 +54,7 @@ public class Product {
     public enum Color {
         ONE, TWO, THREE;
     }
+
+
+
 }

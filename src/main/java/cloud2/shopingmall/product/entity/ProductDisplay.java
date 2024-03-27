@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,8 +31,16 @@ public class ProductDisplay extends BaseEntity {
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
-    private List<ProductDisplayImage> productDisplayImages;
+    private List<ProductDisplayImage> productDisplayImages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
+
+
+
+    public ProductDisplay(String name, String description, String imageUrl){
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+    }
 }
