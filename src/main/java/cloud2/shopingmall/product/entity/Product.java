@@ -9,19 +9,30 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDisplayImageEntity {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_id")
     private Long id;
 
     @Column
-    private String imageUrl;
+    private String name;
 
     @Column
-    private String imageDescription;
+    private Integer price;
+
+    @Column
+    private Integer quantity;
+
+    @Column
+    private ProductStatus status;
 
     @ManyToOne
     @JoinColumn(name = "product_display_id")
-    private ProductDisplayEntity productDisplayEntity;
+    private ProductDisplay productDisplay;
+
+    public enum ProductStatus {
+        ONE, TWO, THREE;
+    }
 }

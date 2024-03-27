@@ -1,6 +1,5 @@
 package cloud2.shopingmall.product.entity;
 
-import cloud2.shopingmall.product.dto.ProductDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,29 +9,20 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductEntity {
+public class ProductDisplayImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_display_image_id")
     private Long id;
 
     @Column
-    private String productName;
+    private String imageUrl;
 
     @Column
-    private Integer productPrice;
-
-    @Column
-    private Integer productQuantity;
-
-    @Column
-    private ProductStatus productStatus;
+    private String imageDescription;
 
     @ManyToOne
     @JoinColumn(name = "product_display_id")
-    private ProductDisplayEntity productDisplayEntity;
-
-    public enum ProductStatus {
-        ONE, TWO, THREE,
-    }
+    private ProductDisplay productDisplay;
 }

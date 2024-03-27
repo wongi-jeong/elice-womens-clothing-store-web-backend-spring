@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ProductDisplayDTO {
 
-    private String ProductDisplayName;
-    private String ProductDescription;
-    private LocalDateTime ProductDisplayCreatedAt;
-    private LocalDateTime ProductDisplayModifiedAt;
+    private String productDisplayName;
+    private String productDescription;
 }

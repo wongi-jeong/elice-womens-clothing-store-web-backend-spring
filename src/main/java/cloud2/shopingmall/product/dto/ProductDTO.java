@@ -15,6 +15,6 @@ public class ProductDTO {
     private ProductStatus productStatus;
 
     public enum ProductStatus {
-        ONE,TWO, THREE,
+        ONE,TWO, THREE;
     }
 }
