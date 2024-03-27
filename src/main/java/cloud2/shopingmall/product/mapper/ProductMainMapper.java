@@ -9,11 +9,11 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface ProductMainMapper {
 
-    interface CategoryMapper extends EntityMapper<CategoryEntity, CategoryDTO> {
+    interface CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     }
 
-    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProductDisplayEntity, CategoryProductDisplayDTO> {
+    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProductDisplay, CategoryProductDisplayDTO> {
 
     }
 

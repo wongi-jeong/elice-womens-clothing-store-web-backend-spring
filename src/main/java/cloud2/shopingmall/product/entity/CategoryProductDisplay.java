@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryProductDisplayEntity {
+public class CategoryProductDisplay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class CategoryProductDisplayEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private CategoryEntity categoryEntity;
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "product_display_id")
