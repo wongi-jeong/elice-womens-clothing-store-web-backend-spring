@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderProductDTO {
-
-    private Integer orderCount;
+    private Integer productCount;
 }

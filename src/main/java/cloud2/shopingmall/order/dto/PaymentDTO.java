@@ -18,6 +18,11 @@ public class PaymentDTO {
 
 
     public enum PayStatus {
-        ONE,TWO, THREE,
+        PAYMENT_REQUESTED,
+        PAYMENT_COMPLETED,
+        PAYMENT_FAILED,
+        PAYMENT_CANCELLED,
+        PAYMENT_REFUNDED,
+
     }
 }

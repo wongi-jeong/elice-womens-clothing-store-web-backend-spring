@@ -1,6 +1,6 @@
 package cloud2.shopingmall.order.entity;
 
-import cloud2.shopingmall.user.entity.UserEntity;
+import cloud2.shopingmall.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderUserEntity {
+public class OrderUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class OrderUserEntity {
     @Column
     private String orderPassword;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private User user;
 }

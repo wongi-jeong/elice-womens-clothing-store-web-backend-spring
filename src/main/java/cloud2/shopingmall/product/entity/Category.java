@@ -9,17 +9,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryProductDisplayEntity {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private CategoryEntity categoryEntity;
+    @Column
+    private String categoryName;
 
-    @ManyToOne
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplayEntity productDisplayEntity;
+    @Column
+    private Integer categoryRank;
 }

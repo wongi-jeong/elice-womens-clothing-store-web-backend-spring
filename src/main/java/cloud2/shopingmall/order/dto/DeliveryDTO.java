@@ -18,7 +18,9 @@ public class DeliveryDTO {
     private LocalDateTime deliveredAt;
 
     public enum SenderStatus {
-        ONE,TWO,THREE
+        PREPARING_FOR_DELIVERY,
+        IN_TRANSIT,
+        DELIVERED,
     }
 
 }

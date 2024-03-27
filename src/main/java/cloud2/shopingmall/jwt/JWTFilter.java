@@ -1,7 +1,7 @@
 package cloud2.shopingmall.jwt;
 
 
-import cloud2.shopingmall.user.entity.UserEntity;
+import cloud2.shopingmall.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,12 +57,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(username);
-        userEntity.setPassword("temppassword");
-        userEntity.setUserRole(role);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword("temppassword");
+        user.setUserRole(role);
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 

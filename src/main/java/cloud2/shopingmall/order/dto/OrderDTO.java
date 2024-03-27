@@ -16,6 +16,12 @@ public class OrderDTO {
     private LocalDateTime orderModifiedAt;
 
     public enum OrderStatus {
-        ONE,TWO, THREE,
+        PENDING_PAYMENT,
+        PAYMENT_COMPLETED,
+        PREPARING_FOR_DELIVERY,
+        IN_TRANSIT,
+        DELIVERED,
+        ORDER_CANCELLED,
+        REFUND_COMPLETED,
     }
 }
