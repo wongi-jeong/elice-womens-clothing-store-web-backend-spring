@@ -33,20 +33,42 @@ public class UserService {
 
 
     @Transactional
-    public void joinProcess(UserDTO userDTO,UserProfileDTO.Create userProfileDTO) {
+    public boolean joinProcess(UserDTO userDTO,UserProfileDTO.Create userProfileDTO) {
 
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
+        String email = userProfileDTO.getEmail();
+        String phoneNumber = userProfileDTO.getPhoneNumber();
+
+
+        Boolean isExist;
 
         // repository에 유저 정보가 존재하는지 체크 존재하는 경우 true 없으면 false
-        Boolean isExist = userRepository.existsByUsername(username);
+        isExist = userRepository.existsByUsername(username);
 
         if (isExist) {
-            // 현재 존재하는 경우 바로 리턴
-            return;
+            // 현재 존재하는 경우 예외 처리
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
-        // 없을 경우 다음 로직 실행
+        // repository에 유저 이메일이 존재하는지 체크 존재하는 경우 true 없으면 false
+        isExist = userProfileRepository.existsByEmail(email);
+        if (isExist) {
+            // 현재 존재하는 경우 예외 처리
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            // 이미 존재하는 경우 커스텀 응답 객체 반환
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 아이디입니다.");
+        }
+
+        // repository에 유저 핸드폰 번호가 존재하는지 체크 존재하는 경우 true 없으면 false
+        isExist = userProfileRepository.existsByPhoneNumber(phoneNumber);
+
+        if (isExist) {
+            // 현재 존재하는 경우 예외 처리
+            throw new IllegalArgumentException("이미 존재하는 전화번호입니다.");
+        }
+
+        // 모두 패스 한 경우 다음 로직 실행
         // DTO -> Entity 변환
         User user = userMapper.toEntity(userDTO);
         UserProfile userProfile = userProfileMapper.toEntity(userProfileDTO);
@@ -61,37 +83,40 @@ public class UserService {
         userProfile.setUser(savedUser);
         userProfile.setGender(userProfileDTO.getGender().getKey());
         userProfileRepository.save(userProfile);
+        return true;
     }
 
     public String findUserId(UserProfileDTO.FindUser findUserDTO) {
-        // 폼 2개 다 null 이면 예외처리
-        if (findUserDTO.getEmail() == null && findUserDTO.getPhoneNumber() == null) {
-            throw new IllegalArgumentException("이메일 또는 전화번호 중 최소 하나는 제공되어야 합니다.");
-        }
 
-        User user = new User();
-        UserProfile userProfile = null;
+        String email = findUserDTO.getEmail();
+        String phoneNumber = findUserDTO.getPhoneNumber();
+        String source = findUserDTO.getSource().getKey();
 
-        // email로 아이디 찾기
-        if ("email".equals(findUserDTO.getSource().getKey())) {
-            userProfile = userProfileRepository.findByEmail(findUserDTO.getEmail());
-        }
+        UserProfile userProfile = new UserProfile();
 
-        // phoneNumber로 아이디 찾기
-        if ("phone".equals(findUserDTO.getSource().getKey())) {
+        if (source.equals("phone")) {
+            if (phoneNumber == null) {
+                throw new IllegalArgumentException("전화번호를 입력해 주세요.");
+            }
+            if (!userProfileRepository.existsByPhoneNumber(phoneNumber)) {
+                throw new IllegalArgumentException("존재하는 전화번호가 없습니다.");
+            }
             userProfile = userProfileRepository.findByPhoneNumber(findUserDTO.getPhoneNumber());
         }
 
-        // user에 저장된 아이디 찾기
-        String findID = null;
-        if (userProfile != null && userProfile.getUser() != null) {
-            findID = userProfile.getUser().getUsername();
+        if (source.equals("email")) {
+            if (email == null) {
+                throw new IllegalArgumentException("이메일을 입력해 주세요.");
+
+            }
+            if (!userProfileRepository.existsByEmail(email)) {
+                throw new IllegalArgumentException("존재하는 이메일이 없습니다.");
+            }
+            userProfile = userProfileRepository.findByEmail(findUserDTO.getEmail());
         }
 
-        if (findID == null) {
-            throw new IllegalStateException("찾는 ID가 없습니다.");
-        }
+        String findID = userProfile.getUser().getUsername();
+
         return findID;
     }
-
 }

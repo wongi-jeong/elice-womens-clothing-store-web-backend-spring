@@ -33,15 +33,19 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             List<FieldError> errors = bindingResult.getFieldErrors();
             StringBuilder errorMessage = new StringBuilder();
+
             for (FieldError error : errors) {
                 errorMessage.append(error.getDefaultMessage()).append("; ");
             }
+
             // 클라이언트에게 유효성 검사 실패 메시지 반환
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
         }
 
         // 유효성 검사 통과 시 UserService의 joinProcess 메서드 호출
-        userService.joinProcess(userDTO, userProfileDTO);
+        if(!userService.joinProcess(userDTO, userProfileDTO)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입에 실패했습니다.");
+        }
 
         // 정상적인 응답 반환
         return ResponseEntity.ok("회원가입 성공");
