@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminController {
     @GetMapping("/admin")
-    public ResponseEntity<String> admin() {
-        return ResponseEntity.status(HttpStatus.OK).body("admin login complete");
+    public String admin() {
+        return "admin";
     }
 }
