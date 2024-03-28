@@ -44,11 +44,25 @@ public class TestDataInit implements ApplicationRunner {
         productDisplayImage.setProductDisplay(pd);
         productDisplayImage2.setProductDisplay(pd);
 
-        ProductDisplay pd2 = productDisplayRepository.save(pd);
+        productDisplayRepository.save(pd);
         productRepository.save(product);
         productRepository.save(product2);
         productDisplayImageRepository.save(productDisplayImage);
         productDisplayImageRepository.save(productDisplayImage2);
+
+
+        ProductDisplay pd2 = new ProductDisplay("elice", "description", "url");
+        ProductDisplayImage productDisplayImage3 = new ProductDisplayImage("eliceImage", "description");
+        ProductDisplayImage productDisplayImage4 = new ProductDisplayImage("eliceImage2", "description");
+
+        pd2.getProductDisplayImages().add(productDisplayImage3);
+        pd2.getProductDisplayImages().add(productDisplayImage4);
+        productDisplayImage3.setProductDisplay(pd2);
+        productDisplayImage4.setProductDisplay(pd2);
+
+        productDisplayRepository.save(pd2);
+        productDisplayImageRepository.save(productDisplayImage3);
+        productDisplayImageRepository.save(productDisplayImage4);
 
     }
 }

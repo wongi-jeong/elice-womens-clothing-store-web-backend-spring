@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,13 +35,18 @@ public class ProductDisplayService {
     public Page<ProductDisplay> getProductDisplays(int page, int size){
         return productDisplayRepository.findAll( PageRequest.of(page, size, Sort.by("product_display_id").descending()));
     }
+    public ProductDisplay getProductDisplay(Long id){
+        return productDisplayRepository.findById(id).orElse(null);
 
+
+    }
 
     public ProductDisplay getProductDisplayWithOptionAndImages(Long id){
         ProductDisplay productDisplay = productDisplayRepository.findProductDisplayWithOptions(id);
-        List<ProductDisplayImage> productDisplayImages = productDisplayImageRepository.findByProductDisplay_Id(id);
-        productDisplay.setProductDisplayImages(productDisplayImages);
+        productDisplay = productDisplayRepository.findProductDisplayWithImages(id);
         return productDisplay;
+
+
     }
 
     public ProductDisplay saveProductDisplay(ProductDisplay productDisplay){
@@ -84,10 +90,17 @@ public class ProductDisplayService {
 
     public void deleteProductDisplay(Long id){
         ProductDisplay productDisplay = productDisplayRepository.getReferenceById(id);
-        if(productDisplay.getProducts() != null){
+        if(productDisplay.getProducts().size() != 0 ){
             throw new RuntimeException();
         }
-        productDisplayRepository.delete(productDisplay);
+        List<ProductDisplayImage> ProductDisplayImages = productDisplayImageRepository.findByProductDisplay_Id(id);
+        for (ProductDisplayImage productDisplayImage : ProductDisplayImages) {
+            productDisplayImage.setProductDisplay(null);
+
+        }
+        productDisplay.setProductDisplayImages(new ArrayList<>());
+        productDisplayImageRepository.deleteAll(ProductDisplayImages);
+        productDisplayRepository.deleteById(id);
 
 
     }
