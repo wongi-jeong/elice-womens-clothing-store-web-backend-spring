@@ -2,7 +2,7 @@ package cloud2.shopingmall.user.service;
 
 
 import cloud2.shopingmall.user.dto.UserDTO;
-import cloud2.shopingmall.user.entity.UserEntity;
+import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,7 @@ public class JoinService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 
@@ -31,11 +32,11 @@ public class JoinService {
             return;
         }
 
-        UserEntity data = new UserEntity();
+        User data = new User();
 
         data.setUsername(username);
         data.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
-        data.setUserRole("ROLE_ADMIN"); // Role 부여
+        data.setUserRole(User.UserRole.ADMIN); // Role 부여
 
         userRepository.save(data);
     }
