@@ -50,6 +50,15 @@ public class ProductDisplayService {
         return productDisplayRepository.save(productDisplay);
     }
 
+    public ProductDisplay updateProductDisplay(ProductDisplay productDisplay){
+        if (productDisplay.getId() == null){
+            //TO DO: need new customException
+            throw new RuntimeException();
+        }
+
+        return productDisplayRepository.save(productDisplay);
+    }
+
 
 
 }
