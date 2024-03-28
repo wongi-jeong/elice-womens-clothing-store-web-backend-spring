@@ -1,5 +1,7 @@
-import cloud2.shopingmall.user.entity.User;
+package cloud2.shopingmall.user.entity;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,6 +16,7 @@ class UserTest {
         user.setUsername("testname");
         user.setPassword("testpassword");
         user.setUserRole(User.UserRole.USER);
+
     }
 
     @Test

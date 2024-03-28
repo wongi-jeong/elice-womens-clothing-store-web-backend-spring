@@ -1,6 +1,7 @@
 package cloud2.shopingmall.user.controller;
 
 import cloud2.shopingmall.user.dto.UserDTO;
+import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.service.JoinService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +16,9 @@ public class JoinController {
     }
 
     @PostMapping("/join")
-    public String joinProcess(UserDTO userDTO) {
+    public String joinProcess(UserDTO userDTO, UserProfileDTO userProfileDTO) {
 
-        joinService.joinProcess(userDTO);
+        joinService.joinProcess(userDTO, userProfileDTO);
 
         return "ok";
     }
