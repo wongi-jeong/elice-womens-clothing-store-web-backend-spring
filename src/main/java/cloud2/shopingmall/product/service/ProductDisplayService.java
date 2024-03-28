@@ -9,10 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductDisplayService {
 
     private final ProductDisplayRepository productDisplayRepository;
@@ -58,6 +60,38 @@ public class ProductDisplayService {
 
         return productDisplayRepository.save(productDisplay);
     }
+
+
+    public void offProductDisplay(Long id){
+        ProductDisplay productDisplay;
+        try{
+            productDisplay = productDisplayRepository.getReferenceById(id);
+        }catch(RuntimeException e){
+            throw new RuntimeException(e);
+        }
+        productDisplay.setStatus(ProductDisplay.ProductDisplayStatus.OFF);
+    }
+
+    public void onProductDisplay(Long id){
+        ProductDisplay productDisplay;
+        try{
+            productDisplay = productDisplayRepository.getReferenceById(id);
+        }catch(RuntimeException e){
+            throw new RuntimeException(e);
+        }
+        productDisplay.setStatus(ProductDisplay.ProductDisplayStatus.ON);
+    }
+
+    public void deleteProductDisplay(Long id){
+        ProductDisplay productDisplay = productDisplayRepository.getReferenceById(id);
+        if(productDisplay.getProducts() != null){
+            throw new RuntimeException();
+        }
+        productDisplayRepository.delete(productDisplay);
+
+
+    }
+
 
 
 

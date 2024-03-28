@@ -29,14 +29,18 @@ public class ProductDisplay extends BaseEntity {
     @Column
     private String imageUrl;
 
+    @Column
+    private ProductDisplayStatus status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProductDisplayImage> productDisplayImages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
     private List<Product> products = new ArrayList<>();
 
-
+    public enum ProductDisplayStatus {
+        ON, OFF;
+    }
 
     public ProductDisplay(String name, String description, String imageUrl){
         this.name = name;
