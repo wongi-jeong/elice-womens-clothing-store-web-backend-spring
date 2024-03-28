@@ -13,7 +13,7 @@ public class UserProfileDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Create {
+    public static class Join {
         @NotNull(message = "이름을 입력해 주세요.")
         @Pattern(regexp = "^[가-힣]*$", message = "한글만 입력 가능합니다.")
         private String name;

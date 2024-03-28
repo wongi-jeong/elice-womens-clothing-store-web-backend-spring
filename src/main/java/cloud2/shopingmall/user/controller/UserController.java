@@ -25,8 +25,8 @@ public class UserController {
 
     // 회원가입 기능
     @PostMapping("/join")
-    public ResponseEntity<String> joinProcess(@Valid UserDTO userDTO,
-                                              @Valid UserProfileDTO.Create userProfileDTO,
+    public ResponseEntity<String> joinProcess(@Valid UserDTO.Join userDTO,
+                                              @Valid UserProfileDTO.Join userProfileDTO,
                                               BindingResult bindingResult) {
 
         // 유효성 검사 결과 확인

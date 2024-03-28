@@ -33,7 +33,7 @@ public class UserService {
 
 
     @Transactional
-    public boolean joinProcess(UserDTO userDTO,UserProfileDTO.Create userProfileDTO) {
+    public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO) {
 
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();

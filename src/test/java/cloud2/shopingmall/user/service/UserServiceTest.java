@@ -2,26 +2,19 @@ package cloud2.shopingmall.user.service;
 
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
-import cloud2.shopingmall.user.entity.User;
-import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileMapper;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.repository.UserRepository;
-import cloud2.shopingmall.user.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,8 +43,8 @@ class UserServiceTest {
     public void testJoinProcess_UserAlreadyExists() {
 
         // 데이터 생성 및 초기화
-        UserDTO userDTO = new UserDTO("test_name","test_password");
-        UserProfileDTO.Create userProfileDTO = new UserProfileDTO.Create();
+        UserDTO.Join userDTO = new UserDTO.Join("test_name", "test_password", "test_password");
+        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join();
 
 
         // 이미 존재하는 사용자라고 가정
@@ -75,7 +68,7 @@ class UserServiceTest {
 //        // 가짜 데이터 생성
 //        UserDTO userDTO = new UserDTO("test_name","test_password");
 //        User user = new User();
-//        UserProfileDTO.Create userProfileDTO = new UserProfileDTO.Create("test_name","abcd@naver.com","010-1234-5678","test_address", UserProfileDTO.Create.Gender.MALE,"1998-12-12");
+//        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("test_name","abcd@naver.com","010-1234-5678","test_address", UserProfileDTO.Join.Gender.MALE,"1998-12-12");
 //        UserProfile userProfile = new UserProfile();
 //
 //
