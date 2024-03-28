@@ -25,4 +25,9 @@ public class ProductDisplayImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_display_id")
     private ProductDisplay productDisplay;
+
+    public ProductDisplayImage(String imageUrl, String imageDescription){
+        this.imageUrl = imageUrl;
+        this.imageDescription = imageDescription;
+    }
 }
