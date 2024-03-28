@@ -1,7 +1,6 @@
 package cloud2.shopingmall.user.service;
 
 
-import cloud2.shopingmall.user.dto.FindUserDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
@@ -10,7 +9,6 @@ import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileMapper;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class UserService {
 
 
     @Transactional
-    public void joinProcess(UserDTO userDTO,UserProfileDTO userProfileDTO) {
+    public void joinProcess(UserDTO userDTO,UserProfileDTO.Create userProfileDTO) {
 
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
@@ -61,11 +59,11 @@ public class UserService {
 
         // UserProfile DB에 생성
         userProfile.setUser(savedUser);
-        userProfile.setGender(userProfileDTO.getGender().getGender());
+        userProfile.setGender(userProfileDTO.getGender().getKey());
         userProfileRepository.save(userProfile);
     }
 
-    public String findUserId(FindUserDTO findUserDTO) {
+    public String findUserId(UserProfileDTO.FindUser findUserDTO) {
         // 폼 2개 다 null 이면 예외처리
         if (findUserDTO.getEmail() == null && findUserDTO.getPhoneNumber() == null) {
             throw new IllegalArgumentException("이메일 또는 전화번호 중 최소 하나는 제공되어야 합니다.");

@@ -1,6 +1,5 @@
 package cloud2.shopingmall.user.controller;
 
-import cloud2.shopingmall.user.dto.FindUserDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.service.UserService;
@@ -11,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,7 +26,7 @@ public class UserController {
     // 회원가입 기능
     @PostMapping("/join")
     public ResponseEntity<String> joinProcess(@Valid UserDTO userDTO,
-                                              @Valid UserProfileDTO userProfileDTO,
+                                              @Valid UserProfileDTO.Create userProfileDTO,
                                               BindingResult bindingResult) {
 
         // 유효성 검사 결과 확인
@@ -49,14 +47,19 @@ public class UserController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
+    // 아이디 중복 체크
+
+
     // 아이디 찾기 기능
     @GetMapping("/findID")
-    ResponseEntity<String> findId(FindUserDTO findUserDTO) {
+    public ResponseEntity<String> findId(UserProfileDTO.FindUser findUserDTO) {
 
         String resultId = userService.findUserId(findUserDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(resultId);
+        return ResponseEntity.status(HttpStatus.OK).body("찾으시는 아이디는 " + resultId + " 입니다.");
     }
+
+
 
 
 }

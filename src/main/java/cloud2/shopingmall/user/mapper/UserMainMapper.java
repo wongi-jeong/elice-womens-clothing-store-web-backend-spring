@@ -20,7 +20,7 @@ public interface UserMainMapper {
     }
 
     @Mapper(componentModel = "spring")
-    interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO> {
+    interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO.Create> {
 
     }
 
