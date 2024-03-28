@@ -27,7 +27,7 @@ public class Category {
     private Integer categoryRank;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-    private List<Category> categories = new ArrayList<>();
+    private List<CategoryProductDisplay> categoryProductDisplays = new ArrayList<>();
 
     public Category(String categoryName, Integer categoryRank) {
         this.categoryName = categoryName;
