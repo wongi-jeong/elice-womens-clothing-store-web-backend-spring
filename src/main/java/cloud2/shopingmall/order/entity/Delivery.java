@@ -10,11 +10,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Delivery {
 
     @Id
@@ -30,22 +30,21 @@ public class Delivery {
     @Column
     private String senderAddress;
 
-    @Enumerated(EnumType.STRING)
+    @Column
     private SenderStatus senderStatus;
 
-    @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deliveredAt;
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Orders orders;
+    private Orders order;
 
 
     public enum SenderStatus {
-        PREPARING_FOR_DELIVERY("배송준비"),
-        IN_TRANSIT("배송중"),
-        DELIVERED("배송완료"),
+        ONE("ONE"),
+        TWO("TWO"),
+        THREE("THREE"),
         ;
 
         private String key;

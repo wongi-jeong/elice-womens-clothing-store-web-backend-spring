@@ -21,6 +21,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class OderManagementService {
+    /**
+     * 주문 생성
+     * 주문 취소
+     * 주문 내용 변경
+     * 주문 상태 업데이트
+     */
     private final OrderRepository orderRepository;
     private final OrderUserRepository orderUserRepository;
     private final OrderProductRepository orderProductRepository;
