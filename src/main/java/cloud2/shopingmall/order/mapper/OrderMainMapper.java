@@ -9,18 +9,19 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface OrderMainMapper {
 
-    interface DeliveryMapper extends EntityMapper<DeliveryEntity, DeliveryDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface DeliveryMapper extends EntityMapper<Delivery, DeliveryDTO> {
     }
-
-    interface OrderProductMapper extends EntityMapper<OrderProductEntity, OrderProductDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface OrderProductMapper extends EntityMapper<OrderProduct, OrderProductDTO> {
     }
-
-    interface OrderMapper extends EntityMapper<OrderEntity, OrderDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface OrderMapper extends EntityMapper<Orders, OrderDTO> {
     }
-
-    interface OrderUserMapper extends EntityMapper<OrderUserEntity, OrderUserDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface OrderUserMapper extends EntityMapper<OrderUser, OrderUserDTO> {
     }
-
-    interface PaymentMapper extends EntityMapper<PaymentEntity, PaymentDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface PaymentMapper extends EntityMapper<Payment, PaymentDTO> {
     }
 }

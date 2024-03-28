@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class UserProfile extends BaseEntity {
 
     @Id

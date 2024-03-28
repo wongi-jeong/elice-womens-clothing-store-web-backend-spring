@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderUserEntity {
+public class OrderUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +24,7 @@ public class OrderUserEntity {
 
     @Column
     private String orderPassword;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")

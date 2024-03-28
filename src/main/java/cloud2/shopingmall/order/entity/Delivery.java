@@ -1,20 +1,21 @@
 package cloud2.shopingmall.order.entity;
 
-import cloud2.shopingmall.order.dto.DeliveryDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeliveryEntity {
+public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +38,7 @@ public class DeliveryEntity {
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private OrderEntity orderEntity;
+    private Orders order;
 
 
     public enum SenderStatus {
