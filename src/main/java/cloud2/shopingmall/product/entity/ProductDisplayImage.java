@@ -13,6 +13,7 @@ public class ProductDisplayImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_display_image_id")
     private Long id;
 
     @Column
@@ -21,7 +22,7 @@ public class ProductDisplayImage {
     @Column
     private String imageDescription;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_display_id")
     private ProductDisplay productDisplay;
 }

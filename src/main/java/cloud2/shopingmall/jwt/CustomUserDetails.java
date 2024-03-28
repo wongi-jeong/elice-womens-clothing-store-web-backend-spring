@@ -29,7 +29,10 @@ public class CustomUserDetails  implements UserDetails {
             @Override
             public String getAuthority() {
 
-                return user.getUserRole();
+
+
+                return user.getUserRole().getKey();
+
             }
         });
 

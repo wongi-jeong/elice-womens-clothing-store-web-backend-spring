@@ -13,25 +13,49 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_id")
     private Long id;
 
     @Column
-    private String productName;
+    private String name;
 
     @Column
-    private Integer productPrice;
+    private Integer price;
+    @Column
+    private Size size;
+    @Column
+    private Color color;
+    @Column
+    private Integer quantity;
 
     @Column
-    private Integer productQuantity;
+    private ProductStatus status;
 
-    @Column
-    private ProductStatus productStatus;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_display_id")
     private ProductDisplay productDisplay;
 
-    public enum ProductStatus {
-        ONE, TWO, THREE,
+    public Product(String name, Size size, Color color, Integer quantity, ProductStatus status){
+        this.name = name;
+        this.size = size;
+        this.color = color;
+        this.quantity = quantity;
+        this.status = status;
     }
+
+    public enum ProductStatus {
+        ONE, TWO, THREE;
+    }
+
+    public enum Size {
+        ONE, TWO, THREE;
+    }
+
+    public enum Color {
+        ONE, TWO, THREE;
+    }
+
+
+
+
 }

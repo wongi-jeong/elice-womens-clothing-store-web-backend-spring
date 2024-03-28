@@ -25,7 +25,8 @@ public class OrderUser {
     @Column
     private String orderPassword;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = true)
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }

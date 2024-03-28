@@ -34,7 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
         // Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
 
-            System.out.println("token null");
+//            System.out.println("token null");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -46,7 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
 
-            System.out.println("token expired");
+//            System.out.println("token expired");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -60,14 +60,23 @@ public class JWTFilter extends OncePerRequestFilter {
         User user = new User();
         user.setUsername(username);
         user.setPassword("temppassword");
-        user.setUserRole(role);
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        // 역할에 따라 setUserRole 메서드에 할당
+        if (role != null && !role.isEmpty()) {
+            if (role.equals("ADMIN")) {
+                user.setUserRole(User.UserRole.ADMIN);
+            } else if (role.equals("USER")) {
+                user.setUserRole(User.UserRole.USER);
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+                CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
-        filterChain.doFilter(request, response);
+                Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                filterChain.doFilter(request, response);
+            }
+        }
     }
 }
