@@ -1,6 +1,6 @@
 package cloud2.shopingmall.order.entity;
 
-import cloud2.shopingmall.product.entity.ProductEntity;
+import cloud2.shopingmall.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +25,5 @@ public class OrderProductEntity {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private ProductEntity productEntity;
+    private Product product;
 }
