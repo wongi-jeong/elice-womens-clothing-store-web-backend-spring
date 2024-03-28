@@ -13,29 +13,6 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-<<<<<<< HEAD
-    private Long id;
-
-    @Column
-    private String productName;
-
-    @Column
-    private Integer productPrice;
-
-    @Column
-    private Integer productQuantity;
-
-    @Column
-    private ProductStatus productStatus;
-
-    @ManyToOne
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplay productDisplay;
-
-    public enum ProductStatus {
-        ONE, TWO, THREE,
-    }
-=======
     @Column(name="product_id")
     private Long id;
 
@@ -80,5 +57,4 @@ public class Product {
 
 
 
->>>>>>> 9619cc3794305c6215aa009a2cf377e9d4a36312
 }

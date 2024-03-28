@@ -9,4 +9,11 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+public interface ProductRepository extends JpaRepository<Product,Long> {
+=======
+>>>>>>> dev
+>>>>>>> 77743b20e2bb91b9f8ff79c810bddb370c26d50f
 }

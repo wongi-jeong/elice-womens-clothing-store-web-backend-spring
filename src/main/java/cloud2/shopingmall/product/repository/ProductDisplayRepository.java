@@ -13,7 +13,9 @@ public interface ProductDisplayRepository extends JpaRepository<ProductDisplay,L
     @Query("SELECT distinct pd FROM ProductDisplay pd join fetch pd.productDisplayImages where pd.id = :id")
     ProductDisplay findProductDisplayWithImages(@Param("id") Long id);
 
-
     ProductDisplay findByName(String name);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77743b20e2bb91b9f8ff79c810bddb370c26d50f
 }

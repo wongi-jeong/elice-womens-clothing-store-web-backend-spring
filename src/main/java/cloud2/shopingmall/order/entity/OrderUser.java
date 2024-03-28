@@ -25,8 +25,7 @@ public class OrderUser {
     @Column
     private String orderPassword;
 
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

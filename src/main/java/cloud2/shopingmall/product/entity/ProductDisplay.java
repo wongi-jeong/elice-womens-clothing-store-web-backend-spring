@@ -6,12 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.List;
 
->>>>>>> 9619cc3794305c6215aa009a2cf377e9d4a36312
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,16 +18,6 @@ public class ProductDisplay extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-<<<<<<< HEAD
-    private Long id;
-
-    @Column
-    private String ProductDisplayName;
-
-    @Column
-    private String ProductDescription;
-
-=======
     @Column(name="product_display_id")
     private Long id;
 
@@ -60,5 +48,5 @@ public class ProductDisplay extends BaseEntity {
         this.description = description;
         this.imageUrl = imageUrl;
     }
->>>>>>> 9619cc3794305c6215aa009a2cf377e9d4a36312
+
 }
