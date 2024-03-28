@@ -17,16 +17,16 @@ public interface ProductMainMapper {
 
     }
 
-    interface ProductDisplayMapper extends EntityMapper<ProductDisplayEntity, ProductDisplayDTO> {
+    interface ProductDisplayMapper extends EntityMapper<ProductDisplay, ProductDisplayDTO> {
 
     }
 
-    interface ProductDisplayImageMapper extends EntityMapper<ProductDisplayImageEntity, ProductDisplayImageDTO> {
+    interface ProductDisplayImageMapper extends EntityMapper<ProductDisplayImage, ProductDisplayImageDTO> {
 
 
     }
 
-    interface ProductMapper extends EntityMapper<ProductEntity, ProductDTO> {
+    interface ProductMapper extends EntityMapper<Product, ProductDTO> {
 
     }
 }
