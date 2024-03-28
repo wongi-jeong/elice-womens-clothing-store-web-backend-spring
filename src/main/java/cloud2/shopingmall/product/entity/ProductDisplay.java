@@ -32,7 +32,7 @@ public class ProductDisplay extends BaseEntity {
     @Column
     private ProductDisplayStatus status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
     private List<ProductDisplayImage> productDisplayImages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productDisplay")
