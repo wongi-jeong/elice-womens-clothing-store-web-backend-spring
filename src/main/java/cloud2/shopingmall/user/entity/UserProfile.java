@@ -20,24 +20,27 @@ public class UserProfile extends BaseEntity {
     private Long id;
 
     @Column
-    private String userProfileName;
+    private String name;
+
+    @Column(unique = true)
+    private String email;
+
+    @Column(unique = true)
+    private String phoneNumber;
 
     @Column
-    private String userEmail;
+    private String address;
 
     @Column
-    private String userPhoneNumber;
-
-    @Column
-    private String userAddress;
-
-    @Column
-    private UserProfileDTO.Gender gender;
+    private String gender;
 
     @Column
     private String birthDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+
+
 }
