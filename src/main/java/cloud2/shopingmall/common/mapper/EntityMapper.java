@@ -1,5 +1,7 @@
 package cloud2.shopingmall.common.mapper;
 
+import org.mapstruct.Mapper;
+
 import java.util.List;
 
 public interface EntityMapper<E,D> {

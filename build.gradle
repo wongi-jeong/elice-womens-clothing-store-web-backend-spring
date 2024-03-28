@@ -36,6 +36,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+	runtimeOnly 'com.h2database:h2'
+
 	// mapstruct
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
 	testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")

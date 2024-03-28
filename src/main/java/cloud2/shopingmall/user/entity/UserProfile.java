@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfileEntity {
+public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,5 +38,5 @@ public class UserProfileEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private User user;
 }
