@@ -29,8 +29,7 @@ public class Payment extends BaseEntity {
     @Column
     private PayStatus payStatus;
 
-    @OneToOne
-    @JoinColumn(name = "order_id")
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Orders order;
 
     public enum PayStatus {
