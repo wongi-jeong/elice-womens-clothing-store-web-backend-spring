@@ -18,7 +18,6 @@ public class CustomUserDetails  implements UserDetails {
     }
 
 
-    // 사용자 권한 Getter
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

@@ -13,6 +13,7 @@ public class ProductDisplayImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="product_display_image_id")
     private Long id;
 
     @Column
@@ -21,7 +22,15 @@ public class ProductDisplayImage {
     @Column
     private String imageDescription;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_display_id")
     private ProductDisplay productDisplay;
+<<<<<<< HEAD
+=======
+
+    public ProductDisplayImage(String imageUrl, String imageDescription){
+        this.imageUrl = imageUrl;
+        this.imageDescription = imageDescription;
+    }
+>>>>>>> 9619cc3794305c6215aa009a2cf377e9d4a36312
 }

@@ -1,5 +1,6 @@
 package cloud2.shopingmall.user.entity;
 
+import cloud2.shopingmall.common.entity.BaseEntity;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,31 +13,34 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+public class UserProfile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String userName;
+    private String name;
+
+    @Column(unique = true)
+    private String email;
+
+    @Column(unique = true)
+    private String phoneNumber;
 
     @Column
-    private String userEmail;
+    private String address;
 
     @Column
-    private String userPhoneNumber;
-
-    @Column
-    private String userAddress;
-
-    @Column
-    private UserProfileDTO.Gender gender;
+    private String gender;
 
     @Column
     private String birthDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+
+
 }
