@@ -41,5 +41,15 @@ public class ProductDisplayService {
         return productDisplay;
     }
 
+    public ProductDisplay saveProductDisplay(ProductDisplay productDisplay){
+        if (productDisplayRepository.findByName(productDisplay.getName()) != null){
+            //TO DO: need new customException
+            throw new RuntimeException();
+        }
+
+        return productDisplayRepository.save(productDisplay);
+    }
+
+
 
 }
