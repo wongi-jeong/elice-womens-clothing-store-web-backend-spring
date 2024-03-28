@@ -1,5 +1,6 @@
 package cloud2.shopingmall.user.entity;
 
+import cloud2.shopingmall.common.entity.BaseEntity;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,14 +13,14 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+public class UserProfile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String userName;
+    private String userProfileName;
 
     @Column
     private String userEmail;
