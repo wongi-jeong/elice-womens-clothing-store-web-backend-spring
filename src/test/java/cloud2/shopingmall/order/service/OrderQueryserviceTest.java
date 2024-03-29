@@ -1,6 +1,7 @@
 package cloud2.shopingmall.order.service;
 
 import cloud2.shopingmall.order.dto.OrderInfoDTO;
+import cloud2.shopingmall.order.entity.OrderProduct;
 import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.entity.Payment;
 import cloud2.shopingmall.order.repository.OrderProductRepository;
@@ -62,9 +63,56 @@ class OrderQueryserviceTest {
 
     @Test
     void findByUser() {
+        // Given
+        Orders mockOrder = Mockito.mock(Orders.class);
+        User mockUser = Mockito.mock(User.class);
+        Payment mockPayment = Mockito.mock(Payment.class);
+        OrderProduct mockorderProduct = Mockito.mock(OrderProduct.class);
+
+        when(mockOrder.getId()).thenReturn(1L);
+        when(mockOrder.getOrderStatus()).thenReturn(Orders.OrderStatus.PAYMENT_COMPLETED);
+        when(mockOrder.getOrderCreatedAt()).thenReturn(LocalDateTime.now());
+        when(mockOrder.getOrderModifiedAt()).thenReturn(LocalDateTime.now());
+        when(mockOrder.getUser()).thenReturn(mockUser);
+        when(mockOrder.getPayment()).thenReturn(mockPayment);
+        when(mockOrder.getOrderProducts()).thenReturn(Arrays.asList(mockorderProduct));
+        when(mockUser.getUsername()).thenReturn("user123");
+        when(mockPayment.getPayTotalPrice()).thenReturn(1000);
+
+        when(orderRepository.findOrdersByUsername("user123")).thenReturn(Arrays.asList(mockOrder));
+
+        // When
+        List<OrderInfoDTO.OrderDetailInfo> result = orderQueryservice.findByUser("user123");
+
+        // Then
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(0).getTotalPrice()).isEqualTo(1000);
     }
 
     @Test
-    void findByOrderId() {
+    void findByOrderId() { // Given
+        Orders mockOrder = Mockito.mock(Orders.class);
+        User mockUser = Mockito.mock(User.class);
+        Payment mockPayment = Mockito.mock(Payment.class);
+        OrderProduct mockorderProduct = Mockito.mock(OrderProduct.class);
+
+        when(mockOrder.getId()).thenReturn(1L);
+        when(mockOrder.getOrderStatus()).thenReturn(Orders.OrderStatus.PAYMENT_COMPLETED);
+        when(mockOrder.getOrderCreatedAt()).thenReturn(LocalDateTime.now());
+        when(mockOrder.getOrderModifiedAt()).thenReturn(LocalDateTime.now());
+        when(mockOrder.getUser()).thenReturn(mockUser);
+        when(mockOrder.getPayment()).thenReturn(mockPayment);
+        when(mockOrder.getOrderProducts()).thenReturn(Arrays.asList(mockorderProduct));
+        when(mockUser.getUsername()).thenReturn("user123");
+        when(mockPayment.getPayTotalPrice()).thenReturn(1000);
+
+        when(orderRepository.findOrdersByOrderId(1L)).thenReturn(mockOrder);
+
+        // When
+        OrderInfoDTO.OrderDetailInfo result = orderQueryservice.findByOrderId(1L);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalPrice()).isEqualTo(1000);
     }
 }

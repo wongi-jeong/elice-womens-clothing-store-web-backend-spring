@@ -1,6 +1,7 @@
 package cloud2.shopingmall.order.repository;
 
 import cloud2.shopingmall.order.dto.OrderInfoDTO;
+import cloud2.shopingmall.order.dto.OrderProductDTO;
 import cloud2.shopingmall.order.entity.OrderProduct;
 import cloud2.shopingmall.order.entity.Orders;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +15,5 @@ import java.util.List;
 @Repository
 @Transactional
 public interface OrderProductRepository extends JpaRepository<OrderProduct,Long> {
-//    @Query("SELECT new cloud2.shopingmall.order.dto.OrderInfoDTO.productQuantityDTO(op.id,op.productCount) "+
-//            "FROM OrderProduct op "+
-//            "WHERE op.orders.id= :orderId")
-//    List<OrderInfoDTO.productQuantityDTO> productQuantityByOrders(@Param("orderId")Long orderId);
+
 }
