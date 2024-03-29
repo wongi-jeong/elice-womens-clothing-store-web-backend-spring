@@ -34,6 +34,7 @@ public class OrderQueryservice {
             orderInfoDTO.setOrderModifiedAt(order.getOrderModifiedAt());
             orderInfoDTO.setOrderUser(order.getUser().getUsername());
             orderInfoDTO.setTotalPrice(order.getPayment().getPayTotalPrice());
+            orderInfoDTOList.add(orderInfoDTO);
         }
         return orderInfoDTOList;
     }
