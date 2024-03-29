@@ -18,7 +18,6 @@ public class CustomUserDetails  implements UserDetails {
     }
 
 
-    // 사용자 권한 Getter
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -29,7 +28,9 @@ public class CustomUserDetails  implements UserDetails {
             @Override
             public String getAuthority() {
 
-                return user.getUserRole().getKey();
+
+                return user.getUserRole();
+
             }
         });
 

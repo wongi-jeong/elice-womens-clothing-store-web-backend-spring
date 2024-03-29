@@ -11,45 +11,44 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private String userRole;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
-    private UserStatus userStatus;
+    private Status Status;
 
 
-    @OnDelete(action = OnDeleteAction.CASCADE) // 연결된 모드 데이터 삭제
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserProfile userProfile;
 
+
     @Getter
-    public enum UserRole {
-        USER("ROLE_USER"),
-        ADMIN("ROLE_ADMIN");
+    public enum Status {
+        ACTIVE("User_Active"),
+        DEACTIVE("User_Deactive"),
+        DELETED("User_Deleted");
 
-        private String key;
+        private String status;
 
-        UserRole(String key) {
-            this.key = key;
+        Status(String status) {
+            this.status = status;
         }
-    }
 
-    public enum UserStatus {
-        ONE,TWO, THREE,
+
     }
 
 
