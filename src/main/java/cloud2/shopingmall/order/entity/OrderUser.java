@@ -1,5 +1,6 @@
-package cloud2.shopingmall.product.entity;
+package cloud2.shopingmall.order.entity;
 
+import cloud2.shopingmall.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,19 +10,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDisplayImageEntity {
+public class OrderUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String imageUrl;
+    private String orderUserName;
 
     @Column
-    private String imageDescription;
+    private Integer orderNumber;
+
+    @Column
+    private String orderPassword;
+
 
     @ManyToOne
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplayEntity productDisplayEntity;
+    @JoinColumn(name = "user_id")
+    private User user;
 }
