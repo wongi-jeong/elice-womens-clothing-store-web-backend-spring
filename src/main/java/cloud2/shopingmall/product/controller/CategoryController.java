@@ -2,7 +2,6 @@ package cloud2.shopingmall.product.controller;
 
 import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.entity.Category;
-import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService, ProductMainMapper.CategoryMapper categoryMapper) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
