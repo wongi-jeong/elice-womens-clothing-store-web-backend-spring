@@ -56,8 +56,7 @@ public class UserService {
         if (isExist) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-            // 이미 존재하는 경우 커스텀 응답 객체 반환
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 아이디입니다.");
+
         }
 
         // repository에 유저 핸드폰 번호가 존재하는지 체크 존재하는 경우 true 없으면 false
@@ -86,6 +85,7 @@ public class UserService {
         return true;
     }
 
+    // 아이디 찾기 기능
     public String findUserId(UserProfileDTO.FindUser findUserDTO) {
 
         String email = findUserDTO.getEmail();
