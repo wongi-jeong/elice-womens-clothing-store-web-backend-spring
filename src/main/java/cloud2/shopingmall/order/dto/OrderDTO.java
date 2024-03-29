@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,9 +15,9 @@ public class OrderDTO {
     private OrderStatus orderStatus;
     private LocalDateTime orderCreatedAt;
     private LocalDateTime orderModifiedAt;
+    private List<OrderProductDTO> products;
 
     public enum OrderStatus {
-        PENDING_PAYMENT,
         PAYMENT_COMPLETED,
         PREPARING_FOR_DELIVERY,
         IN_TRANSIT,
