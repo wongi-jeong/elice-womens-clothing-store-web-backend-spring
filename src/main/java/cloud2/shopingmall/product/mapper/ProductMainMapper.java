@@ -15,23 +15,23 @@ public interface ProductMainMapper {
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProductDisplay, CategoryProductDisplayDTO> {
+    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProduct, CategoryProductDisplayDTO> {
 
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface ProductDisplayMapper extends EntityMapper<ProductDisplay, ProductDisplayDTO> {
+    interface ProductDisplayMapper extends EntityMapper<Product, ProductDTO> {
 
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface ProductDisplayImageMapper extends EntityMapper<ProductDisplayImage, ProductDisplayImageDTO> {
+    interface ProductDisplayImageMapper extends EntityMapper<ProductBody, ProductBodyDTO> {
 
 
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface ProductMapper extends EntityMapper<Product, ProductDTO> {
+    interface ProductMapper extends EntityMapper<ProductDetails, ProductDetailsDTO> {
 
     }
 }

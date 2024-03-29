@@ -5,8 +5,7 @@ import cloud2.shopingmall.order.entity.OrderProduct;
 import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.repository.OrderProductRepository;
 import cloud2.shopingmall.order.repository.OrderRepository;
-import cloud2.shopingmall.order.repository.OrderUserRepository;
-import cloud2.shopingmall.product.entity.Product;
+import cloud2.shopingmall.product.entity.ProductDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,25 +23,23 @@ public class OrderQueryservice {
      * 주문 상세 조회
      */
     private final OrderRepository orderRepository;
-    private final OrderUserRepository orderUserRepository;
-    private  final OrderProductRepository orderProductRepository;
+    private final OrderProductRepository orderProductRepository;
 
 
-    public List<OrderInfoDTO> findAllOrder(){
+    public List<OrderInfoDTO> findAllOrder() {
         //관리자 입장에서 전체 주문 목록 조회
         List<Orders> allorders = orderRepository.findAll();
         List<OrderInfoDTO> orderInfoDTOList = new ArrayList<>();
-        for(Orders order : allorders){
+        for (Orders order : allorders) {
             List<OrderProduct> orderProducts = orderProductRepository.findByOrders(order);
-            Map<Product, Integer> productsMap = new HashMap<>();
-            for(OrderProduct orderProduct: orderProducts){
-                Product product = orderProduct.getProduct();
-                productsMap.put(product,orderProduct.getProductCount());
+            Map<ProductDetails, Integer> productsMap = new HashMap<>();
+            for (OrderProduct orderProduct : orderProducts) {
+                ProductDetails productDetails = orderProduct.getProductDetails();
+                productsMap.put(productDetails, orderProduct.getProductCount());
             }
             OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
             orderInfoDTO.setOrderId(order.getId());
             orderInfoDTO.setOrderStatus(order.getOrderStatus());
-            orderInfoDTO.setOrderNumber(order.getOrderUser().getOrderNumber());
             orderInfoDTO.setOrderCreatedAt(order.getOrderCreatedAt());
             orderInfoDTO.setOrderModifiedAt(order.getOrderModifiedAt());
             orderInfoDTO.setProducts(productsMap);

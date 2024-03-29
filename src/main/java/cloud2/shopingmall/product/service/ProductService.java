@@ -1,10 +1,8 @@
 package cloud2.shopingmall.product.service;
 
 import cloud2.shopingmall.product.entity.Product;
-import cloud2.shopingmall.product.entity.ProductDisplay;
-import cloud2.shopingmall.product.entity.ProductDisplayImage;
-import cloud2.shopingmall.product.repository.ProductDisplayImageRepository;
-import cloud2.shopingmall.product.repository.ProductDisplayRepository;
+import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,32 +19,48 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductDisplayRepository productDisplayRepository;
+    private final ProductBodyRepository productBodyRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductDisplayRepository productDisplayRepository){
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository) {
         this.productRepository = productRepository;
-        this.productDisplayRepository = productDisplayRepository;
+        this.productBodyRepository = productBodyRepository;
     }
 
-    public Product getProduct(Long id){
+
+    public List<Product> getProductDisplays() {
+        return productRepository.findAll();
+    }
+
+    public Page<Product> getProductDisplays(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size, Sort.by("product_display_id").descending()));
+    }
+
+    public Product getProductDisplay(Long id) {
         return productRepository.findById(id).orElse(null);
+
+
     }
 
-    public List<Product> getProductsByProductDisplayId(Long productDisplayId){
-        return productRepository.findByProductDisplay_Id(productDisplayId);
+    public Product getProductDisplayWithOptionAndImages(Long id) {
+        Product product = productRepository.findProductDisplayWithOptions(id);
+        product = productRepository.findProductDisplayWithImages(id);
+        return product;
+
+
     }
 
-
-    public Product saveProduct(Product product, Long productDisplayId){
-        ProductDisplay productDisplay = productDisplayRepository.getReferenceById(productDisplayId);
-        product.setProductDisplay(productDisplay);
+    public Product saveProductDisplay(Product product) {
+        if (productRepository.findByName(product.getName()) != null) {
+            //TO DO: need new customException
+            throw new RuntimeException();
+        }
 
         return productRepository.save(product);
     }
 
-    public Product updateProductDisplay(Product product){
-        if (product.getId() == null){
+    public Product updateProductDisplay(Product product) {
+        if (product.getId() == null) {
             //TO DO: need new customException
             throw new RuntimeException();
         }
@@ -55,34 +69,42 @@ public class ProductService {
     }
 
 
-    public void offProduct(Long id){
-        try{
-            Product product = productRepository.getReferenceById(id);
-            product.setStatus(Product.ProductStatus.OFF);
-
-        }catch(RuntimeException e){
+    public void offProductDisplay(Long id) {
+        Product product;
+        try {
+            product = productRepository.getReferenceById(id);
+        } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+        product.setStatus(Product.ProductDisplayStatus.OFF);
     }
 
-    public void onProduct(Long id){
-        try{
-            Product product = productRepository.getReferenceById(id);
-            product.setStatus(Product.ProductStatus.ON);
-
-        }catch(RuntimeException e){
+    public void onProductDisplay(Long id) {
+        Product product;
+        try {
+            product = productRepository.getReferenceById(id);
+        } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+        product.setStatus(Product.ProductDisplayStatus.ON);
     }
 
-
-    public void deleteProduct(Long id){
+    public void deleteProductDisplay(Long id) {
         Product product = productRepository.getReferenceById(id);
-        ProductDisplay productDisplay = product.getProductDisplay();
-        productDisplay.getProducts().remove(product);
-        productRepository.delete(product);
+        if (product.getProductDetails().size() != 0) {
+            throw new RuntimeException();
+        }
+        List<ProductBody> productBodies = productBodyRepository.findByProduct_Id(id);
+        for (ProductBody productBody : productBodies) {
+            productBody.setProduct(null);
+
+        }
+        product.setProductBodies(new ArrayList<>());
+        productBodyRepository.deleteAll(productBodies);
+        productRepository.deleteById(id);
 
 
     }
+
 
 }

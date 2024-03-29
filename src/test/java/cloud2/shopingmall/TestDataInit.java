@@ -1,11 +1,11 @@
 package cloud2.shopingmall;
 
+import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.entity.Product;
-import cloud2.shopingmall.product.entity.ProductDisplay;
-import cloud2.shopingmall.product.entity.ProductDisplayImage;
-import cloud2.shopingmall.product.repository.ProductDisplayImageRepository;
-import cloud2.shopingmall.product.repository.ProductDisplayRepository;
+import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
+import cloud2.shopingmall.product.repository.ProductDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -16,53 +16,53 @@ import org.springframework.stereotype.Component;
 public class TestDataInit implements ApplicationRunner {
 
     @Autowired
+    ProductDetailsRepository productDetailsRepository;
+    @Autowired
     ProductRepository productRepository;
     @Autowired
-    ProductDisplayRepository productDisplayRepository;
-    @Autowired
-    ProductDisplayImageRepository productDisplayImageRepository;
+    ProductBodyRepository productBodyRepository;
 
     @Override
     public void run(ApplicationArguments args) {
         initData();
     }
     public void initData(){
-        ProductDisplay pd = new ProductDisplay("elice", "description", "url");
-        Product product = new Product("elice", Product.Size.ONE, Product.Color.ONE, 100, Product.ProductStatus.ONE);
-        Product product2 = new Product("elice2", Product.Size.TWO, Product.Color.TWO, 200, Product.ProductStatus.TWO);
+        Product pd = new Product("elice", "description", "url");
+        ProductDetails productDetails = new ProductDetails("elice", ProductDetails.Size.ONE, ProductDetails.Color.ONE, 100, ProductDetails.ProductStatus.ONE);
+        ProductDetails productDetails2 = new ProductDetails("elice2", ProductDetails.Size.TWO, ProductDetails.Color.TWO, 200, ProductDetails.ProductStatus.TWO);
 
-        ProductDisplayImage productDisplayImage = new ProductDisplayImage("eliceImage", "description");
-        ProductDisplayImage productDisplayImage2 = new ProductDisplayImage("eliceImage2", "description");
-
-
-        pd.getProducts().add(product);
-        pd.getProducts().add(product2);
-        pd.getProductDisplayImages().add(productDisplayImage);
-        pd.getProductDisplayImages().add(productDisplayImage2);
-        product.setProductDisplay(pd);
-        product2.setProductDisplay(pd);
-        productDisplayImage.setProductDisplay(pd);
-        productDisplayImage2.setProductDisplay(pd);
-
-        productDisplayRepository.save(pd);
-        productRepository.save(product);
-        productRepository.save(product2);
-        productDisplayImageRepository.save(productDisplayImage);
-        productDisplayImageRepository.save(productDisplayImage2);
+        ProductBody productBody = new ProductBody("eliceImage", "description");
+        ProductBody productBody2 = new ProductBody("eliceImage2", "description");
 
 
-        ProductDisplay pd2 = new ProductDisplay("elice", "description", "url");
-        ProductDisplayImage productDisplayImage3 = new ProductDisplayImage("eliceImage", "description");
-        ProductDisplayImage productDisplayImage4 = new ProductDisplayImage("eliceImage2", "description");
+        pd.getProductDetails().add(productDetails);
+        pd.getProductDetails().add(productDetails2);
+        pd.getProductBodies().add(productBody);
+        pd.getProductBodies().add(productBody2);
+        productDetails.setProduct(pd);
+        productDetails2.setProduct(pd);
+        productBody.setProduct(pd);
+        productBody2.setProduct(pd);
 
-        pd2.getProductDisplayImages().add(productDisplayImage3);
-        pd2.getProductDisplayImages().add(productDisplayImage4);
-        productDisplayImage3.setProductDisplay(pd2);
-        productDisplayImage4.setProductDisplay(pd2);
+        productRepository.save(pd);
+        productDetailsRepository.save(productDetails);
+        productDetailsRepository.save(productDetails2);
+        productBodyRepository.save(productBody);
+        productBodyRepository.save(productBody2);
 
-        productDisplayRepository.save(pd2);
-        productDisplayImageRepository.save(productDisplayImage3);
-        productDisplayImageRepository.save(productDisplayImage4);
+
+        Product pd2 = new Product("elice", "description", "url");
+        ProductBody productBody3 = new ProductBody("eliceImage", "description");
+        ProductBody productBody4 = new ProductBody("eliceImage2", "description");
+
+        pd2.getProductBodies().add(productBody3);
+        pd2.getProductBodies().add(productBody4);
+        productBody3.setProduct(pd2);
+        productBody4.setProduct(pd2);
+
+        productRepository.save(pd2);
+        productBodyRepository.save(productBody3);
+        productBodyRepository.save(productBody4);
 
     }
 }

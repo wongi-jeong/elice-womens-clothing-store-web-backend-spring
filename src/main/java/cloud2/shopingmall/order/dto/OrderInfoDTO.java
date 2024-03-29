@@ -1,7 +1,7 @@
 package cloud2.shopingmall.order.dto;
 
 import cloud2.shopingmall.order.entity.Orders;
-import cloud2.shopingmall.product.entity.Product;
+import cloud2.shopingmall.product.entity.ProductDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class OrderInfoDTO {
     private Integer orderNumber;
     private LocalDateTime orderCreatedAt;
     private LocalDateTime orderModifiedAt;
-    private Map<Product,Integer> products;
+    private Map<ProductDetails,Integer> products;
     private Orders.OrderStatus orderStatus;
 
 }

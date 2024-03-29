@@ -21,7 +21,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false)
     private String categoryName;
 
@@ -29,7 +28,7 @@ public class Category {
     private Integer categoryRank;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-    private List<CategoryProductDisplay> categoryProductDisplays = new ArrayList<>();
+    private List<CategoryProduct> categoryProducts = new ArrayList<>();
 
     public Category(String categoryName, Integer categoryRank) {
         this.categoryName = categoryName;

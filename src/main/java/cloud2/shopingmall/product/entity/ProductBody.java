@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDisplayImage {
+public class ProductBody {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="product_display_image_id")
+    @Column(name = "product_body_id")
     private Long id;
 
     @Column
@@ -23,10 +23,10 @@ public class ProductDisplayImage {
     private String imageDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplay productDisplay;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    public ProductDisplayImage(String imageUrl, String imageDescription){
+    public ProductBody(String imageUrl, String imageDescription) {
         this.imageUrl = imageUrl;
         this.imageDescription = imageDescription;
     }

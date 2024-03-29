@@ -31,9 +31,6 @@ public class Orders {
     @LastModifiedDate
     private LocalDateTime orderModifiedAt;
 
-    @OneToOne
-    @JoinColumn(name = "order_user_id")
-    private OrderUser orderUser;
 
     public enum OrderStatus {
         PENDING_PAYMENT("결제요청"),
@@ -46,7 +43,7 @@ public class Orders {
 
         private final String description;
 
-        OrderStatus(String description){
+        OrderStatus(String description) {
             this.description = description;
         }
 

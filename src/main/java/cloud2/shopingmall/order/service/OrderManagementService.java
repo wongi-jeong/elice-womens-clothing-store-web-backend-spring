@@ -8,8 +8,7 @@ import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.repository.DeliveryRepository;
 import cloud2.shopingmall.order.repository.OrderProductRepository;
 import cloud2.shopingmall.order.repository.OrderRepository;
-import cloud2.shopingmall.order.repository.OrderUserRepository;
-import cloud2.shopingmall.product.repository.ProductRepository;
+import cloud2.shopingmall.product.repository.ProductDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OderManagementService {
+public class OrderManagementService {
     /**
      * 주문 생성
      * 주문 취소
@@ -28,13 +27,13 @@ public class OderManagementService {
      * 주문 상태 업데이트
      */
     private final OrderRepository orderRepository;
-    private final OrderUserRepository orderUserRepository;
     private final OrderProductRepository orderProductRepository;
-    private final ProductRepository productRepository;
+    private final ProductDetailsRepository productDetailsRepository;
     private final DeliveryRepository deliveryRepository;
+
     @Transactional
-    public Orders createOrder(List<OrderProductDTO> orderProductDTOS, OrderUserDTO orderUserDTO, DeliveryDTO deliveryDTO, PaymentDTO paymentDTO){
-        for(OrderProductDTO productDTO : orderProductDTOS){
+    public Orders createOrder(List<OrderProductDTO> orderProductDTOS, OrderUserDTO orderUserDTO, DeliveryDTO deliveryDTO, PaymentDTO paymentDTO) {
+        for (OrderProductDTO productDTO : orderProductDTOS) {
 
         }
         return new Orders();

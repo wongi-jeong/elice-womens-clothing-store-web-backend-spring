@@ -3,9 +3,9 @@ package cloud2.shopingmall.product.service;
 
 import cloud2.shopingmall.TestConfig;
 import cloud2.shopingmall.product.entity.Product;
-import cloud2.shopingmall.product.entity.ProductDisplay;
-import cloud2.shopingmall.product.repository.ProductDisplayRepository;
+import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.repository.ProductRepository;
+import cloud2.shopingmall.product.repository.ProductDetailsRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,42 +13,44 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
 @Import(TestConfig.class)
 public class ProductServiceTest {
 
-    private final ProductDisplayRepository productDisplayRepository;
     private final ProductRepository productRepository;
+    private final ProductDetailsRepository productDetailsRepository;
     private final ProductService productService;
-    @Autowired
-    public ProductServiceTest(ProductDisplayRepository productDisplayRepository, ProductRepository productRepository, ProductService productService) {
 
-        this.productDisplayRepository = productDisplayRepository;
+    @Autowired
+    public ProductServiceTest(ProductRepository productRepository, ProductDetailsRepository productDetailsRepository, ProductService productService) {
+
         this.productRepository = productRepository;
+        this.productDetailsRepository = productDetailsRepository;
         this.productService = productService;
     }
 
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void findProductDisplayWithOptionsAndImagesTest() {
+
+        Product pd3 = productService.getProductDisplayWithOptionAndImages(1L);
+        assertEquals(pd3.getProductDetails().get(0).getSize(), ProductDetails.Size.ONE);
+        assertEquals(pd3.getProductDetails().get(1).getSize(), ProductDetails.Size.TWO);
+        assertEquals(pd3.getProductBodies().get(0).getImageUrl(), "eliceImage");
+        assertEquals(pd3.getProductBodies().get(1).getImageUrl(), "eliceImage2");
+    }
 
 
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void deleteProductTest(){
-        ProductDisplay productDisplay = productDisplayRepository.findProductDisplayWithOptions(1L);
-        assertEquals(productDisplay.getProducts().size(),2);
-
-        productService.deleteProduct(2L);
-        productDisplay = productDisplayRepository.findProductDisplayWithOptions(1L);
-
-        assertEquals(productService.getProduct(2L), null);
-        assertEquals(productDisplay.getProducts().size(),1);
-
+    public void deleteProductDisplayTest() {
+        assertThrows(RuntimeException.class, () -> productService.deleteProductDisplay(1L));
+        productService.deleteProductDisplay(2L);
+        assertNull(productService.getProductDisplay(2L));
     }
-
-
 
 
 }
