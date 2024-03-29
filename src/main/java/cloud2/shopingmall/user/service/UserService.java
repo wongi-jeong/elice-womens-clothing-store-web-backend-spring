@@ -174,6 +174,8 @@ public class UserService {
             throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
         }
 
+        // 입력한 비밀번호가 저장된 비밀번호와 같은지 확인하기
+
         target.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
 
         userRepository.save(target);

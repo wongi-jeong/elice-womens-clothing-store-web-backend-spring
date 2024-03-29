@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,9 +53,6 @@ public class UserController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    // 아이디 중복 체크
-
-
     // 아이디 찾기 기능
     @GetMapping("/findID")
     public ResponseEntity<String> findId(UserProfileDTO.FindUser findUserDTO) {
@@ -62,6 +60,29 @@ public class UserController {
         String resultId = userService.findUserId(findUserDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body("찾으시는 아이디는 " + resultId + " 입니다.");
+    }
+
+    // 비밀번호 찾기 기능 필터
+    @GetMapping("/findPassword")
+    public ResponseEntity<String> findPasswordFilter(UserProfileDTO.FindPassword findPasswordDTO) {
+
+        if(!userService.findPasswordFilter(findPasswordDTO)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
+        }
+
+        // 정상적인 응답 반환
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/findPassword")
+    public ResponseEntity<String> findPasswordChange(UserDTO.ChangePassword changePasswordDTO) throws PasswordMismatchException {
+
+        if (!userService.changePassword(changePasswordDTO)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
+        }
+
+        // 정상적인 응답 반환
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
