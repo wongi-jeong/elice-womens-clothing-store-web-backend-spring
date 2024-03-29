@@ -19,7 +19,11 @@ public interface UserMainMapper {
     @Mapper(componentModel = "spring")
     interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO.Join> {
 
+        default UserProfile toEntity(UserProfileDTO.Create userProfileDTO) {
+            return null;
+        }
     }
+
 
 
 }

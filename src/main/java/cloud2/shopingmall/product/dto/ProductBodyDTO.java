@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDisplayImageDTO {
+public class ProductBodyDTO {
 
     private String imageUrl;
     private String imageDescription;

@@ -22,6 +22,7 @@ public class UserService {
     private final UserProfileRepository userProfileRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     @Autowired
     public UserService(UserMapper userMapper, UserProfileMapper userProfileMapper, UserRepository userRepository, UserProfileRepository userProfileRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userMapper = userMapper;

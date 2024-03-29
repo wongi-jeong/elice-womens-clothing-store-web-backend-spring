@@ -9,19 +9,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDisplayImageEntity {
+public class CategoryProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column
-    private String imageDescription;
-
-    @ManyToOne
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplayEntity productDisplayEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_details_id")
+    private ProductDetails productDetails;
 }
