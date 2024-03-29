@@ -1,5 +1,6 @@
 package cloud2.shopingmall.user.service;
 
+import cloud2.shopingmall.common.exception.PasswordMismatchException;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserMapper;
@@ -40,7 +41,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 계정이 DB에 존재하는 경우")
-    public void testJoinProcess_UserAlreadyExists() {
+    public void testJoinProcess_UserAlreadyExists() throws PasswordMismatchException {
 
         // 데이터 생성 및 초기화
         UserDTO.Join userDTO = new UserDTO.Join("test_name", "test_password", "test_password");
