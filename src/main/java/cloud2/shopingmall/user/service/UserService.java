@@ -1,6 +1,7 @@
 package cloud2.shopingmall.user.service;
 
 
+import cloud2.shopingmall.common.exception.PasswordMismatchException;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
@@ -34,36 +35,43 @@ public class UserService {
 
 
     @Transactional
-    public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO) {
+    public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO) throws PasswordMismatchException {
 
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
+        String secondPassword = userDTO.getSecondPassword();
         String email = userProfileDTO.getEmail();
         String phoneNumber = userProfileDTO.getPhoneNumber();
-
-
-        Boolean isExist;
+        
+        Boolean condition;
+        
+        // 비밀번호를 제대로 두 번 입력했는지 확인
+        condition = !password.equals(secondPassword);
+        
+        if(condition){
+            throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
+        }
 
         // repository에 유저 정보가 존재하는지 체크 존재하는 경우 true 없으면 false
-        isExist = userRepository.existsByUsername(username);
+        condition = userRepository.existsByUsername(username);
 
-        if (isExist) {
+        if (condition) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
         // repository에 유저 이메일이 존재하는지 체크 존재하는 경우 true 없으면 false
-        isExist = userProfileRepository.existsByEmail(email);
-        if (isExist) {
+        condition = userProfileRepository.existsByEmail(email);
+        if (condition) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 
         }
 
         // repository에 유저 핸드폰 번호가 존재하는지 체크 존재하는 경우 true 없으면 false
-        isExist = userProfileRepository.existsByPhoneNumber(phoneNumber);
+        condition = userProfileRepository.existsByPhoneNumber(phoneNumber);
 
-        if (isExist) {
+        if (condition) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 전화번호입니다.");
         }
@@ -83,6 +91,7 @@ public class UserService {
         userProfile.setUser(savedUser);
         userProfile.setGender(userProfileDTO.getGender().getKey());
         userProfileRepository.save(userProfile);
+
         return true;
     }
 

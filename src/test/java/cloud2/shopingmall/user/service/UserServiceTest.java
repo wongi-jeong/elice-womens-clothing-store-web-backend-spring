@@ -62,45 +62,4 @@ class UserServiceTest {
         verify(userProfileRepository, never()).save(any());
     }
 
-//    @Test
-//    @DisplayName("사용자 계정이 DB에 존재하지 않는 경우")
-//    public void testJoinProcess_UserDoesNotExist() {
-//        // 가짜 데이터 생성
-//        UserDTO userDTO = new UserDTO("test_name","test_password");
-//        User user = new User();
-//        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("test_name","abcd@naver.com","010-1234-5678","test_address", UserProfileDTO.Join.Gender.MALE,"1998-12-12");
-//        UserProfile userProfile = new UserProfile();
-//
-//
-//
-//        // 사용자가 존재하지 않는다고 가정
-//        when(userRepository.existsByUsername(any(String.class))).thenReturn(false);
-//        // userMapper.toEntity() 메서드의 리턴값 설정 -> user 객체를 반환
-//        when(userMapper.toEntity(userDTO)).thenReturn(user);
-//        // userProfileMapper.toEntity() 메서드의 리턴값 설정
-//        when(userProfileMapper.toEntity(userProfileDTO)).thenReturn(userProfile);
-//        // bCryptPasswordEncoder.encode() 메서드의 리턴값 설정
-//        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
-//        // userRepository.save() 메서드의 리턴값 설정
-//        when(userRepository.save(user)).thenReturn(user);
-//
-//        // 테스트 실행
-//        userService.joinProcess(userDTO, userProfileDTO);
-//
-//        // userRepository.save()가 호출되었는지 확인
-//        verify(userRepository, times(1)).save(user);
-//        // userProfileRepository.save()가 호출되었는지 확인
-//        verify(userProfileRepository, times(1)).save(userProfile);
-//
-//        // user.setPassword()가 올바르게 호출되었는지 확인
-//        verify(user).setPassword("encodedPassword");
-//        // user.setStatus()가 올바르게 호출되었는지 확인
-//        verify(user).setStatus(User.Status.ACTIVE);
-//        // user.setUserRole()가 올바르게 호출되었는지 확인
-//        verify(user).setUserRole("ROLE_ADMIN");
-//        // userProfile.setUser()가 올바르게 호출되었는지 확인
-//        verify(userProfile).setUser(user);
-//        // userProfile.setGender()가 올바르게 호출되었는지 확인
-//        verify(userProfile).setGender(anyString());
-//    }
 }

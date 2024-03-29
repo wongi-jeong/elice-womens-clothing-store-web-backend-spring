@@ -1,5 +1,6 @@
 package cloud2.shopingmall.user.controller;
 
+import cloud2.shopingmall.common.exception.PasswordMismatchException;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.service.UserService;
@@ -27,7 +28,7 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<String> joinProcess(@Valid UserDTO.Join userDTO,
                                               @Valid UserProfileDTO.Join userProfileDTO,
-                                              BindingResult bindingResult) {
+                                              BindingResult bindingResult) throws PasswordMismatchException {
 
         // 유효성 검사 결과 확인
         if (bindingResult.hasErrors()) {
