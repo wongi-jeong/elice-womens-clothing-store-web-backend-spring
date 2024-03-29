@@ -2,7 +2,6 @@ package cloud2.shopingmall.order.service;
 
 import cloud2.shopingmall.order.dto.DeliveryDTO;
 import cloud2.shopingmall.order.dto.OrderProductDTO;
-import cloud2.shopingmall.order.dto.OrderUserDTO;
 import cloud2.shopingmall.order.dto.PaymentDTO;
 import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.repository.DeliveryRepository;
@@ -32,7 +31,7 @@ public class OrderManagementService {
     private final DeliveryRepository deliveryRepository;
 
     @Transactional
-    public Orders createOrder(List<OrderProductDTO> orderProductDTOS, OrderUserDTO orderUserDTO, DeliveryDTO deliveryDTO, PaymentDTO paymentDTO) {
+    public Orders createOrder(List<OrderProductDTO> orderProductDTOS, DeliveryDTO deliveryDTO, PaymentDTO paymentDTO) {
         for (OrderProductDTO productDTO : orderProductDTOS) {
 
         }
