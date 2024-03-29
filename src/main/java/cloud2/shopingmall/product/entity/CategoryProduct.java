@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryProductDisplay {
+public class CategoryProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,6 @@ public class CategoryProductDisplay {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplay productDisplay;
+    @JoinColumn(name = "product_details_id")
+    private ProductDetails productDetails;
 }

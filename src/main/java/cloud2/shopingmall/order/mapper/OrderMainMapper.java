@@ -19,9 +19,6 @@ public interface OrderMainMapper {
     interface OrderMapper extends EntityMapper<Orders, OrderDTO> {
     }
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface OrderUserMapper extends EntityMapper<OrderUser, OrderUserDTO> {
-    }
-    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
     interface PaymentMapper extends EntityMapper<Payment, PaymentDTO> {
     }
 }

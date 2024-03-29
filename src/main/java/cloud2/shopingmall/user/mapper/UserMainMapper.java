@@ -7,8 +7,6 @@ import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface UserMainMapper {
@@ -21,6 +19,9 @@ public interface UserMainMapper {
     @Mapper(componentModel = "spring")
     interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO> {
 
+        default UserProfile toEntity(UserProfileDTO.Create userProfileDTO) {
+            return null;
+        }
     }
 
 

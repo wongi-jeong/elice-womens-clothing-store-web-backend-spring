@@ -1,5 +1,6 @@
 package cloud2.shopingmall.order.entity;
 
+import cloud2.shopingmall.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,8 +39,8 @@ public class Orders {
     private LocalDateTime orderModifiedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_user_id")
-    private OrderUser orderUser;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_product_id")
@@ -54,7 +55,6 @@ public class Orders {
     private Payment payment;
 
     public enum OrderStatus {
-        PENDING_PAYMENT("결제요청"),
         PAYMENT_COMPLETED("결제완료"),
         PREPARING_FOR_DELIVERY("배송준비"),
         IN_TRANSIT("배송중"),

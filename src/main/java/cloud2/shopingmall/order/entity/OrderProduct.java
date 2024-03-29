@@ -1,6 +1,6 @@
 package cloud2.shopingmall.order.entity;
 
-import cloud2.shopingmall.product.entity.Product;
+import cloud2.shopingmall.product.entity.ProductDetails;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +24,6 @@ public class OrderProduct {
     private Orders orders;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_details_id")
+    private ProductDetails productDetails;
 }

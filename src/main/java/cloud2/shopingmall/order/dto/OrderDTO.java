@@ -18,7 +18,6 @@ public class OrderDTO {
     private List<OrderProductDTO> products;
 
     public enum OrderStatus {
-        PENDING_PAYMENT,
         PAYMENT_COMPLETED,
         PREPARING_FOR_DELIVERY,
         IN_TRANSIT,

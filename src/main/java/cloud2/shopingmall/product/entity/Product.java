@@ -1,60 +1,51 @@
 package cloud2.shopingmall.product.entity;
 
+import cloud2.shopingmall.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="product_id")
+    @Column(name = "product_id")
     private Long id;
 
     @Column
     private String name;
 
     @Column
-    private Integer price;
-    @Column
-    private Size size;
-    @Column
-    private Color color;
-    @Column
-    private Integer quantity;
+    private String description;
 
     @Column
-    private ProductStatus status;
+    private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_display_id")
-    private ProductDisplay productDisplay;
+    @Column
+    private ProductDisplayStatus status;
 
-    public Product(String name, Size size, Color color, Integer quantity, ProductStatus status){
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private List<ProductBody> productBodies = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private List<ProductDetails> productDetails = new ArrayList<>();
+
+    public enum ProductDisplayStatus {
+        ON, OFF
+    }
+
+    public Product(String name, String description, String imageUrl) {
         this.name = name;
-        this.size = size;
-        this.color = color;
-        this.quantity = quantity;
-        this.status = status;
+        this.description = description;
+        this.imageUrl = imageUrl;
     }
-
-    public enum ProductStatus {
-        ONE, TWO, THREE;
-    }
-
-    public enum Size {
-        ONE, TWO, THREE;
-    }
-
-    public enum Color {
-        ONE, TWO, THREE;
-    }
-
-
-
 }

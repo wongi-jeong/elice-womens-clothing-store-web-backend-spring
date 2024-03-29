@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductDTO {
 
+    private String id;
     private String name;
-    private Integer price;
-    private Integer quantity;
-    private ProductStatus productStatus;
-
-    public enum ProductStatus {
-        ONE,TWO, THREE;
-    }
+    private String description;
+    private String imageUrl;
 }
