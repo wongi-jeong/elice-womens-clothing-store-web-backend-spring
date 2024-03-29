@@ -21,5 +21,5 @@ public class CategoryProductDisplay {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_display_id")
-    private ProductDisplayEntity productDisplayEntity;
+    private ProductDisplay productDisplay;
 }

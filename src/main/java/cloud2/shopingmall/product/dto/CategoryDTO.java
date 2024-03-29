@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryDTO {
 
+    private Long id;
     private String categoryName;
     private Integer categoryRank;
 

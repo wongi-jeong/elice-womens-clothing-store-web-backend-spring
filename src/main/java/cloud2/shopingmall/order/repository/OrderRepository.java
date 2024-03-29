@@ -1,7 +1,12 @@
 package cloud2.shopingmall.order.repository;
 
-import cloud2.shopingmall.order.entity.OrderEntity;
+import cloud2.shopingmall.order.entity.Orders;
+import cloud2.shopingmall.order.entity.Orders;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface OrderRepository extends JpaRepository<OrderEntity,Long> {
+@Repository
+@Transactional
+public interface OrderRepository extends JpaRepository<Orders,Long> {
 }
