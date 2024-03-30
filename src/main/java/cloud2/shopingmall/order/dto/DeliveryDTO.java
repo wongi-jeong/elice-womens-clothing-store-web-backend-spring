@@ -3,6 +3,7 @@ package cloud2.shopingmall.order.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.lang.String;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,28 @@ public class DeliveryDTO {
     private LocalDateTime deliveredAt;
 
     public enum SenderStatus {
-       ONE,TWO,THREE
+       PREPARING_FOR_DELIVERY,
+        IN_TRANSIT,
+        DELIVERED,
+    }
+
+    public String getSenderStatus() {
+        return senderStatus;
+    }
+
+    public void setSenderStatus(String senderStatus) {
+        if (!isValidSenderStatus(senderStatus)) {
+            throw new IllegalArgumentException("유효하지 않은 배송 상태값 입니다.");
+        }
+        this.senderStatus = senderStatus;
+    }
+
+    private boolean isValidSenderStatus(String senderStatus) {
+        for (SenderStatus senderStatus : senderStatus.values()) {
+            if (senderStatus.name().equals(status)) {
+                return true;
+            }
+        } return false;
     }
 
 }

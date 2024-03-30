@@ -9,4 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
+    List<Delivery> findByDelivery(Delivery delivery);
 }

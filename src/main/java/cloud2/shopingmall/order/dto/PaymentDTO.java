@@ -18,7 +18,9 @@ public class PaymentDTO {
 
 
     public enum PayStatus {
-        ONE, TWO, THREE,
+        PENDING_PAYMENT,
+        PAYMENT_COMPLETE,
+        PAYMENT_CANCELED,
 
     }
 }

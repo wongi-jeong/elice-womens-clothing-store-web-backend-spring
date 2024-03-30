@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Delivery {
 
     @Id
@@ -42,15 +43,15 @@ public class Delivery {
 
 
     public enum SenderStatus {
-        ONE("ONE"),
-        TWO("TWO"),
-        THREE("THREE"),
+        PREPARING_FOR_DELIVERY("배송준비"),
+        IN_TRANSIT("배송중"),
+        DELIVERED("배송완료"),
         ;
 
-        private String key;
+        private String description;
 
-        SenderStatus(String key) {
-            this.key = key;
+        SenderStatus(String description) {
+            this.description = description;
         }
     }
 

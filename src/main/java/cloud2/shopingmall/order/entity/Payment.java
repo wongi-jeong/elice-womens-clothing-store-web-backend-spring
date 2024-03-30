@@ -1,6 +1,5 @@
 package cloud2.shopingmall.order.entity;
 
-import cloud2.shopingmall.common.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment extends BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +29,25 @@ public class Payment extends BaseEntity {
     @Column
     private PayStatus payStatus;
 
+    @CreatedDate
+    private LocalDateTime payCreatedAt;
+
+    @LastModifiedDate
+    private LocalDateTime payModifiedAt;
+
     @OneToOne
     @JoinColumn(name = "order_id")
     private Orders order;
 
     public enum PayStatus {
-        ONE, TWO, THREE,
+        PENDING_PAYMENT("결제대기"),
+        PAYMENT_COMPLETE("결제완료"),
+        PAYMENT_CANCELED("결제취소");
+
+        private final String description;
+
+        PayStatus(String description) {
+            this.description = description;
+        }
     }
 }
