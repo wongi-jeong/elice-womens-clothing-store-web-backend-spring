@@ -45,7 +45,7 @@ class UserServiceTest {
     void testJoinProcess() throws PasswordMismatchException {
         // 유저 DTO 및 유저 프로필 DTO 생성
         UserDTO.Join userDTO = new UserDTO.Join("testuser", "Test123!", "Test123!");
-        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("John Doe", "john@example.com", "010-1234-5678",
+        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("Test Name", "test@example.com", "010-1234-5678",
                 "123 Test St", Gender.MALE, "1990-01-01");
 
         // userMapper.toEntity() 메서드가 호출될 때 적절한 User 객체 반환하도록 설정
