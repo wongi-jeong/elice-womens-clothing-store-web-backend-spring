@@ -1,7 +1,7 @@
 package cloud2.shopingmall.jwt;
 
 
-import cloud2.shopingmall.user.entity.UserEntity;
+import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserEntity userData = userRepository.findByUsername(username);
+        User userData = userRepository.findByUsername(username);
 
         if (userData != null) {
 

@@ -3,20 +3,26 @@ package cloud2.shopingmall.user.mapper;
 import cloud2.shopingmall.common.mapper.EntityMapper;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
-import cloud2.shopingmall.user.entity.UserEntity;
-import cloud2.shopingmall.user.entity.UserProfileEntity;
+import cloud2.shopingmall.user.entity.User;
+import cloud2.shopingmall.user.entity.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface UserMainMapper {
 
-    interface UserMapper extends EntityMapper<UserEntity, UserDTO> {
+    @Mapper(componentModel = "spring")
+    interface UserMapper extends EntityMapper<User, UserDTO> {
 
     }
 
-    interface UserProfileMapper extends EntityMapper<UserProfileEntity, UserProfileDTO> {
+    @Mapper(componentModel = "spring")
+    interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO> {
 
+        default UserProfile toEntity(UserProfileDTO.Create userProfileDTO) {
+            return null;
+        }
     }
+
 
 }
