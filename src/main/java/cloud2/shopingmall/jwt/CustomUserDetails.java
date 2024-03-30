@@ -1,7 +1,7 @@
 package cloud2.shopingmall.jwt;
 
 
-import cloud2.shopingmall.user.entity.UserEntity;
+import cloud2.shopingmall.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,15 +10,14 @@ import java.util.Collection;
 
 public class CustomUserDetails  implements UserDetails {
 
-    private final UserEntity userEntity;
+    private final User user;
 
-    public CustomUserDetails(UserEntity userEntity) {
+    public CustomUserDetails(User user) {
 
-        this.userEntity = userEntity;
+        this.user = user;
     }
 
 
-    // 사용자 권한 Getter
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -29,7 +28,9 @@ public class CustomUserDetails  implements UserDetails {
             @Override
             public String getAuthority() {
 
-                return userEntity.getUserRole();
+
+                return user.getUserRole();
+
             }
         });
 
@@ -39,13 +40,13 @@ public class CustomUserDetails  implements UserDetails {
     @Override
     public String getPassword() {
 
-        return userEntity.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
 
-        return userEntity.getUsername();
+        return user.getUsername();
     }
 
     @Override

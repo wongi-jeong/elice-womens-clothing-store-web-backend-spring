@@ -18,6 +18,7 @@ public class PaymentDTO {
 
 
     public enum PayStatus {
-        ONE,TWO, THREE,
+        ONE, TWO, THREE,
+
     }
 }
