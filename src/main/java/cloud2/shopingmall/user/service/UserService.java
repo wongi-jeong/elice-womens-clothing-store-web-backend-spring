@@ -1,6 +1,7 @@
 package cloud2.shopingmall.user.service;
 
 
+import cloud2.shopingmall.common.exception.PasswordMismatchException;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
@@ -34,42 +35,39 @@ public class UserService {
 
 
     @Transactional
-    public boolean joinProcess(UserDTO userDTO,UserProfileDTO.Create userProfileDTO) {
+    public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO) throws PasswordMismatchException {
 
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
+        String secondPassword = userDTO.getSecondPassword();
         String email = userProfileDTO.getEmail();
         String phoneNumber = userProfileDTO.getPhoneNumber();
 
-
-        Boolean isExist;
+        // 비밀번호를 제대로 두 번 입력했는지 확인
+        if(!password.equals(secondPassword)){
+            throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
+        }
 
         // repository에 유저 정보가 존재하는지 체크 존재하는 경우 true 없으면 false
-        isExist = userRepository.existsByUsername(username);
-
-        if (isExist) {
+        if (userRepository.existsByUsername(username)) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
         // repository에 유저 이메일이 존재하는지 체크 존재하는 경우 true 없으면 false
-        isExist = userProfileRepository.existsByEmail(email);
-        if (isExist) {
+        if (userProfileRepository.existsByEmail(email)) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-            // 이미 존재하는 경우 커스텀 응답 객체 반환
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 아이디입니다.");
+
         }
 
         // repository에 유저 핸드폰 번호가 존재하는지 체크 존재하는 경우 true 없으면 false
-        isExist = userProfileRepository.existsByPhoneNumber(phoneNumber);
-
-        if (isExist) {
+        if (userProfileRepository.existsByPhoneNumber(phoneNumber)) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 전화번호입니다.");
         }
 
-        // 모두 패스 한 경우 다음 로직 실행
+        // 모두 통과한 경우 다음 로직 실행
         // DTO -> Entity 변환
         User user = userMapper.toEntity(userDTO);
         UserProfile userProfile = userProfileMapper.toEntity(userProfileDTO);
@@ -84,14 +82,16 @@ public class UserService {
         userProfile.setUser(savedUser);
         userProfile.setGender(userProfileDTO.getGender().getKey());
         userProfileRepository.save(userProfile);
+
         return true;
     }
 
-    public String findUserId(UserProfileDTO.FindUser findUserDTO) {
+    // 아이디 찾기 기능
+    public String findUserId(UserProfileDTO.FindUser findIdUserDTO) {
 
-        String email = findUserDTO.getEmail();
-        String phoneNumber = findUserDTO.getPhoneNumber();
-        String source = findUserDTO.getSource().getKey();
+        String email = findIdUserDTO.getEmail();
+        String phoneNumber = findIdUserDTO.getPhoneNumber();
+        String source = findIdUserDTO.getSource().getKey();
 
         UserProfile userProfile = new UserProfile();
 
@@ -102,7 +102,7 @@ public class UserService {
             if (!userProfileRepository.existsByPhoneNumber(phoneNumber)) {
                 throw new IllegalArgumentException("존재하는 전화번호가 없습니다.");
             }
-            userProfile = userProfileRepository.findByPhoneNumber(findUserDTO.getPhoneNumber());
+            userProfile = userProfileRepository.findByPhoneNumber(findIdUserDTO.getPhoneNumber());
         }
 
         if (source.equals("email")) {
@@ -113,11 +113,88 @@ public class UserService {
             if (!userProfileRepository.existsByEmail(email)) {
                 throw new IllegalArgumentException("존재하는 이메일이 없습니다.");
             }
-            userProfile = userProfileRepository.findByEmail(findUserDTO.getEmail());
+            userProfile = userProfileRepository.findByEmail(findIdUserDTO.getEmail());
         }
 
         String findID = userProfile.getUser().getUsername();
 
         return findID;
+    }
+
+    // 비밀번호 찾기 기능
+    public Boolean findPasswordFilter(UserProfileDTO.FindPassword findPasswordDTO) {
+
+        String username = findPasswordDTO.getUsername();
+        String email = findPasswordDTO.getEmail();
+        String phoneNumber = findPasswordDTO.getPhoneNumber();
+        String source = findPasswordDTO.getSource().getKey();
+
+        // 아이디가 있는지 확인
+        if (!userRepository.existsByUsername(username)) {
+            // 존재하지 않을 경우 예외처리
+            throw new IllegalArgumentException("존재하는 아이디가 없습니다.");
+        }
+
+        User target = userRepository.findByUsername(username);
+
+        // 아이디에 해당하는 이메일을 입력했는지 확인
+        if (source.equals("email")) {
+            if (email == null) {
+                throw new IllegalArgumentException("이메일을 입력해 주세요.");
+            }
+            if (!userProfileRepository.existsByEmailAndUser(email,target)) {
+                throw new IllegalArgumentException("아이디에 해당하는 이메일이 없습니다.");
+            }
+        }
+
+        // 아이디에 해당하는 전화번호를 입력했는지 확인
+        if (source.equals("phone")) {
+            if (phoneNumber == null) {
+                throw new IllegalArgumentException("전화번호를 입력해 주세요.");
+            }
+            if (!userProfileRepository.existsByPhoneNumberAndUser(phoneNumber,target)) {
+                throw new IllegalArgumentException("아이디에 해당하는 전화번호가 없습니다.");
+            }
+        }
+
+        // -> 비밀번호 변경 페이지로 이동하기
+        return true;
+    }
+
+    @Transactional
+    // 비밀번호 변경 기능 (비 로그인 상태에서 진행 / 비밀번호 찾기 기능과 관련됨)
+    public Boolean changePassword(UserDTO.ChangePassword changePasswordDTO) throws PasswordMismatchException {
+
+        User target = userRepository.findByUsername(changePasswordDTO.getUsername());
+        String password = changePasswordDTO.getPassword();
+        String secondPassword = changePasswordDTO.getSecondPassword();
+
+        // 비밀번호를 제대로 두 번 입력했는지 확인
+        if(!password.equals(secondPassword)){
+            throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 입력한 비밀번호가 저장된 비밀번호와 같은지 확인하기
+
+        target.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
+
+        userRepository.save(target);
+
+        return true;
+    }
+
+    // 아이디 변경 기능 (로그인 상태에서 진행)
+    public Boolean changeId() {
+        // 현재 로그인한 사용자의 정보 가져오기
+        // 사용자 아이디 변경하기
+        return true;
+    }
+
+    // 비밀번호 변경 기능 (로그인 상태에서 진행)
+    public Boolean changePassword() {
+        // 현재 로그인한 사용자의 정보 가져오기
+        // 비밀번호를 제대로 두 번 입력했는지 확인
+        // 비밀번호가 이전 비밀번호와 같은지 확인
+        return true;
     }
 }
