@@ -37,8 +37,7 @@ public class Delivery {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deliveredAt;
 
-    @OneToOne
-    @JoinColumn(name = "order_id")
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Orders order;
 
 

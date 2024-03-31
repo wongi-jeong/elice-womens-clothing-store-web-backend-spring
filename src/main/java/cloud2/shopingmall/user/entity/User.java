@@ -11,7 +11,6 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class User extends BaseEntity {
 
     @Id
@@ -47,7 +46,6 @@ public class User extends BaseEntity {
         Status(String status) {
             this.status = status;
         }
-
 
     }
 

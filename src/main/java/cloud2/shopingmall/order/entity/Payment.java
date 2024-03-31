@@ -29,14 +29,7 @@ public class Payment {
     @Column
     private PayStatus payStatus;
 
-    @CreatedDate
-    private LocalDateTime payCreatedAt;
-
-    @LastModifiedDate
-    private LocalDateTime payModifiedAt;
-
-    @OneToOne
-    @JoinColumn(name = "order_id")
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Orders order;
 
     public enum PayStatus {
