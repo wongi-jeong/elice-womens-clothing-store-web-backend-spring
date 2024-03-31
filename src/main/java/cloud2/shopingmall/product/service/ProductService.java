@@ -28,29 +28,29 @@ public class ProductService {
     }
 
 
-    public List<Product> getProductDisplays() {
+    public List<Product> getProducts() {
         return productRepository.findAll();
     }
 
-    public Page<Product> getProductDisplays(int page, int size) {
-        return productRepository.findAll(PageRequest.of(page, size, Sort.by("product_display_id").descending()));
+    public Page<Product> getProducts(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
     }
 
-    public Product getProductDisplay(Long id) {
+    public Product getProduct(Long id) {
         return productRepository.findById(id).orElse(null);
 
 
     }
 
-    public Product getProductDisplayWithOptionAndImages(Long id) {
-        Product product = productRepository.findProductDisplayWithOptions(id);
-        product = productRepository.findProductDisplayWithImages(id);
+    public Product getProductWithDetailsAndBodies(Long id) {
+        Product product = productRepository.findProductWithDetails(id);
+        product = productRepository.findProductWithBodies(id);
         return product;
 
 
     }
 
-    public Product saveProductDisplay(Product product) {
+    public Product saveProduct(Product product) {
         if (productRepository.findByName(product.getName()) != null) {
             //TO DO: need new customException
             throw new RuntimeException();
@@ -59,7 +59,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProductDisplay(Product product) {
+    public Product updateProduct(Product product) {
         if (product.getId() == null) {
             //TO DO: need new customException
             throw new RuntimeException();
@@ -69,7 +69,7 @@ public class ProductService {
     }
 
 
-    public void offProductDisplay(Long id) {
+    public void offProduct(Long id) {
         Product product;
         try {
             product = productRepository.getReferenceById(id);
@@ -79,7 +79,7 @@ public class ProductService {
         product.setStatus(Product.ProductDisplayStatus.OFF);
     }
 
-    public void onProductDisplay(Long id) {
+    public void onProduct(Long id) {
         Product product;
         try {
             product = productRepository.getReferenceById(id);
@@ -89,7 +89,7 @@ public class ProductService {
         product.setStatus(Product.ProductDisplayStatus.ON);
     }
 
-    public void deleteProductDisplay(Long id) {
+    public void deleteProduct(Long id) {
         Product product = productRepository.getReferenceById(id);
         if (product.getProductDetails().size() != 0) {
             throw new RuntimeException();

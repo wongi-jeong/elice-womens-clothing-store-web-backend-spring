@@ -40,7 +40,7 @@ public class ProductRepositoryTest {
     @Test
     public void findProductDisplayWithOptionsTest(){
 
-        Product pd3 = productRepository.findProductDisplayWithOptions(1L);
+        Product pd3 = productRepository.findProductWithDetails(1L);
 
         assertTrue(Hibernate.isInitialized(pd3.getProductDetails()));
         assertFalse(Hibernate.isInitialized(pd3.getProductBodies()));
