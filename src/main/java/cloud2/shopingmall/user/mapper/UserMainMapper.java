@@ -12,17 +12,15 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMainMapper {
 
     @Mapper(componentModel = "spring")
-    interface UserMapper extends EntityMapper<User, UserDTO> {
+    interface UserMapper extends EntityMapper<User, UserDTO.Join> {
 
     }
 
     @Mapper(componentModel = "spring")
-    interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO> {
+    interface UserProfileMapper extends EntityMapper<UserProfile, UserProfileDTO.Join> {
 
-        default UserProfile toEntity(UserProfileDTO.Create userProfileDTO) {
-            return null;
-        }
     }
+
 
 
 }

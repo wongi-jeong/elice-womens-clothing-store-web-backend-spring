@@ -12,4 +12,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<Object> handlePasswordMissMatchException(PasswordMismatchException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
