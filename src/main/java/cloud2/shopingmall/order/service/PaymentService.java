@@ -1,11 +1,12 @@
 package cloud2.shopingmall.order.service;
 
-import cloud2.shopingmall.order.entity.Delivery;
-import org.springframework.stereotype.Service;
-import cloud2.shopingmall.order.repository.PaymentRepository;
 import cloud2.shopingmall.order.entity.Payment;
 import cloud2.shopingmall.order.dto.PaymentDTO;
-import cloud2.shopingmall.order.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import cloud2.shopingmall.order.repository.PaymentRepository;
+
+//import cloud2.shopingmall.order.exception.ResourceNotFoundException;
 
 @Service
 public class PaymentService {
@@ -17,7 +18,12 @@ public class PaymentService {
 
     private PaymentRepository paymentRepository;
 
-    public PaymentDTO createPayment(Integer payTotalPrice, PaymentDTO.PayStatus payStatus) {
+    @Autowired
+    public PaymentService(PaymentRepository paymentRepository) {
+        this.paymentRepository = paymentRepository;
+    }
+
+    public PaymentDTO createPayment(Integer payTotalPrice, Payment.PayStatus payStatus) {
         Payment payment = new Payment();
         payment.setPayTotalPrice(payTotalPrice);
         payment.setPayStatus(payStatus);
@@ -29,7 +35,19 @@ public class PaymentService {
         paymentDTO.setPayTotalPrice(payment.getPayTotalPrice());
         paymentDTO.setPayCreatedAt(payment.getPayCreatedAt());
         paymentDTO.setPayModifiedAt(payment.getPayModifiedAt());
-        paymentDTO.setPayStatus(payment.getPayStatus());
+        paymentDTO.setPayStatus(String.valueOf(payment.getPayStatus()));
+
+        return paymentDTO;
+    }
+
+    /*public PaymentDTO getPaymentById(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId);
+
+        PaymentDTO paymentDTO = new PaymentDTO();
+        paymentDTO.setPayTotalPrice(payment.getPayTotalPrice());
+        paymentDTO.setPayCreatedAt(payment.getPayCreatedAt());
+        paymentDTO.setPayModifiedAt(payment.getPayModifiedAt());
+        paymentDTO.setPayStatus(String.valueOf(payment.getPayStatus()));
 
         return paymentDTO;
     }
@@ -53,5 +71,5 @@ public class PaymentService {
 
         payment.setPayStatus(newStatus);
         return paymentRepository.save(payment);
-    }
+    }*/
 }
