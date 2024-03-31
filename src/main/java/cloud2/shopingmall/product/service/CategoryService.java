@@ -43,9 +43,10 @@ public class CategoryService {
                         .categoryName(categoryName)
                         .build());
 
-        foundCategory = foundCategory.toBuilder()
-                .categoryRank(categoryDTO.getCategoryRank())
-                .build();
+        Optional.ofNullable(categoryDTO.getCategoryRank())
+                .ifPresent(categoryRank -> foundCategory = foundCategory.toBuilder()
+                        .categoryRank(categoryRank)
+                        .build());
 
         return categoryRepository.save(foundCategory);
     }
