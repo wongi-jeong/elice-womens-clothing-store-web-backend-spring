@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-//import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -37,9 +37,9 @@ public class Delivery {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deliveredAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "order_id")
-    private Orders orders;
+    private Orders order;
 
 
     public enum SenderStatus {
@@ -52,11 +52,6 @@ public class Delivery {
 
         SenderStatus(String description) {
             this.description = description;
-        }
-
-        @Override
-        public String toString() {
-            return description;
         }
     }
 

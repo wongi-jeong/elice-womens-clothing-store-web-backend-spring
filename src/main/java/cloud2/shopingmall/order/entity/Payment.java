@@ -35,9 +35,9 @@ public class Payment {
     @LastModifiedDate
     private LocalDateTime payModifiedAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "order_id")
-    private Orders orders;
+    private Orders order;
 
     public enum PayStatus {
         PENDING_PAYMENT("결제대기"),
@@ -48,11 +48,6 @@ public class Payment {
 
         PayStatus(String description) {
             this.description = description;
-        }
-
-        @Override
-        public String toString() {
-            return description;
         }
     }
 }
