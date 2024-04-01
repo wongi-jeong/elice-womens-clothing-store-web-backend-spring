@@ -43,6 +43,7 @@ public class ProductService {
     }
 
     public Product getProductWithDetailsAndBodies(Long id) {
+//        Product product = productRepository.findProductWithDetailsAndBodies(id);
         Product product = productRepository.findProductWithDetails(id);
         product = productRepository.findProductWithBodies(id);
         return product;

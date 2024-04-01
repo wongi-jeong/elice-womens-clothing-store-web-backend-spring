@@ -38,7 +38,7 @@ public class ProductRepositoryTest {
 
 
     @Test
-    public void findProductDisplayWithOptionsTest(){
+    public void findProductWithOptionsTest(){
 
         Product pd3 = productRepository.findProductWithDetails(1L);
 

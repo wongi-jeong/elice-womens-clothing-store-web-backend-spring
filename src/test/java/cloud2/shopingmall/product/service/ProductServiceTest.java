@@ -34,7 +34,7 @@ public class ProductServiceTest {
 
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void findProductDisplayWithOptionsAndImagesTest() {
+    public void findProductWithOptionsAndImagesTest() {
 
         Product pd3 = productService.getProductWithDetailsAndBodies(1L);
         assertEquals(pd3.getProductDetails().get(0).getSize(), ProductDetails.Size.ONE);
@@ -46,7 +46,7 @@ public class ProductServiceTest {
 
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void deleteProductDisplayTest() {
+    public void deleteProductTest() {
         assertThrows(RuntimeException.class, () -> productService.deleteProduct(1L));
         productService.deleteProduct(2L);
         assertNull(productService.getProduct(2L));
