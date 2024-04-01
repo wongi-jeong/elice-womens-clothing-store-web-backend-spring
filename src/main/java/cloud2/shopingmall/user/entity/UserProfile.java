@@ -37,6 +37,9 @@ public class UserProfile extends BaseEntity {
     @Column
     private String birthDate;
 
+    @Column
+    private Integer point;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

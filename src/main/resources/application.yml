@@ -7,12 +7,13 @@ spring:
     password: 1234 # 자신의 환경에 맞게 변경 가능
 
 
+  jackson:
+    default-property-inclusion: non_null # DTO에서 null 값인 필드 전송 안됨
 
   # 임의로 설정한 변수
   # spring security에서 JWT 토큰 만들때 사용
   jwt:
     secret: eliceproject2eliceproject2eliceproject2eliceproject2
-
 
 
   # spring data jpa 설정
@@ -21,7 +22,3 @@ spring:
       ddl-auto: none # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
     show-sql: true
     defer-datasource-initialization: true
-
-#logging:
-#  level:
-#    root: DEBUG
