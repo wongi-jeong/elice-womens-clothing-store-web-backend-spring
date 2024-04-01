@@ -14,11 +14,14 @@ public class PaymentDTO {
     private Integer payTotalPrice;
     private LocalDateTime payCreatedAt;
     private LocalDateTime payModifiedAt;
-    private PayStatus payStatus;
+    private String payStatus;
 
 
     public enum PayStatus {
-        ONE, TWO, THREE,
+        PENDING_PAYMENT,
+        PAYMENT_COMPLETE,
+        PAYMENT_CANCELED,
+
 
     }
 }
