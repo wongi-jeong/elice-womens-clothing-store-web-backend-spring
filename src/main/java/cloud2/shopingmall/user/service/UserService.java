@@ -34,6 +34,7 @@ public class UserService {
     }
 
 
+    // 회원 가입 기능
     @Transactional
     public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO) throws PasswordMismatchException {
 
@@ -58,7 +59,6 @@ public class UserService {
         if (userProfileRepository.existsByEmail(email)) {
             // 현재 존재하는 경우 예외 처리
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-
         }
 
         // repository에 유저 핸드폰 번호가 존재하는지 체크 존재하는 경우 true 없으면 false
@@ -183,18 +183,20 @@ public class UserService {
         return true;
     }
 
-    // 아이디 변경 기능 (로그인 상태에서 진행)
+    // 로그인한 사용자 정보 조회 기능
+    public UserDTO showUser() {
+        return null;
+    }
+
+    public UserProfileDTO showUserProfile() {
+        return null;
+    }
+
+    // 회원정보 변경 기능
     public Boolean changeId() {
         // 현재 로그인한 사용자의 정보 가져오기
         // 사용자 아이디 변경하기
         return true;
     }
 
-    // 비밀번호 변경 기능 (로그인 상태에서 진행)
-    public Boolean changePassword() {
-        // 현재 로그인한 사용자의 정보 가져오기
-        // 비밀번호를 제대로 두 번 입력했는지 확인
-        // 비밀번호가 이전 비밀번호와 같은지 확인
-        return true;
-    }
 }
