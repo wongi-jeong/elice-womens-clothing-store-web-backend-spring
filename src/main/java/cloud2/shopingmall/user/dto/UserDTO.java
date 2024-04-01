@@ -35,6 +35,17 @@ public class UserDTO {
         private String secondPassword;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Show {
+
+        private String username;
+
+        private String password;
+
+    }
+
 
 
 

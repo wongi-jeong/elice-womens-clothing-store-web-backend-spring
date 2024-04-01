@@ -17,4 +17,14 @@ public class CommonDTO {
         private UserProfileDTO.Join userProfileDTO;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShowResponse {
+
+        private UserDTO.Show userDTO;
+
+        private UserProfileDTO.Show userProfileDTO;
+    }
+
 }
