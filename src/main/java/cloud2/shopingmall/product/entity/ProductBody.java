@@ -13,7 +13,6 @@ public class ProductBody {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_body_id")
     private Long id;
 
     @Column
