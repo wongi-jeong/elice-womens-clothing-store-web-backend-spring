@@ -19,9 +19,9 @@ class OrdersTest {
    @Test
     void save(){
        Orders order = new Orders();
-       order.setOrderStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
-       order.setOrderCreatedAt(LocalDateTime.now().minusHours(1));
-       order.setOrderModifiedAt(LocalDateTime.now());
+       order.setStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
+       order.setCreatedAt(LocalDateTime.now().minusHours(1));
+       order.setModifiedAt(LocalDateTime.now());
        orderRepository.save(order);
 
        assertThat(orderRepository.findById(order.getId())).isEqualTo(Optional.of(order));

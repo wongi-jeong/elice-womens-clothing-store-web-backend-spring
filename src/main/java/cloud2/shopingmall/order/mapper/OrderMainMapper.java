@@ -3,8 +3,12 @@ package cloud2.shopingmall.order.mapper;
 import cloud2.shopingmall.common.mapper.EntityMapper;
 import cloud2.shopingmall.order.dto.*;
 import cloud2.shopingmall.order.entity.*;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface OrderMainMapper {
@@ -23,6 +27,28 @@ public interface OrderMainMapper {
     }
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
     interface RefundMapper extends EntityMapper<Refund, RefundDTO> {
+    }
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface OrderInfoMapper extends EntityMapper<Orders, OrderInfoDTO> {
+        @Mapping(source = "user.username",target = "userName")
+        @Mapping(source = "payment.payTotalPrice",target = "totalPrice")
+         OrderInfoDTO toDto(Orders order);
+    }
+    @Mapper(componentModel = "spring")
+    interface OrderDetailMapper extends EntityMapper<Orders, OrderInfoDTO.OrderDetailInfo> {
+        @Mapping(source = "user.username",target = "userName")
+        @Mapping(source = "payment.payTotalPrice",target = "totalPrice")
+        @Mapping(target = "products", ignore = true)
+        OrderInfoDTO.OrderDetailInfo toDto(Orders order);
+        @AfterMapping
+        default void customMapping(@MappingTarget OrderInfoDTO.OrderDetailInfo target, Orders source) {
+            // 상품 맵핑 로직
+            Map<Long, Integer> productsMap = new HashMap<>();
+            for (OrderProduct op : source.getOrderProducts()) {
+                productsMap.put(op.getId(), op.getProductCount());
+            }
+            target.setProducts(productsMap);
+        }
     }
 
 }
