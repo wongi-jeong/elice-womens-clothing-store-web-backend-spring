@@ -1,14 +1,18 @@
 package cloud2.shopingmall.user.service;
 
 import cloud2.shopingmall.common.exception.PasswordMismatchException;
+import cloud2.shopingmall.jwt.CustomUserDetails;
+import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 
 
 import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
-import cloud2.shopingmall.user.mapper.UserMainMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileShowMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -17,8 +21,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +41,11 @@ class UserServiceTest {
     @Mock
     private UserJoinMapper userJoinMapper;
     @Mock
-    private UserMainMapper.UserProfileJoinMapper userProfileJoinMapper;
+    private UserProfileJoinMapper userProfileJoinMapper;
+    @Mock
+    private UserShowMapper userShowMapper;
+    @Mock
+    private UserProfileShowMapper userProfileShowMapper;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -135,4 +146,34 @@ class UserServiceTest {
         assertTrue(result);
     }
 
+    @Test
+    @DisplayName("회원정보 조회 테스트")
+    void showUser() {
+        // 유저 Entity 및 유저 프로필 Entity 생성
+        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",100000,null);
+
+        UserDTO.Show userDTO = new UserDTO.Show(user.getUsername(), user.getPassword());
+        UserProfileDTO.Show userProfileDTO = new UserProfileDTO.Show(userProfile.getName(), userProfile.getEmail(), userProfile.getPhoneNumber(), userProfile.getAddress(), userProfile.getGender(), userProfile.getBirthDate());
+
+        // userRepository가 findByUsername 메소드를 호출할 때 가짜 사용자를 반환하도록 설정
+        when(userRepository.findByUsername("testuser")).thenReturn(user);
+
+
+        // userShowMapper가 toDto 메소드를 호출할 때 가짜 DTO를 반환하도록 설정
+        when(userShowMapper.toDto(user)).thenReturn(userDTO);
+        when(userProfileShowMapper.toDto(user.getUserProfile())).thenReturn(userProfileDTO);
+
+        // 가짜 인증 객체 생성
+        Authentication authentication = mock(Authentication.class);
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        when(authentication.getPrincipal()).thenReturn(customUserDetails);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 테스트 대상 메소드 호출
+        CommonDTO.ShowResponse response = userService.showUser();
+
+        // 결과 검증
+        assertNotNull(response);
+    }
 }
