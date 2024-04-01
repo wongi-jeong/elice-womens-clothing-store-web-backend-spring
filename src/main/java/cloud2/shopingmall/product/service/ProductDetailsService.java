@@ -27,19 +27,20 @@ public class ProductDetailsService {
         return productDetailsRepository.findById(id).orElse(null);
     }
 
-    public List<ProductDetails> getProductsByProductDisplayId(Long productDisplayId) {
-        return productDetailsRepository.findByProduct_Id(productDisplayId);
+    public List<ProductDetails> getProductDetailsByProductId(Long productId) {
+        return productDetailsRepository.findByProduct_Id(productId);
     }
 
 
-    public ProductDetails saveProduct(ProductDetails productDetails, Long productDisplayId) {
-        Product product = productRepository.getReferenceById(productDisplayId);
+    public ProductDetails saveProductDetails(ProductDetails productDetails, Long productId) {
+        Product product = productRepository.getReferenceById(productId);
         productDetails.setProduct(product);
+        product.getProductDetails().add(productDetails);
 
         return productDetailsRepository.save(productDetails);
     }
 
-    public ProductDetails updateProductDisplay(ProductDetails productDetails) {
+    public ProductDetails updateProductDetails(ProductDetails productDetails) {
         if (productDetails.getId() == null) {
             //TO DO: need new customException
             throw new RuntimeException();
@@ -49,7 +50,7 @@ public class ProductDetailsService {
     }
 
 
-    public void offProduct(Long id) {
+    public void offProductDetails(Long id) {
         try {
             ProductDetails productDetails = productDetailsRepository.getReferenceById(id);
             productDetails.setStatus(ProductDetails.ProductStatus.OFF);
@@ -59,7 +60,7 @@ public class ProductDetailsService {
         }
     }
 
-    public void onProduct(Long id) {
+    public void onProductDetails(Long id) {
         try {
             ProductDetails productDetails = productDetailsRepository.getReferenceById(id);
             productDetails.setStatus(ProductDetails.ProductStatus.ON);
@@ -70,7 +71,7 @@ public class ProductDetailsService {
     }
 
 
-    public void deleteProduct(Long id) {
+    public void deleteProductDetails(Long id) {
         ProductDetails productDetails = productDetailsRepository.getReferenceById(id);
         Product product = productDetails.getProduct();
         product.getProductDetails().remove(productDetails);

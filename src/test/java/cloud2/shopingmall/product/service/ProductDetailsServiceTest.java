@@ -36,11 +36,11 @@ public class ProductDetailsServiceTest {
     @Test
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void deleteProductTest(){
-        Product product = productRepository.findProductDisplayWithOptions(1L);
+        Product product = productRepository.findProductWithDetails(1L);
         assertEquals(product.getProductDetails().size(),2);
 
-        productDetailsService.deleteProduct(2L);
-        product = productRepository.findProductDisplayWithOptions(1L);
+        productDetailsService.deleteProductDetails(2L);
+        product = productRepository.findProductWithDetails(1L);
 
         assertNull(productDetailsService.getProduct(2L));
         assertEquals(product.getProductDetails().size(),1);

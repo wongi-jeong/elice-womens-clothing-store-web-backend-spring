@@ -7,11 +7,17 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT distinct pd FROM ProductDetails pd join fetch pd.product where pd.id = :id")
-    Product findProductDisplayWithOptions(@Param("id") Long id);
+    @Query("SELECT distinct p FROM Product p join fetch p.productDetails where p.id = :id")
+    Product findProductWithDetails(@Param("id") Long id);
 
-    @Query("SELECT distinct pd FROM ProductDetails pd join fetch pd.productBody where pd.id = :id")
-    Product findProductDisplayWithImages(@Param("id") Long id);
+    @Query("SELECT distinct p FROM Product p join fetch p.productBodies where p.id = :id")
+    Product findProductWithBodies(@Param("id") Long id);
 
+    @Query("SELECT DISTINCT p  \n" +
+            "FROM Product p\n" +
+            "LEFT JOIN FETCH p.productBodies pb\n" +
+            "LEFT JOIN FETCH p.productDetails pd\n" +
+            "WHERE p.id = :id")
+    Product findProductWithDetailsAndBodies(@Param("id") Long id);
     Product findByName(String name);
 }
