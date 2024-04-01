@@ -88,7 +88,7 @@ public class UserProfileDTO {
 
         private String email;
 
-        private FindUser.Source source;
+        private Source source;
 
         @Getter
         public enum Source {

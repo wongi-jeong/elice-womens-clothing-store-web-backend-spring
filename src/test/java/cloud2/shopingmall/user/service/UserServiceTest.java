@@ -11,6 +11,7 @@ import cloud2.shopingmall.user.mapper.UserMainMapper.UserMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -47,20 +49,91 @@ class UserServiceTest {
         UserDTO.Join userDTO = new UserDTO.Join("testuser", "Test123!", "Test123!");
         UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("Test Name", "test@example.com", "010-1234-5678",
                 "123 Test St", Gender.MALE, "1990-01-01");
+        // 유저 Entity 및 유저 프로필 Entity 생성
+        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",null);
 
         // userMapper.toEntity() 메서드가 호출될 때 적절한 User 객체 반환하도록 설정
-        when(userMapper.toEntity(userDTO)).thenReturn(new User());
+        when(userMapper.toEntity(userDTO)).thenReturn(user);
         // userProfileMapper.toEntity() 메서드가 호출될 때 적절한 UserProfile 객체 반환하도록 설정
-        when(userProfileMapper.toEntity(userProfileDTO)).thenReturn(new UserProfile());
+        when(userProfileMapper.toEntity(userProfileDTO)).thenReturn(userProfile);
+
+        // Repository 메서드 호출 시 반환 객체 설정
+        when(userRepository.save(user)).thenReturn(user);
+        when(userProfileRepository.save(userProfile)).thenReturn(userProfile);
 
         // 테스트 대상 메서드 호출
         boolean result = userService.joinProcess(userDTO, userProfileDTO);
 
-        // userRepository.save() 및 userProfileRepository.save() 메서드가 호출되었는지 확인
-        verify(userRepository, times(1)).save(any());
-        verify(userProfileRepository, times(1)).save(any());
+        // 결과 검증
+        assertTrue(result);
+
+        // 레파지토리에 저장된 값과 user 객체가 같은지 확인
+        assertEquals(user, userRepository.save(user));
+        assertEquals(userProfile, userProfileRepository.save(userProfile));
+    }
+
+    @Test
+    @DisplayName("아이디 찾기 테스트")
+    void findUserId() {
+        // 유저 프로필 DTO 생성
+        UserProfileDTO.FindUser userProfileDTO = new UserProfileDTO.FindUser("010-1234-5678", "test@exampl.com", UserProfileDTO.FindUser.Source.PHONE);
+        // 유저 Entity 생성
+        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",user);
+
+        // Repository 메서드 실행 시 적절한 객체 반환 *현재는 핸드폰으로 찾기를 사용하여 이멜로 찾기 기능은 주석 처리
+        when(userProfileRepository.existsByPhoneNumber(any(String.class))).thenReturn(true);
+        when(userProfileRepository.findByPhoneNumber(any(String.class))).thenReturn(userProfile);
+//        when(userProfileRepository.findByEmail(any(String.class))).thenReturn(userProfile);
+//        when(userProfileRepository.existsByEmail(any(String.class))).thenReturn(true);
+
+        // 테스트 대상 메서드 호출
+        String result = userService.findUserId(userProfileDTO);
+
+        // 테스트 결과와 비교하기
+        assertEquals(user.getUsername(),result);
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 정보 입력 테스트")
+    void findPasswordFilter() {
+        // 유저 Profile DTO 생성
+        UserProfileDTO.FindPassword userProfileDTO = new UserProfileDTO.FindPassword("testuser", "010-1234-5678", "test@example.com", UserProfileDTO.FindPassword.Source.PHONE);
+
+        // 유저 Entity 및 유저 프로필 Entity 생성
+        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",null);
+
+        // Repository 메서드 호출 시 반환 객체 설정
+        when(userRepository.existsByUsername(any(String.class))).thenReturn(true);
+        when(userRepository.findByUsername(any(String.class))).thenReturn(user);
+        when(userProfileRepository.existsByPhoneNumberAndUser(any(String.class), any(User.class))).thenReturn(true);
+
+        // 테스트 대상 메서드 호출
+        Boolean result = userService.findPasswordFilter(userProfileDTO);
+
+        // 결과 검증
+        assertTrue(result);
+
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트")
+    void changePassword() throws PasswordMismatchException {
+        // 유저 DTO 생성 및 초기화
+        UserDTO.ChangePassword userDTO = new UserDTO.ChangePassword("test name", "1234test!", "1234test!");
+        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
+
+        // Repository 메서드 호출 시 반환 객체 설정
+        when(userRepository.findByUsername(any(String.class))).thenReturn(user);
+
+        // 테스트 대상 메서드 호출
+        Boolean result = userService.changePassword(userDTO);
 
         // 결과 검증
         assertTrue(result);
     }
+
 }
