@@ -24,11 +24,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(nullable = false)
     private String userRole;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
+    @Column
     private Status Status;
 
 
