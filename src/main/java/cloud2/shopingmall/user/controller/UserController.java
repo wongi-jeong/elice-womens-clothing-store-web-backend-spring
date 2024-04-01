@@ -1,6 +1,7 @@
 package cloud2.shopingmall.user.controller;
 
 import cloud2.shopingmall.common.exception.PasswordMismatchException;
+import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.service.UserService;
@@ -9,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,10 +24,12 @@ public class UserController {
     }
 
     // 회원가입 기능
+    // 하나의 메서드에서는 하나의 @RequestBody만 사용 가능하다
     @PostMapping("/join")
-    public ResponseEntity<String> joinProcess(@Valid UserDTO.Join userDTO,
-                                              @Valid UserProfileDTO.Join userProfileDTO,
+    public ResponseEntity<String> joinProcess(@RequestBody CommonDTO.JoinRequest request,
                                               BindingResult bindingResult) throws PasswordMismatchException {
+        UserDTO.Join userDTO = request.getUserDTO();
+        UserProfileDTO.Join userProfileDTO = request.getUserProfileDTO();
 
         // 유효성 검사 결과 확인
         if (bindingResult.hasErrors()) {

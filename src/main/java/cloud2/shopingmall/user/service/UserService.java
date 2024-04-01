@@ -81,6 +81,7 @@ public class UserService {
         // UserProfile DB에 생성
         userProfile.setUser(savedUser);
         userProfile.setGender(userProfileDTO.getGender().getKey());
+        userProfile.setPoint(100000); // 처음 가입 시 10만 포인트 증정
         userProfileRepository.save(userProfile);
 
         return true;
@@ -184,13 +185,10 @@ public class UserService {
     }
 
     // 로그인한 사용자 정보 조회 기능
-    public UserDTO showUser() {
+    public User showUser() {
         return null;
     }
 
-    public UserProfileDTO showUserProfile() {
-        return null;
-    }
 
     // 회원정보 변경 기능
     public Boolean changeId() {

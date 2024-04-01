@@ -51,7 +51,7 @@ class UserServiceTest {
                 "123 Test St", Gender.MALE, "1990-01-01");
         // 유저 Entity 및 유저 프로필 Entity 생성
         User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
-        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",null);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",100000,null);
 
         // userMapper.toEntity() 메서드가 호출될 때 적절한 User 객체 반환하도록 설정
         when(userMapper.toEntity(userDTO)).thenReturn(user);
@@ -80,7 +80,7 @@ class UserServiceTest {
         UserProfileDTO.FindUser userProfileDTO = new UserProfileDTO.FindUser("010-1234-5678", "test@exampl.com", UserProfileDTO.FindUser.Source.PHONE);
         // 유저 Entity 생성
         User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
-        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",user);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",100000,user);
 
         // Repository 메서드 실행 시 적절한 객체 반환 *현재는 핸드폰으로 찾기를 사용하여 이멜로 찾기 기능은 주석 처리
         when(userProfileRepository.existsByPhoneNumber(any(String.class))).thenReturn(true);
@@ -103,7 +103,7 @@ class UserServiceTest {
 
         // 유저 Entity 및 유저 프로필 Entity 생성
         User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
-        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",null);
+        UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678", "123 Test St","Male","1990-01-01",100000,null);
 
         // Repository 메서드 호출 시 반환 객체 설정
         when(userRepository.existsByUsername(any(String.class))).thenReturn(true);
@@ -124,7 +124,7 @@ class UserServiceTest {
     void changePassword() throws PasswordMismatchException {
         // 유저 DTO 생성 및 초기화
         UserDTO.ChangePassword userDTO = new UserDTO.ChangePassword("test name", "1234test!", "1234test!");
-        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null);
+        User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE,null);
 
         // Repository 메서드 호출 시 반환 객체 설정
         when(userRepository.findByUsername(any(String.class))).thenReturn(user);
