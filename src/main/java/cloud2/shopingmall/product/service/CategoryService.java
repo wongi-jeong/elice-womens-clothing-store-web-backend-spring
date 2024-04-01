@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -38,15 +37,10 @@ public class CategoryService {
         foundCategory = categoryRepository.findById(categoryDTO.getId())
                 .orElseThrow(NoSuchElementException::new);
 
-        Optional.ofNullable(categoryDTO.getCategoryName())
-                .ifPresent(categoryName -> foundCategory = foundCategory.toBuilder()
-                        .categoryName(categoryName)
-                        .build());
-
-        Optional.ofNullable(categoryDTO.getCategoryRank())
-                .ifPresent(categoryRank -> foundCategory = foundCategory.toBuilder()
-                        .categoryRank(categoryRank)
-                        .build());
+        foundCategory.toBuilder()
+                .categoryName(categoryDTO.getCategoryName())
+                .categoryRank(categoryDTO.getCategoryRank())
+                .build();
 
         return categoryRepository.save(foundCategory);
     }
