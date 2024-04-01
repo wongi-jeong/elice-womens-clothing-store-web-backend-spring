@@ -33,7 +33,7 @@ public class ProductBodyService {
         return productBodyRepository.findByProduct_Id(productId);
     }
 
--
+
     public List<ProductBody> saveProductBodies(List<ProductBody> productBodies, Long productId) {
         Product product = productRepository.getReferenceById(productId);
         for (ProductBody productBody : productBodies) {
