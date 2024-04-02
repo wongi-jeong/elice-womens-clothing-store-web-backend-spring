@@ -24,7 +24,6 @@ public class Orders {
     @Column
     private OrderStatus orderStatus;
 
-
     @CreatedDate
     private LocalDateTime orderCreatedAt;
 

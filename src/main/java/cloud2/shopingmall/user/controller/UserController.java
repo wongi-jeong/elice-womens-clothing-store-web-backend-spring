@@ -1,6 +1,7 @@
 package cloud2.shopingmall.user.controller;
 
 import cloud2.shopingmall.common.exception.PasswordMismatchException;
+import cloud2.shopingmall.jwt.CustomUserDetails;
 import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
@@ -10,6 +11,7 @@ import cloud2.shopingmall.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -87,9 +89,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경이 완료되었습니다.");
     }
 
+    // 마이페이지 이동시 현재 로그인한 사용자 정보 조회 기능
     @GetMapping("/myInfor")
-    public ResponseEntity<CommonDTO.ShowResponse> showMyInfo() {
-        CommonDTO.ShowResponse dtos = userService.showUser();
+    public ResponseEntity<CommonDTO.ShowResponse> showMyInfo(@AuthenticationPrincipal CustomUserDetails userInfo) {
+        CommonDTO.ShowResponse dtos = userService.showUser(userInfo);
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
+    }
+
+    @PatchMapping("/changeInfo")
+    public ResponseEntity<String> changeInfo(@RequestBody CommonDTO.ChangeInfoRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

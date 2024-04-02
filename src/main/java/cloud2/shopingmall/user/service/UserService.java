@@ -205,13 +205,10 @@ public class UserService {
     }
 
     // 로그인한 사용자 정보 조회 기능
-    public CommonDTO.ShowResponse showUser() {
+    public CommonDTO.ShowResponse showUser(CustomUserDetails userInfo) {
 
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        String username = customUserDetails.getUsername();
+        String username = userInfo.getUsername();
 
         // 현재 인증된 사용자의 정보 담기
         User user = userRepository.findByUsername(username);
@@ -220,9 +217,9 @@ public class UserService {
         UserDTO.Show userDTO = userShowMapper.toDto(user);
         UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
 
-        CommonDTO.ShowResponse dtos = new CommonDTO.ShowResponse(userDTO, userProfileDTO);
+        CommonDTO.ShowResponse dto = new CommonDTO.ShowResponse(userDTO, userProfileDTO);
 
-        return dtos;
+        return dto;
     }
 
     // 회원정보 변경 기능
