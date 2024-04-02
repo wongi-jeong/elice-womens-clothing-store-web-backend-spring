@@ -3,6 +3,7 @@ package cloud2.shopingmall.product.service;
 import cloud2.shopingmall.product.dto.ProductDTO;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
@@ -24,12 +25,14 @@ public class ProductService {
     private final ProductBodyRepository productBodyRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
+    private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper) {
         this.productRepository = productRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
+        this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
     }
 
 
@@ -52,13 +55,15 @@ public class ProductService {
 
     }
 
-    public ProductDTO getProductDTO(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
+    public ProductDTO.ProductWithDetailsAndBodiesDTO getProductWithDetailsAndBodiesDTO(Long id) {
+//        Product product = productRepository.findProductWithDetailsAndBodies(id);
+        Product product = productRepository.findProductWithDetails(id);
+        product = productRepository.findProductWithBodies(id);
         if(product == null){
             //TO DO
             throw new RuntimeException();
         }
-        return productMapper.toDto(product);
+        return productWithDetailsAndBodiesMapper.toDto(product);
 
 
     }
@@ -81,7 +86,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public ProductDTO saveProduct(ProductDTO productDTO) {
+    public ProductDTO saveProductDTO(ProductDTO productDTO) {
         if (productRepository.findByName(productDTO.getName()) != null) {
             //TO DO: need new customException
             throw new RuntimeException();
@@ -101,8 +106,10 @@ public class ProductService {
             //TO DO: need new customException
             throw new RuntimeException();
         }
+        Product Product = productRepository.getReferenceById(productDTO.getId());
+        productMapper.updateFromDto(productDTO, Product);
 
-        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDTO)));
+        return productMapper.toDto(Product);
     }
 
 
