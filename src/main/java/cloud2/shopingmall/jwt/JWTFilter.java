@@ -22,17 +22,15 @@ public class JWTFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //request에서 Authorization 헤더를 찾음
-        String authorization= request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
         //Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
 
-            System.out.println("token null");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -44,7 +42,6 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
 
-            System.out.println("token expired");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -57,14 +54,15 @@ public class JWTFilter extends OncePerRequestFilter {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword("temppassword");
+        user.setPassword("temppassword"); // 임시로 패스워드를 설정 ( 실제로는 JWT 토큰에서 패스워드를 추출 X )
         user.setUserRole(role);
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
-
+        // UsernamePasswordAuthenticationToken을 사용하여 사용자의 인증 정보를 생성 이 때, 인증된 사용자의 상세 정보인 customUserDetails와 사용자의 권한 정보를 전달
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
+        // 생성된 인증 정보를 SecurityContextHolder에 저장, 이를 통해 스프링 시큐리티는 현재 사용자가 인증되었음을 파악하고, 해당 사용자의 정보와 권한을 사용하여 인증 및 권한 부여를 수행
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
