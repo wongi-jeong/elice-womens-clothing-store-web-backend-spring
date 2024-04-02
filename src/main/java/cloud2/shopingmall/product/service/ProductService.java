@@ -3,6 +3,7 @@ package cloud2.shopingmall.product.service;
 import cloud2.shopingmall.product.dto.ProductDTO;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
@@ -105,8 +106,10 @@ public class ProductService {
             //TO DO: need new customException
             throw new RuntimeException();
         }
+        Product Product = productRepository.getReferenceById(productDTO.getId());
+        productMapper.updateFromDto(productDTO, Product);
 
-        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDTO)));
+        return productMapper.toDto(Product);
     }
 
 
