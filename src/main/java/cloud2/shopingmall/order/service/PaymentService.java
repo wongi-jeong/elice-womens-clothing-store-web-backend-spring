@@ -2,13 +2,16 @@ package cloud2.shopingmall.order.service;
 
 import cloud2.shopingmall.order.entity.Payment;
 import cloud2.shopingmall.order.dto.PaymentDTO;
+import cloud2.shopingmall.user.entity.User;
+import cloud2.shopingmall.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cloud2.shopingmall.order.repository.PaymentRepository;
 
-//import cloud2.shopingmall.order.exception.ResourceNotFoundException;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
     /**
      * 결제 진행
@@ -16,29 +19,15 @@ public class PaymentService {
      * 결제 취소 및 환불 처리
      */
 
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public PaymentService(PaymentRepository paymentRepository) {
-        this.paymentRepository = paymentRepository;
-    }
 
-    public PaymentDTO createPayment(Integer payTotalPrice, Payment.PayStatus payStatus) {
-        Payment payment = new Payment();
-        payment.setPayTotalPrice(payTotalPrice);
-        payment.setPayStatus(payStatus);
-        // 생성일시 및 수정일시 설정 등
 
-        paymentRepository.save(payment);
-
-        PaymentDTO paymentDTO = new PaymentDTO();
-        paymentDTO.setPayTotalPrice(payment.getPayTotalPrice());
-        paymentDTO.setPayCreatedAt(payment.getPayCreatedAt());
-        paymentDTO.setPayModifiedAt(payment.getPayModifiedAt());
-        paymentDTO.setPayStatus(String.valueOf(payment.getPayStatus()));
-
-        return paymentDTO;
-    }
+//    public PaymentDTO createPayment(String userName, PaymentDTO paymentDTO) {
+//        User user = userRepository.findByUsername(userName);
+//        user.get
+//    }
 
     /*public PaymentDTO getPaymentById(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId);

@@ -27,16 +27,16 @@ public class Orders {
     private Long id;
 
     @Column
-    private OrderStatus orderStatus;
+    private OrderStatus Status;
 
 
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime orderCreatedAt;
+    private LocalDateTime CreatedAt;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime orderModifiedAt;
+    private LocalDateTime ModifiedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

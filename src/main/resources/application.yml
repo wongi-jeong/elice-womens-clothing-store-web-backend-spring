@@ -22,3 +22,12 @@ spring:
       ddl-auto: none # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
     show-sql: true
     defer-datasource-initialization: true
+
+
+    jackson:
+      default-property-inclusion: non_null
+
+#logging:
+#  level:
+#    root: DEBUG
+
