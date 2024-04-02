@@ -33,8 +33,8 @@ public interface ProductMainMapper {
         @Mapping(source = "productDetails", target = "productDetailsDTOList")
         ProductDTO.ProductWithDetailsAndBodiesDTO toDto(Product product);
 
-        @Mapping(source = "productBodyDTOList", target = "productBodies", ignore = true)
-        @Mapping(source = "productDetailsDTOList", target = "productDetails", ignore = true)
+        @Mapping(source = "productBodyDTOList", target = "productBodies")
+        @Mapping(source = "productDetailsDTOList", target = "productDetails")
         Product toEntity(ProductDTO.ProductWithDetailsAndBodiesDTO productWithDetailsAndBodiesDTO);
 
     }
