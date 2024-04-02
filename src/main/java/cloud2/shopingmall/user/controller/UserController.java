@@ -96,8 +96,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
+    // 사용자 회원정보 변경 기능
     @PatchMapping("/changeInfo")
-    public ResponseEntity<String> changeInfo(@RequestBody CommonDTO.ChangeInfoRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+    public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
+        Boolean result = userService.changeInfo(userInfo, request);
+        return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
     }
 }

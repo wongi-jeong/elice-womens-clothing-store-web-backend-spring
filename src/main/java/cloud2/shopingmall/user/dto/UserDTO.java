@@ -50,9 +50,13 @@ public class UserDTO {
     @AllArgsConstructor
     public static class ChangeInfo {
 
-        private String username;
+        @NotNull(message = "현재 비밀번호를 입력해주세요.")
+        private String currentPassword;
 
         private String password;
+
+        private String secondPassword;
+
     }
 
 
