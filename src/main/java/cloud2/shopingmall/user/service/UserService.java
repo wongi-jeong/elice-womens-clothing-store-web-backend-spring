@@ -192,7 +192,11 @@ public class UserService {
             throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
         }
 
-        // 입력한 비밀번호가 저장된 비밀번호와 같은지 확인하기
+        // 입력한 비밀번호가 DB에 저장된 비밀번호와 같은지 확인하기
+        if (bCryptPasswordEncoder.matches(password, target.getPassword())) {
+            throw new PasswordMismatchException("입력한 비밀번호가 현재 비밀번호와 같습니다");
+        }
+
         target.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
 
         userRepository.save(target);
@@ -201,8 +205,25 @@ public class UserService {
     }
 
     // 로그인한 사용자 정보 조회 기능
-    public CommonDTO.ShowResponse showUser() {
+    public CommonDTO.ShowResponse showUser(CustomUserDetails userInfo) {
 
+        // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
+        String username = userInfo.getUsername();
+
+        // 현재 인증된 사용자의 정보 담기
+        User user = userRepository.findByUsername(username);
+
+        // user Entity -> Dto 변환
+        UserDTO.Show userDTO = userShowMapper.toDto(user);
+        UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
+
+        CommonDTO.ShowResponse dto = new CommonDTO.ShowResponse(userDTO, userProfileDTO);
+
+        return dto;
+    }
+
+    // 회원정보 변경 기능
+    public Boolean changeId() {
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -212,19 +233,6 @@ public class UserService {
         // 현재 인증된 사용자의 정보 담기
         User user = userRepository.findByUsername(username);
 
-        // user Entity -> Dto 변환
-        UserDTO.Show userDTO = userShowMapper.toDto(user);
-        UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
-
-        CommonDTO.ShowResponse dtos = new CommonDTO.ShowResponse(userDTO, userProfileDTO);
-
-        return dtos;
-    }
-
-
-    // 회원정보 변경 기능
-    public Boolean changeId() {
-        // 현재 로그인한 사용자의 정보 가져오기
         // 사용자 아이디 변경하기
         return true;
     }

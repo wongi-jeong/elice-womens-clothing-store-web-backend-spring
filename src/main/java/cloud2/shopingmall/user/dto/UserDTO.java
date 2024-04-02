@@ -43,7 +43,16 @@ public class UserDTO {
         private String username;
 
         private String password;
+    }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChangeInfo {
+
+        private String username;
+
+        private String password;
     }
 
 
