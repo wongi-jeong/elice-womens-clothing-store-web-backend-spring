@@ -3,7 +3,10 @@ package cloud2.shopingmall.order.service;
 import cloud2.shopingmall.order.entity.Payment;
 import cloud2.shopingmall.order.dto.PaymentDTO;
 import cloud2.shopingmall.user.entity.User;
+import cloud2.shopingmall.user.entity.UserProfile;
+import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,14 +23,18 @@ public class PaymentService {
      */
 
     private final PaymentRepository paymentRepository;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
 
 
 
-//    public PaymentDTO createPayment(String userName, PaymentDTO paymentDTO) {
-//        User user = userRepository.findByUsername(userName);
-//        user.get
-//    }
+    public PaymentDTO createPayment(String userName, Integer totalPrice,Long orderId) {
+        //유저네임으로 유저 프로파일 리파지토리에서 찾아서
+        //유저가 가진 적립금이랑 토탈 금액이랑 비교
+        //비교후 결제 완료
+        //결제 완료 시 주문과 맵핑
+        return null;
+
+    }
 
     /*public PaymentDTO getPaymentById(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId);
