@@ -26,4 +26,8 @@ public interface UserMainMapper {
     interface UserProfileShowMapper extends EntityMapper<UserProfile, UserProfileDTO.Show> {
     }
 
+    @Mapper(componentModel = "spring")
+    interface UserProfileChangeMapper extends EntityMapper<UserProfile, UserProfileDTO.ChangeInfo> {
+    }
+
 }
