@@ -24,12 +24,14 @@ public class ProductService {
     private final ProductBodyRepository productBodyRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
+    private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper) {
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper) {
         this.productRepository = productRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
+        this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
     }
 
 
@@ -52,13 +54,15 @@ public class ProductService {
 
     }
 
-    public ProductDTO getProductDTO(Long id) {
-        Product product = productRepository.findById(id).orElse(null);
+    public ProductDTO.ProductWithDetailsAndBodiesDTO getProductWithDetailsAndBodiesDTO(Long id) {
+//        Product product = productRepository.findProductWithDetailsAndBodies(id);
+        Product product = productRepository.findProductWithDetails(id);
+        product = productRepository.findProductWithBodies(id);
         if(product == null){
             //TO DO
             throw new RuntimeException();
         }
-        return productMapper.toDto(product);
+        return productWithDetailsAndBodiesMapper.toDto(product);
 
 
     }

@@ -38,9 +38,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity<ProductDTO.ProductWithDetailsAndBodiesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.getProductDTO(id));
+                .body(productService.getProductWithDetailsAndBodiesDTO(id));
 
     }
 
