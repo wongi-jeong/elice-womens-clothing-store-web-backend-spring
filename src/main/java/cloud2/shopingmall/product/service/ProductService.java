@@ -86,7 +86,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public ProductDTO saveProduct(ProductDTO productDTO) {
+    public ProductDTO saveProductDTO(ProductDTO productDTO) {
         if (productRepository.findByName(productDTO.getName()) != null) {
             //TO DO: need new customException
             throw new RuntimeException();

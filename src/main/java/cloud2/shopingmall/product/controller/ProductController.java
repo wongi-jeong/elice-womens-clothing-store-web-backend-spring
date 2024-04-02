@@ -48,7 +48,7 @@ public class ProductController {
     public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductDTO productDTO){
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productService.saveProduct(productDTO));
+                .body(productService.saveProductDTO(productDTO));
 
     }
 
