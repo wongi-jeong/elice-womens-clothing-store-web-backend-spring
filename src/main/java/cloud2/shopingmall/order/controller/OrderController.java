@@ -53,21 +53,26 @@ public class OrderController {
         }
         return ResponseEntity.ok(orderDTO);
     }
-//    @PostMapping("/create")
-//    public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-//                                                @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
-//        //장바구니 주문
-////json으로 여러 객체 받아와야할때 복합 객체를 사용하게 되면 언제 검증을 하게 되는지 그리고 검증에 관한 로직은 어디서 구현하면 좋을 지
-//        OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername());
-//        orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(),orderDTO.getId());
-//        return ResponseEntity.ok(orderDTO);
-//
-//    }
-    @PostMapping("/create")
+    @PostMapping("/creat/cart")
+    public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
+        //장바구니 주문
+//json으로 여러 객체 받아와야할때 복합 객체를 사용하게 되면 언제 검증을 하게 되는지 그리고 검증에 관한 로직은 어디서 구현하면 좋을 지
+        OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername());
+        orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(),orderDTO.getId());
+        deliveryService.createDelivery(orderCreateRequest.getDeliveryDTO(),orderDTO.getId());
+        paymentService.createPayment(customUserDetails.getUsername(), orderCreateRequest.getTotalPrice(),orderDTO.getId());
+        return ResponseEntity.ok(orderDTO);
+
+    }
+    @PostMapping("/create/product")
     public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                       @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){
         //상품 주문
         OrderDTO orderDTO = orderManagementService.createOrderForProduct(customUserDetails.getUsername());
+        orderManagementService.createOrderProduct(orderByProduct.getOrderProductDTOS(),orderDTO.getId());
+        deliveryService.createDelivery(orderByProduct.getDeliveryDTO(),orderDTO.getId());
+        paymentService.createPayment(customUserDetails.getUsername(), orderByProduct.getTotalPrice(),orderDTO.getId());
         return ResponseEntity.ok(orderDTO);
 
     }
