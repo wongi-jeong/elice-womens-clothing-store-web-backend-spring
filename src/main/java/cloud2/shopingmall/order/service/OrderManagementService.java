@@ -85,5 +85,9 @@ public class OrderManagementService {
         orderProduct.setOrders(orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId)));
         orderProductRepository.save(orderProduct);
     }
+    public void updateOrder(Long orderId){
+        Orders order = orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId));
+
+    }
 
 }
