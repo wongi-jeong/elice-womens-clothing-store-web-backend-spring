@@ -27,4 +27,14 @@ public class CommonDTO {
         private UserProfileDTO.Show userProfileDTO;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChangeInfoRequest {
+        @Valid
+        private UserDTO.ChangeInfo userDTO;
+        @Valid
+        private UserProfileDTO.ChangeInfo userProfileDTO;
+    }
+
 }

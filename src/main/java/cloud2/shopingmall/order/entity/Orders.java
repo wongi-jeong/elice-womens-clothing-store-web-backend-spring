@@ -29,7 +29,6 @@ public class Orders {
     @Column
     private OrderStatus Status;
 
-
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime CreatedAt;

@@ -171,7 +171,7 @@ class UserServiceTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 테스트 대상 메소드 호출
-        CommonDTO.ShowResponse response = userService.showUser();
+        CommonDTO.ShowResponse response = userService.showUser(customUserDetails);
 
         // 결과 검증
         assertNotNull(response);
