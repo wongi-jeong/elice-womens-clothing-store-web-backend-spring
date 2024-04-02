@@ -1,7 +1,12 @@
 package cloud2.shopingmall.order.service;
 
+import cloud2.shopingmall.common.exception.OrderException;
 import cloud2.shopingmall.order.dto.DeliveryDTO;
 import cloud2.shopingmall.order.dto.OrderDTO;
+import cloud2.shopingmall.order.entity.Orders;
+import cloud2.shopingmall.order.mapper.OrderMainMapper;
+import cloud2.shopingmall.order.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import cloud2.shopingmall.order.entity.Delivery;
 import cloud2.shopingmall.order.repository.DeliveryRepository;
@@ -10,26 +15,44 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DeliveryService {
     /**
      * 배송 시작
      * 배송상태업데이트
      */
-    private DeliveryRepository deliveryRepository;
+    private final DeliveryRepository deliveryRepository;
+    private final OrderMainMapper.DeliveryMapper deliveryMapper;
+    private final OrderRepository orderRepository;
 
     public List<Delivery> getAllDeliveries() {
         return deliveryRepository.findAll();
     }
 
-    /*public Delivery getDeliveryById(Long deliveryId) {
+
+    public DeliveryDTO createDelivery(DeliveryDTO deliveryDTO,Long orderId) {
+        Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
+        delivery.setSenderStatus(Delivery.SenderStatus.PREPARING_FOR_DELIVERY);
+        delivery.setOrder(orderRepository.findById(orderId).orElseThrow(()->new OrderException.OrderNotFoundException(orderId)));
+        Delivery save = deliveryRepository.save(delivery);
+        return  deliveryMapper.toDto(save);
+    }
+
+    public void verifyModify(Long orderId){
+        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+        if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {
+            throw new OrderException.OrderCancellationNotAllowedException(order.getId());
+        }
+    }
+    public DeliveryDTO modifyDelivery(DeliveryDTO deliveryDTO){
+        //배송지 변경(기존 배송지 어떻게 찾을 것인가 무엇을 받을 것인가)
+        return deliveryDTO;
+    }
+
+ /*public Delivery getDeliveryById(Long deliveryId) {
         return deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery", "id", deliveryId));
     }*/
-
-    public Delivery createDelivery(Delivery delivery) {
-        return deliveryRepository.save(delivery);
-    }
-
     /*public Delivery updateDeliveryStatus(Long deliveryId, Delivery.SenderStatus newStatus) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery", "id", deliveryId));
