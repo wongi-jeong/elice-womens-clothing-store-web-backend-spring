@@ -15,7 +15,7 @@ public interface ProductMainMapper {
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProduct, CategoryProductDisplayDTO> {
+    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProduct, CategoryProductDTO> {
 
     }
 
