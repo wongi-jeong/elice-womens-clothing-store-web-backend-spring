@@ -35,17 +35,6 @@ public class UserProfileDTO {
         @NotNull(message = "생년월일을 입력해 주세요.")
         private String birthDate;
 
-        @Getter
-        public enum Gender {
-            MALE("Male"),
-            FEMALE("Female");
-
-            private String key;
-
-            Gender(String key) {
-                this.key = key;
-            }
-        }
     }
 
     @Data
@@ -88,21 +77,51 @@ public class UserProfileDTO {
 
         private String email;
 
-        private FindUser.Source source;
+        private Source source;
 
-        @Getter
-        public enum Source {
-            PHONE("phone"), EMAIL("email");
+    }
 
-            private String key;
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Show {
 
-            Source(String source) {
-                this.key = source;
-            }
+        private String name;
+
+        private String email;
+
+        private String phoneNumber;
+
+        private String address;
+
+        private String gender;
+
+        private String birthDate;
+
+    }
+
+    @Getter
+    public enum Gender {
+        MALE("Male"),
+        FEMALE("Female");
+
+        private String key;
+
+        Gender(String key) {
+            this.key = key;
         }
     }
 
+    @Getter
+    public enum Source {
+        PHONE("phone"), EMAIL("email");
 
+        private String key;
+
+        Source(String source) {
+            this.key = source;
+        }
+    }
 
 
 

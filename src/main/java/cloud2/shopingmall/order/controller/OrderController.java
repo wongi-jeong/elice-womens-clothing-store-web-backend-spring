@@ -46,7 +46,7 @@ public class OrderController {
     public ResponseEntity<OrderDTO> cancelOrder(@RequestBody OrderDTO orderDTO){
         try {
             OrderDTO orderDTO1 = orderManagementService.canceledOrder(orderDTO);
-        } catch (OrderException.OrderNotFoundExecption e) {
+        } catch (OrderException.OrderNotFoundException e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }catch (OrderException.OrderCancellationNotAllowedException e){
             ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
@@ -56,15 +56,18 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
-
-        OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername(), orderCreateRequest.getOrderProductDTOS(), orderCreateRequest.getDeliveryDTO(), orderCreateRequest.getPaymentDTO());
+        //장바구니 주문
+//json으로 여러 객체 받아와야할때 복합 객체를 사용하게 되면 언제 검증을 하게 되는지 그리고 검증에 관한 로직은 어디서 구현하면 좋을 지
+        OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername());
+        orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(),orderDTO.getId());
         return ResponseEntity.ok(orderDTO);
 
     }
     @PostMapping("/create")
     public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                       @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){
-        OrderDTO orderDTO = orderManagementService.createOrderForProduct(customUserDetails.getUsername(), orderByProduct.getOrderProductDTOS(), orderByProduct.getDeliveryDTO(), orderByProduct.getPaymentDTO());
+        //상품 주문
+        OrderDTO orderDTO = orderManagementService.createOrderForProduct(customUserDetails.getUsername());
         return ResponseEntity.ok(orderDTO);
 
     }

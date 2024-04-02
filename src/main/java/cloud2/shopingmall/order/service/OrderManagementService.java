@@ -32,33 +32,19 @@ public class OrderManagementService {
     private final OrderMainMapper.DeliveryMapper deliveryMapper;
     private final OrderProductRepository orderProductRepository;
     @Transactional
-    public OrderDTO createOrderForProduct(String userName, OrderProductDTO productDTO,DeliveryDTO deliveryDTO, PaymentDTO paymentDTO){
+    public OrderDTO createOrderForProduct(String userName){
         //개별상품 주문
-        OrderProduct product = orderProductMapper.toEntity(productDTO);
-        Payment payment = paymentMapper.toEntity(paymentDTO);
-        Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
         Orders order = new Orders();
        order.setUser(userRepository.findByUsername(userName));
-       order.setPayment(payment);
-       order.setDelivery(delivery);
-       order.getOrderProducts().add(product);
        order.setStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
        Orders savedOrder = orderRepository.save(order);
        return  orderMapper.toDto(savedOrder);
     }
     @Transactional
-    public OrderDTO createOrderForCart(String userName, List<OrderProductDTO> productDTOs,DeliveryDTO deliveryDTO, PaymentDTO paymentDTO){
+    public OrderDTO createOrderForCart(String userName){
         //장바구니 상품 주문
-        Payment payment = paymentMapper.toEntity(paymentDTO);
-        Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
         Orders order = new Orders();
         order.setUser(userRepository.findByUsername(userName));
-        order.setPayment(payment);
-        order.setDelivery(delivery);
-        for(OrderProductDTO productDTO : productDTOs){
-            OrderProduct product = orderProductMapper.toEntity(productDTO);
-            order.getOrderProducts().add(product);
-        }
         order.setStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
         Orders savedOrder = orderRepository.save(order);
         return  orderMapper.toDto(savedOrder);
@@ -66,7 +52,7 @@ public class OrderManagementService {
     @Transactional
     public OrderDTO canceledOrder(OrderDTO orderDTO){
         //주문 상태가 결제완료 혹은 배송 준비일때만 주문 취소 가능
-        Orders order = orderRepository.findById(orderDTO.getId()).orElseThrow(()->new OrderException.OrderNotFoundExecption(orderDTO.getId()));
+        Orders order = orderRepository.findById(orderDTO.getId()).orElseThrow(()->new OrderException.OrderNotFoundException(orderDTO.getId()));
         if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {
             throw new OrderException.OrderCancellationNotAllowedException(order.getId());
         }
@@ -79,18 +65,25 @@ public class OrderManagementService {
     public void createOrderProduct(List<OrderProductDTO> orderProductDTOS, Long orderId){
         //장바구니 주문 결제시
         if(orderProductDTOS.isEmpty()){
-            ///error
+            throw new OrderException.OrderNotFoundOrderProductException();
         }
-        for(OrderProductDTO orderProductDTO :orderProductDTOS){
-            OrderProduct orderProduct = new OrderProduct();
-            orderProduct.setId(orderProduct.getId());
-            orderProduct.setProductCount(orderProduct.getProductCount());
-            orderProduct.setOrders(orderRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException()));
-            orderProductRepository.save(orderProduct);
-        }
+        orderProductDTOS.stream().forEach(orderProductDTO -> {OrderProduct orderProduct = new OrderProduct();
+                                                    orderProduct.setId(orderProductDTO.getProductId());
+                                                    orderProduct.setProductCount(orderProductDTO.getProductCount());
+                                                    orderProduct.setOrders(orderRepository.findById(orderId).orElseThrow(()->
+                                                            new OrderException.OrderNotFoundException(orderId)));
+                                                    orderProductRepository.save(orderProduct);});
     }
-    public void createOrderProduct(OrderProductDTO orderProductDTOS, Long orderId){
+    public void createOrderProduct(OrderProductDTO orderProductDTO, Long orderId){
             //상품 주문 결제시
+        if(orderProductDTO == null){
+            throw new OrderException.OrderNotFoundOrderProductException();
+        }
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setId(orderProductDTO.getProductId());
+        orderProduct.setProductCount(orderProductDTO.getProductCount());
+        orderProduct.setOrders(orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId)));
+        orderProductRepository.save(orderProduct);
     }
 
 }

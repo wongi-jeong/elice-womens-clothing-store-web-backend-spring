@@ -1,7 +1,9 @@
 package cloud2.shopingmall.product.service;
 
+import cloud2.shopingmall.product.dto.ProductDTO;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,36 +23,56 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductBodyRepository productBodyRepository;
 
+    private final ProductMainMapper.ProductMapper productMapper;
+
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository) {
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.productBodyRepository = productBodyRepository;
+        this.productMapper = productMapper;
     }
 
 
-    public List<Product> getProductDisplays() {
+    public List<Product> getProducts() {
         return productRepository.findAll();
     }
-
-    public Page<Product> getProductDisplays(int page, int size) {
-        return productRepository.findAll(PageRequest.of(page, size, Sort.by("product_display_id").descending()));
+    public List<ProductDTO> getProductsDTO() {
+        return productMapper.toDto(productRepository.findAll());
+    }
+    public Page<Product> getProducts(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
+    }
+    public Page<ProductDTO> getProductsDTO(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending())).map(product-> productMapper.toDto(product));
     }
 
-    public Product getProductDisplay(Long id) {
+    public Product getProduct(Long id) {
         return productRepository.findById(id).orElse(null);
 
 
     }
 
-    public Product getProductDisplayWithOptionAndImages(Long id) {
-        Product product = productRepository.findProductDisplayWithOptions(id);
-        product = productRepository.findProductDisplayWithImages(id);
+    public ProductDTO getProductDTO(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if(product == null){
+            //TO DO
+            throw new RuntimeException();
+        }
+        return productMapper.toDto(product);
+
+
+    }
+
+    public Product getProductWithDetailsAndBodies(Long id) {
+//        Product product = productRepository.findProductWithDetailsAndBodies(id);
+        Product product = productRepository.findProductWithDetails(id);
+        product = productRepository.findProductWithBodies(id);
         return product;
 
 
     }
 
-    public Product saveProductDisplay(Product product) {
+    public Product saveProduct(Product product) {
         if (productRepository.findByName(product.getName()) != null) {
             //TO DO: need new customException
             throw new RuntimeException();
@@ -59,37 +81,60 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProductDisplay(Product product) {
-        if (product.getId() == null) {
+    public ProductDTO saveProduct(ProductDTO productDTO) {
+        if (productRepository.findByName(productDTO.getName()) != null) {
             //TO DO: need new customException
             throw new RuntimeException();
         }
 
+        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDTO)));
+    }
+
+    public Product updateProduct(Product product) {
+
+
         return productRepository.save(product);
     }
 
+    public ProductDTO updateProductDTO(ProductDTO productDTO) {
+        if (productDTO.getId() == null) {
+            //TO DO: need new customException
+            throw new RuntimeException();
+        }
 
-    public void offProductDisplay(Long id) {
+        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDTO)));
+    }
+
+
+    public void offProduct(Long id) {
         Product product;
         try {
             product = productRepository.getReferenceById(id);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
+        }
+        if(product.getStatus() == Product.ProductDisplayStatus.OFF){
+            //TO DO
+            throw new RuntimeException();
         }
         product.setStatus(Product.ProductDisplayStatus.OFF);
     }
 
-    public void onProductDisplay(Long id) {
+    public void onProduct(Long id) {
         Product product;
         try {
             product = productRepository.getReferenceById(id);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+        if(product.getStatus() == Product.ProductDisplayStatus.ON){
+            //TO DO
+            throw new RuntimeException();
+        }
         product.setStatus(Product.ProductDisplayStatus.ON);
     }
 
-    public void deleteProductDisplay(Long id) {
+    public void deleteProduct(Long id) {
         Product product = productRepository.getReferenceById(id);
         if (product.getProductDetails().size() != 0) {
             throw new RuntimeException();

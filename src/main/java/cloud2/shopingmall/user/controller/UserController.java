@@ -1,18 +1,18 @@
 package cloud2.shopingmall.user.controller;
 
 import cloud2.shopingmall.common.exception.PasswordMismatchException;
+import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
+import cloud2.shopingmall.user.entity.User;
+import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,10 +26,12 @@ public class UserController {
     }
 
     // 회원가입 기능
+    // 하나의 메서드에서는 하나의 @RequestBody만 사용 가능하다
     @PostMapping("/join")
-    public ResponseEntity<String> joinProcess(@Valid UserDTO.Join userDTO,
-                                              @Valid UserProfileDTO.Join userProfileDTO,
+    public ResponseEntity<String> joinProcess(@RequestBody CommonDTO.JoinRequest request,
                                               BindingResult bindingResult) throws PasswordMismatchException {
+        UserDTO.Join userDTO = request.getUserDTO();
+        UserProfileDTO.Join userProfileDTO = request.getUserProfileDTO();
 
         // 유효성 검사 결과 확인
         if (bindingResult.hasErrors()) {
@@ -45,7 +47,7 @@ public class UserController {
         }
 
         // 유효성 검사 통과 시 UserService의 joinProcess 메서드 호출
-        if(!userService.joinProcess(userDTO, userProfileDTO)){
+        if (!userService.joinProcess(userDTO, userProfileDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입에 실패했습니다.");
         }
 
@@ -55,7 +57,7 @@ public class UserController {
 
     // 아이디 찾기 기능
     @GetMapping("/findID")
-    public ResponseEntity<String> findId(UserProfileDTO.FindUser findUserDTO) {
+    public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
 
         String resultId = userService.findUserId(findUserDTO);
 
@@ -64,28 +66,30 @@ public class UserController {
 
     // 비밀번호 찾기 기능 필터
     @GetMapping("/findPassword")
-    public ResponseEntity<String> findPasswordFilter(UserProfileDTO.FindPassword findPasswordDTO) {
+    public ResponseEntity<String> findPasswordFilter(@RequestBody UserProfileDTO.FindPassword findPasswordDTO) {
 
-        if(!userService.findPasswordFilter(findPasswordDTO)){
+        if (!userService.findPasswordFilter(findPasswordDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
         }
 
         // 정상적인 응답 반환
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 찾기 정보 입력 완료");
     }
 
     @PatchMapping("/findPassword")
-    public ResponseEntity<String> findPasswordChange(UserDTO.ChangePassword changePasswordDTO) throws PasswordMismatchException {
+    public ResponseEntity<String> findPasswordChange(@RequestBody UserDTO.ChangePassword changePasswordDTO) throws PasswordMismatchException {
 
         if (!userService.changePassword(changePasswordDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
         }
 
         // 정상적인 응답 반환
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경이 완료되었습니다.");
     }
 
-
-
-
+    @GetMapping("/myInfor")
+    public ResponseEntity<CommonDTO.ShowResponse> showMyInfo() {
+        CommonDTO.ShowResponse dtos = userService.showUser();
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
+    }
 }
