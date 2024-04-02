@@ -28,7 +28,7 @@ public class ProductDetails {
     private Integer quantity;
 
     @Column
-    private ProductStatus status;
+    private ProductStatus status = ProductStatus.ON;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
