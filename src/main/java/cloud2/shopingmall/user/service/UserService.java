@@ -11,6 +11,7 @@ import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.mapper.UserMainMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileShowMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileChangeMapper;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
@@ -29,6 +30,7 @@ public class UserService {
     private final UserProfileShowMapper userProfileShowMapper;
     private final UserMainMapper.UserJoinMapper userJoinMapper;
     private final UserProfileJoinMapper userProfileJoinMapper;
+    private final UserProfileChangeMapper userProfileChangeMapper;
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -38,11 +40,12 @@ public class UserService {
     public UserService(UserJoinMapper userJoinMapper, UserProfileJoinMapper userProfileJoinMapper,
                        UserRepository userRepository, UserProfileRepository userProfileRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder, UserShowMapper userShowMapper,
-                       UserProfileShowMapper userProfileShowMapper) {
+                       UserProfileShowMapper userProfileShowMapper, UserProfileChangeMapper userProfileChangeMapper) {
 
         this.userProfileJoinMapper = userProfileJoinMapper;
         this.userJoinMapper = userJoinMapper;
         this.userProfileShowMapper = userProfileShowMapper;
+        this.userProfileChangeMapper = userProfileChangeMapper;
         this.userShowMapper = userShowMapper;
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
@@ -223,17 +226,40 @@ public class UserService {
     }
 
     // 회원정보 변경 기능
-    public Boolean changeId() {
+    public Boolean changeInfo(CustomUserDetails userInfo, CommonDTO.ChangeInfoRequest changeInfoRequest) throws PasswordMismatchException {
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        String username = customUserDetails.getUsername();
+        String username = userInfo.getUsername();
 
         // 현재 인증된 사용자의 정보 담기
-        User user = userRepository.findByUsername(username);
+        User targetUser = userRepository.findByUsername(username);
+        UserProfile targetUserProfile = targetUser.getUserProfile();
 
-        // 사용자 아이디 변경하기
+        // 클라이언트에서 입력한 데이터 담기
+        UserDTO.ChangeInfo userDTO = changeInfoRequest.getUserDTO();
+        UserProfileDTO.ChangeInfo userProfileDTO = changeInfoRequest.getUserProfileDTO();
+
+        // 등록되어 있는 비밀번호가 입력한 비밀번호와 맞는지 비교하기
+        String currentPassword = userDTO.getCurrentPassword();
+        if (!bCryptPasswordEncoder.matches(currentPassword, targetUser.getPassword())) {
+            throw new PasswordMismatchException("정확한 비밀번호를 입력해 주세요.");
+        }
+
+        // 비밀번호를 바꿀 경우 == 입력한 비밀번호가 null 값이 아닌 경우
+        if (userDTO.getPassword() != null) {
+            // 비밀번호를 두 번 제대로 입력했는지 확인하기
+            if (!userDTO.getPassword().equals(userDTO.getSecondPassword())) {
+                throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
+            }
+            // 입력한 비밀번호를 암호화하여 Entity에 저장
+            targetUser.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+        }
+
+        targetUserProfile = userProfileChangeMapper.toEntity(userProfileDTO);
+
+        targetUser.setUserProfile(targetUserProfile);
+        // 사용자의 정보 변경하기
+        userRepository.save(targetUser);
+
         return true;
     }
 
