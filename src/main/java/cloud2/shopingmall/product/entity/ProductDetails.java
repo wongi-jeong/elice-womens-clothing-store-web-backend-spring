@@ -34,10 +34,6 @@ public class ProductDetails {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_body_id")
-    private ProductBody productBody;
-
     public ProductDetails(String name, Size size, Color color, Integer quantity, ProductStatus status) {
         this.name = name;
         this.size = size;
