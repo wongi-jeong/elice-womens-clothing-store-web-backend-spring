@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryProductDTO {
-    private Category entity;
-    private List<Product> products;
+public class ProductAndCategoryResponseDTO {
+    private Product entity;
+    private List<Category> categories;
 }
