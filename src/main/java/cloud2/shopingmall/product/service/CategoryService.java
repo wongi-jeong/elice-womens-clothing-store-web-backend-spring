@@ -37,10 +37,8 @@ public class CategoryService {
         foundCategory = categoryRepository.findById(categoryDTO.getId())
                 .orElseThrow(NoSuchElementException::new);
 
-        foundCategory.toBuilder()
-                .categoryName(categoryDTO.getCategoryName())
-                .categoryRank(categoryDTO.getCategoryRank())
-                .build();
+        foundCategory.setName(categoryDTO.getName());
+        foundCategory.setLevel(categoryDTO.getLevel());
 
         return categoryRepository.save(foundCategory);
     }
@@ -50,5 +48,9 @@ public class CategoryService {
                 .orElseThrow(NoSuchElementException::new);
 
         categoryRepository.delete(foundCategory);
+    }
+
+    public Category getCategoryWithCategoryProducts(Long id) {
+        return categoryRepository.findCategoryWithCategoryProducts(id);
     }
 }
