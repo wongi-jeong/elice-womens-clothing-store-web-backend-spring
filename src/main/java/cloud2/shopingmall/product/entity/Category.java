@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Entity
 @Data
@@ -17,6 +14,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long id;
 
     @Column(nullable = false)
@@ -24,9 +22,6 @@ public class Category {
 
     @Column(nullable = false)
     private Integer level;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-    private List<CategoryProduct> categoryProducts = new ArrayList<>();
 
     public Category(String name, Integer level) {
         this.name = name;
