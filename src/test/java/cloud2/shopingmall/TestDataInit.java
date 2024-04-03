@@ -64,5 +64,7 @@ public class TestDataInit implements ApplicationRunner {
         productBodyRepository.save(productBody3);
         productBodyRepository.save(productBody4);
 
+
+
     }
 }

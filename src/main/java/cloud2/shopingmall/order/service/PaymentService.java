@@ -1,7 +1,11 @@
 package cloud2.shopingmall.order.service;
 
+import cloud2.shopingmall.common.exception.OrderException;
+import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.entity.Payment;
 import cloud2.shopingmall.order.dto.PaymentDTO;
+import cloud2.shopingmall.order.mapper.OrderMainMapper;
+import cloud2.shopingmall.order.repository.OrderRepository;
 import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
@@ -11,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cloud2.shopingmall.order.repository.PaymentRepository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 @Service
@@ -24,15 +31,39 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final UserProfileRepository userProfileRepository;
+    private final OrderRepository orderRepository;
+    private final OrderMainMapper.PaymentMapper paymentMapper;
 
-
-
+    @Transactional
+    public Boolean verifyPayment(String userName,Integer totalPrice){
+        UserProfile userProfile = userProfileRepository.findByUserUsername(userName);
+        Integer userPoint = userProfile.getPoint();
+        if(userPoint<totalPrice){
+            return false;
+        }
+        return true;
+    }
+    @Transactional
     public PaymentDTO createPayment(String userName, Integer totalPrice,Long orderId) {
         //유저네임으로 유저 프로파일 리파지토리에서 찾아서
         //유저가 가진 적립금이랑 토탈 금액이랑 비교
         //비교후 결제 완료
         //결제 완료 시 주문과 맵핑
-        return null;
+        UserProfile userProfile = userProfileRepository.findByUserUsername(userName);
+        Integer userPoint = userProfile.getPoint();
+        if(userPoint<totalPrice){
+            throw new OrderException.CustomException();
+        }
+        userProfile.setPoint(userPoint -= totalPrice);
+        userProfileRepository.save(userProfile);
+        Payment payment = new Payment();
+        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+        payment.setOrder(order);
+        payment.setPayStatus(Payment.PayStatus.PAYMENT_COMPLETE);
+        payment.setPayTotalPrice(totalPrice);
+        Payment save = paymentRepository.save(payment);
+        order.setPayment(save);
+        return paymentMapper.toDto(save);
 
     }
 

@@ -12,7 +12,7 @@ public class OrderCreateRequest {
    public static class OrderByCart{
        private DeliveryDTO deliveryDTO;
        private List<OrderProductDTO> orderProductDTOS;
-       private Integer TotalPrice;
+       private Integer totalPrice;
    }
     @Getter
     @Setter
