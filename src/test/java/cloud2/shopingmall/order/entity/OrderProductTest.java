@@ -17,22 +17,22 @@ class OrderProductTest {
     @Test
     void EntityToDTOMapping(){
         OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setId(1L);
-        orderProduct.setProductCount(3);
+        orderProduct.setName("product");
+        orderProduct.setCount(3);
 
         OrderProductDTO dto = mapper.toDto(orderProduct);
         assertThat(dto).isNotNull();
-        assertThat(dto.getProductCount()).isEqualTo(orderProduct.getProductCount());
+        assertThat(dto.getCount()).isEqualTo(orderProduct.getCount());
 
     }
     @Test
     void DTOToEntity(){
         OrderProductDTO orderProductDTO = new OrderProductDTO();
-        orderProductDTO.setProductCount(2);
+        orderProductDTO.setCount(2);
 
         OrderProduct orderProduct = mapper.toEntity(orderProductDTO);
 
-        assertThat(orderProduct.getProductCount()).isEqualTo(orderProductDTO.getProductCount());
+        assertThat(orderProduct.getCount()).isEqualTo(orderProductDTO.getCount());
     }
 
 

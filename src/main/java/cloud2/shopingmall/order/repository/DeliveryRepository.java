@@ -10,5 +10,7 @@ import java.util.List;
 @Transactional
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
-    List<Delivery> findById(Delivery delivery);
+//    List<Delivery> findById(Delivery delivery);
+
+    Delivery findByOrderId(Long orderId);
 }
