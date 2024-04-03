@@ -19,21 +19,23 @@ public class ProductBodyController {
     private final ProductBodyService productBodyService;
 
     @Autowired
-    public ProductBodyController(ProductService productService, ProductBodyService productBodyService){
+    public ProductBodyController(ProductService productService, ProductBodyService productBodyService) {
         this.productService = productService;
         this.productBodyService = productBodyService;
     }
 
 
     @GetMapping("/{productId}/body")
-    public ResponseEntity<List<ProductBodyDTO>> getProductBodies(@PathVariable(name = "productId") Long productId){
+    public ResponseEntity<List<ProductBodyDTO>> getProductBodies(@PathVariable(name = "productId") Long productId) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productBodyService.getProductBodiesDTOByProductId(productId));
     }
-//
+
+    //
     @PostMapping("/{productId}/body")
-    public ResponseEntity<List<ProductBodyDTO>> postProductBodies(@RequestBody List<ProductBodyDTO> productBodiesDTO, @PathVariable(name = "productId") Long productId){
+    public ResponseEntity<List<ProductBodyDTO>> postProductBodies(@RequestBody List<ProductBodyDTO> productBodiesDTO,
+                                                                  @PathVariable(name = "productId") Long productId) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productBodyService.saveProductBodiesDTO(productBodiesDTO, productId));
@@ -41,7 +43,8 @@ public class ProductBodyController {
     }
 
     @PutMapping("/{productId}/body")
-    public ResponseEntity<List<ProductBodyDTO>> patchProductBodies(@RequestBody List<ProductBodyDTO> productBodiesDTO, @PathVariable(name = "productId") Long productId){
+    public ResponseEntity<List<ProductBodyDTO>> patchProductBodies(@RequestBody List<ProductBodyDTO> productBodiesDTO,
+                                                                   @PathVariable(name = "productId") Long productId) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productBodyService.saveProductBodiesDTO(productBodiesDTO, productId));
@@ -50,7 +53,7 @@ public class ProductBodyController {
     }
 
     @DeleteMapping("/{productId}/body")
-    public ResponseEntity deleteProductBodies(@PathVariable(name = "productId") Long productId){
+    public ResponseEntity deleteProductBodies(@PathVariable(name = "productId") Long productId) {
         productBodyService.deleteProductBodies(productId);
         return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
 

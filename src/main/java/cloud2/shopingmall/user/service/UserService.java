@@ -9,16 +9,14 @@ import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.mapper.UserMainMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileChangeMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileShowMapper;
-import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileChangeMapper;
-import cloud2.shopingmall.user.repository.UserProfileRepository;
-import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
+import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +54,8 @@ public class UserService {
 
     // 회원 가입 기능
     @Transactional
-    public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO) throws PasswordMismatchException {
+    public boolean joinProcess(UserDTO.Join userDTO, UserProfileDTO.Join userProfileDTO)
+            throws PasswordMismatchException {
 
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
@@ -65,7 +64,7 @@ public class UserService {
         String phoneNumber = userProfileDTO.getPhoneNumber();
 
         // 비밀번호를 제대로 두 번 입력했는지 확인
-        if(!password.equals(secondPassword)){
+        if (!password.equals(secondPassword)) {
             throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
         }
 
@@ -163,7 +162,7 @@ public class UserService {
             if (email == null) {
                 throw new IllegalArgumentException("이메일을 입력해 주세요.");
             }
-            if (!userProfileRepository.existsByEmailAndUser(email,target)) {
+            if (!userProfileRepository.existsByEmailAndUser(email, target)) {
                 throw new IllegalArgumentException("아이디에 해당하는 이메일이 없습니다.");
             }
         }
@@ -173,7 +172,7 @@ public class UserService {
             if (phoneNumber == null) {
                 throw new IllegalArgumentException("전화번호를 입력해 주세요.");
             }
-            if (!userProfileRepository.existsByPhoneNumberAndUser(phoneNumber,target)) {
+            if (!userProfileRepository.existsByPhoneNumberAndUser(phoneNumber, target)) {
                 throw new IllegalArgumentException("아이디에 해당하는 전화번호가 없습니다.");
             }
         }
@@ -191,7 +190,7 @@ public class UserService {
         String secondPassword = changePasswordDTO.getSecondPassword();
 
         // 비밀번호를 제대로 두 번 입력했는지 확인
-        if(!password.equals(secondPassword)){
+        if (!password.equals(secondPassword)) {
             throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
         }
 
@@ -226,7 +225,8 @@ public class UserService {
     }
 
     // 회원정보 변경 기능
-    public Boolean changeInfo(CustomUserDetails userInfo, CommonDTO.ChangeInfoRequest changeInfoRequest) throws PasswordMismatchException {
+    public Boolean changeInfo(CustomUserDetails userInfo, CommonDTO.ChangeInfoRequest changeInfoRequest)
+            throws PasswordMismatchException {
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
         String username = userInfo.getUsername();
 

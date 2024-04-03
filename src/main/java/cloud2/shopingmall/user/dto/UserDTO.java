@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 
-
 public class UserDTO {
     @Data
     @NoArgsConstructor
@@ -58,8 +57,6 @@ public class UserDTO {
         private String secondPassword;
 
     }
-
-
 
 
 }

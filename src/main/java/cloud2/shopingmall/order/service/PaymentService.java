@@ -1,33 +1,24 @@
 package cloud2.shopingmall.order.service;
 
-import cloud2.shopingmall.order.entity.Payment;
 import cloud2.shopingmall.order.dto.PaymentDTO;
-import cloud2.shopingmall.user.entity.User;
-import cloud2.shopingmall.user.entity.UserProfile;
-import cloud2.shopingmall.user.repository.UserProfileRepository;
-import cloud2.shopingmall.user.repository.UserRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import cloud2.shopingmall.order.repository.PaymentRepository;
+import cloud2.shopingmall.user.repository.UserProfileRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     /**
-     * 결제 진행
-     * 결제 확인및 검증
-     * 결제 취소 및 환불 처리
+     * 결제 진행 결제 확인및 검증 결제 취소 및 환불 처리
      */
 
     private final PaymentRepository paymentRepository;
     private final UserProfileRepository userProfileRepository;
 
 
-
-    public PaymentDTO createPayment(String userName, Integer totalPrice,Long orderId) {
+    public PaymentDTO createPayment(String userName, Integer totalPrice, Long orderId) {
         //유저네임으로 유저 프로파일 리파지토리에서 찾아서
         //유저가 가진 적립금이랑 토탈 금액이랑 비교
         //비교후 결제 완료

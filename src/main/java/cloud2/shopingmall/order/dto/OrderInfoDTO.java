@@ -1,12 +1,12 @@
 package cloud2.shopingmall.order.dto;
 
 import cloud2.shopingmall.order.entity.Orders;
-import cloud2.shopingmall.product.entity.Product;
-import cloud2.shopingmall.user.entity.User;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -26,9 +26,9 @@ public class OrderInfoDTO {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class OrderDetailInfo extends OrderInfoDTO{
+    public static class OrderDetailInfo extends OrderInfoDTO {
 
-        private Map<Long,Integer> products;
+        private Map<Long, Integer> products;
 
     }
 

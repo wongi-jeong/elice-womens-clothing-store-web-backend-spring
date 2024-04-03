@@ -39,7 +39,7 @@ public class UserProfileDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FindUser{
+    public static class FindUser {
 
         @NotNull(message = "핸드폰 번호를 입력해 주세요.")
         @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "올바른 핸드폰 번호 형식이 아닙니다.")
@@ -67,7 +67,7 @@ public class UserProfileDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FindPassword{
+    public static class FindPassword {
 
         @NotNull(message = "아이디를 입력해 주세요.")
         private String username;

@@ -3,5 +3,5 @@ package cloud2.shopingmall.product.repository;
 import cloud2.shopingmall.product.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CategoryRepository extends JpaRepository<Category,Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 }

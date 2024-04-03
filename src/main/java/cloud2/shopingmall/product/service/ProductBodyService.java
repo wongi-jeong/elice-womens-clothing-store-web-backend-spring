@@ -3,16 +3,13 @@ package cloud2.shopingmall.product.service;
 import cloud2.shopingmall.product.dto.ProductBodyDTO;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
-import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
-import cloud2.shopingmall.product.repository.ProductDetailsRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -25,7 +22,8 @@ public class ProductBodyService {
 
 
     @Autowired
-    public ProductBodyService(ProductBodyRepository productBodyRepository, ProductRepository productRepository, ProductMainMapper.ProductBodyMapper productBodyMapper) {
+    public ProductBodyService(ProductBodyRepository productBodyRepository, ProductRepository productRepository,
+                              ProductMainMapper.ProductBodyMapper productBodyMapper) {
         this.productBodyRepository = productBodyRepository;
         this.productRepository = productRepository;
         this.productBodyMapper = productBodyMapper;
@@ -38,6 +36,7 @@ public class ProductBodyService {
     public List<ProductBody> getProductBodiesByProductId(Long productId) {
         return productBodyRepository.findByProduct_Id(productId);
     }
+
     public List<ProductBodyDTO> getProductBodiesDTOByProductId(Long productId) {
         return productBodyMapper.toDto(productBodyRepository.findByProduct_Id(productId));
     }
@@ -57,7 +56,7 @@ public class ProductBodyService {
         Product product = productRepository.getReferenceById(productId);
         List<ProductBody> productBodies = productBodyMapper.toEntity(productBodiesDTO);
 
-        for(int i = 0; i < productBodies.size(); i++){
+        for (int i = 0; i < productBodies.size(); i++) {
             productBodies.get(i).setProduct(product);
             productBodies.get(i).setSequence(i);
         }

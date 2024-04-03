@@ -4,19 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
 @Getter
 @Setter
 public class OrderCreateRequest {
     @Getter
     @Setter
-   public static class OrderByCart{
-       private DeliveryDTO deliveryDTO;
-       private List<OrderProductDTO> orderProductDTOS;
-       private Integer TotalPrice;
-   }
+    public static class OrderByCart {
+        private DeliveryDTO deliveryDTO;
+        private List<OrderProductDTO> orderProductDTOS;
+        private Integer TotalPrice;
+    }
+
     @Getter
     @Setter
-    public static class OrderByProduct{
+    public static class OrderByProduct {
         private DeliveryDTO deliveryDTO;
         private OrderProductDTO orderProductDTOS;
         private Integer TotalPrice;

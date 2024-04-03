@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/category")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -38,7 +38,8 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id,
+                                                   @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setId(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(categoryService.updateCategory(categoryDTO));

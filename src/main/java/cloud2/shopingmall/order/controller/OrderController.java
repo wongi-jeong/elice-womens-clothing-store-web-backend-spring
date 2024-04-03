@@ -31,28 +31,32 @@ public class OrderController {
     private final DeliveryService deliveryService;
 
     @GetMapping("")
-    public ResponseEntity<Page<OrderInfoDTO>> findAllOrder(@PageableDefault(size = 20) Pageable pageable){
+    public ResponseEntity<Page<OrderInfoDTO>> findAllOrder(@PageableDefault(size = 20) Pageable pageable) {
         Page<OrderInfoDTO> allOrder = orderQueryService.findAllOrder(pageable);
         return ResponseEntity.ok(allOrder);
     }
+
     @GetMapping("/user")
-    public ResponseEntity<List<OrderInfoDTO.OrderDetailInfo>> findOrderByUser(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        List<OrderInfoDTO.OrderDetailInfo> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
+    public ResponseEntity<List<OrderInfoDTO.OrderDetailInfo>> findOrderByUser(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<OrderInfoDTO.OrderDetailInfo> orderDetailList = orderQueryService.findByUser(
+                customUserDetails.getUsername());
         return ResponseEntity.ok(orderDetailList);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<OrderInfoDTO.OrderDetailInfo> findOrderById(@PathVariable Long id){
+    public ResponseEntity<OrderInfoDTO.OrderDetailInfo> findOrderById(@PathVariable Long id) {
         OrderInfoDTO.OrderDetailInfo orderDetail = orderQueryService.findByOrderId(id);
         return ResponseEntity.ok(orderDetail);
     }
 
     @PostMapping("/cancel")
-    public ResponseEntity<OrderDTO> cancelOrder(@RequestBody OrderDTO orderDTO){
+    public ResponseEntity<OrderDTO> cancelOrder(@RequestBody OrderDTO orderDTO) {
         try {
             OrderDTO orderDTO1 = orderManagementService.canceledOrder(orderDTO);
         } catch (OrderException.OrderNotFoundException e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (OrderException.OrderCancellationNotAllowedException e){
+        } catch (OrderException.OrderCancellationNotAllowedException e) {
             ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }
         return ResponseEntity.ok(orderDTO);
@@ -60,16 +64,16 @@ public class OrderController {
 
     @PostMapping("/creat/cart")
     public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
+                                                      @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest) {
         //장바구니 주문
 //json으로 여러 객체 받아와야할때 복합 객체를 사용하게 되면 언제 검증을 하게 되는지 그리고 검증에 관한 로직은 어디서 구현하면 좋을 지
         OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername());
-        orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(),orderDTO.getId());
+        orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(), orderDTO.getId());
         return ResponseEntity.ok(orderDTO);
 
     }
 
-    }
+}
 //    @PostMapping("/create/product")
 //    public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 //                                                      @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){

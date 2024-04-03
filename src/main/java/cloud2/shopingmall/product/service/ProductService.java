@@ -33,9 +33,11 @@ public class ProductService {
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
 
 
-
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper, CategoryProductRepository categoryProductRepository) {
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository,
+                          ProductMainMapper.ProductMapper productMapper,
+                          ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper,
+                          CategoryProductRepository categoryProductRepository) {
         this.productRepository = productRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
@@ -47,14 +49,18 @@ public class ProductService {
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
+
     public List<ProductDTO> getProductsDTO() {
         return productMapper.toDto(productRepository.findAll());
     }
+
     public Page<Product> getProducts(int page, int size) {
         return productRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
     }
+
     public Page<ProductDTO> getProductsDTO(int page, int size) {
-        return productRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending())).map(product-> productMapper.toDto(product));
+        return productRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()))
+                .map(product -> productMapper.toDto(product));
     }
 
     public Product getProduct(Long id) {
@@ -67,7 +73,7 @@ public class ProductService {
 //        Product product = productRepository.findProductWithDetailsAndBodies(id);
         Product product = productRepository.findProductWithDetails(id);
         product = productRepository.findProductWithBodies(id);
-        if(product == null){
+        if (product == null) {
             //TO DO
             throw new RuntimeException();
         }
@@ -105,7 +111,6 @@ public class ProductService {
 
     public Product updateProduct(Product product) {
 
-
         return productRepository.save(product);
     }
 
@@ -128,7 +133,7 @@ public class ProductService {
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
-        if(product.getStatus() == Product.ProductDisplayStatus.OFF){
+        if (product.getStatus() == Product.ProductDisplayStatus.OFF) {
             //TO DO
             throw new RuntimeException();
         }
@@ -142,7 +147,7 @@ public class ProductService {
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
-        if(product.getStatus() == Product.ProductDisplayStatus.ON){
+        if (product.getStatus() == Product.ProductDisplayStatus.ON) {
             //TO DO
             throw new RuntimeException();
         }

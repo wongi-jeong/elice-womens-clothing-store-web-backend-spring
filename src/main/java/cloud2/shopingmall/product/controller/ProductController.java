@@ -7,9 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/products")
@@ -18,10 +24,9 @@ public class ProductController {
     private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
-
 
 //    @GetMapping
 //    public ResponseEntity<List<ProductDTO>> getProducts(){
@@ -31,21 +36,23 @@ public class ProductController {
 //    }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> getProducts(@RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "size",  defaultValue = "10") int size){
+    public ResponseEntity<Page<ProductDTO>> getProducts(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                        @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductsDTO(page - 1, size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO.ProductWithDetailsAndBodiesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
+    public ResponseEntity<ProductDTO.ProductWithDetailsAndBodiesDTO> getProductWithDetailsAndBodies(
+            @PathVariable(name = "id") Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductWithDetailsAndBodiesDTO(id));
 
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductDTO productDTO){
+    public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductDTO productDTO) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productService.saveProductDTO(productDTO));
@@ -53,7 +60,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){
+    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO,
+                                                   @PathVariable(name = "id") Long id) {
         productDTO.setId(id);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -62,20 +70,21 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/on")
-    public ResponseEntity onProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity onProduct(@PathVariable(name = "id") Long id) {
         productService.onProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
+
     @PutMapping("/{id}/off")
-    public ResponseEntity offProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity offProduct(@PathVariable(name = "id") Long id) {
         productService.offProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity deleteProduct(@PathVariable(name = "id") Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
 

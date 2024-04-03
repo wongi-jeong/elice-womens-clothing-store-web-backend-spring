@@ -14,6 +14,7 @@ public interface UserMainMapper {
     @Mapper(componentModel = "spring")
     interface UserJoinMapper extends EntityMapper<User, UserDTO.Join> {
     }
+
     @Mapper(componentModel = "spring")
     interface UserProfileJoinMapper extends EntityMapper<UserProfile, UserProfileDTO.Join> {
     }

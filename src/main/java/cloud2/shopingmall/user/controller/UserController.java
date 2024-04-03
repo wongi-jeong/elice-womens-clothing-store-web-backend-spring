@@ -5,18 +5,18 @@ import cloud2.shopingmall.jwt.CustomUserDetails;
 import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
-import cloud2.shopingmall.user.entity.User;
-import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.service.UserService;
-import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
@@ -79,7 +79,8 @@ public class UserController {
     }
 
     @PatchMapping("/findPassword")
-    public ResponseEntity<String> findPasswordChange(@RequestBody UserDTO.ChangePassword changePasswordDTO) throws PasswordMismatchException {
+    public ResponseEntity<String> findPasswordChange(@RequestBody UserDTO.ChangePassword changePasswordDTO)
+            throws PasswordMismatchException {
 
         if (!userService.changePassword(changePasswordDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
@@ -98,7 +99,9 @@ public class UserController {
 
     // 사용자 회원정보 변경 기능
     @PatchMapping("/changeInfo")
-    public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
+    public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo,
+                                             @RequestBody CommonDTO.ChangeInfoRequest request)
+            throws PasswordMismatchException {
         Boolean result = userService.changeInfo(userInfo, request);
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
     }

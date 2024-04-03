@@ -17,7 +17,6 @@ public class ProductDTO {
     private String imageUrl;
 
 
-
     public ProductDTO(String name, String description, String imageUrl) {
         this.name = name;
         this.description = description;
@@ -27,7 +26,7 @@ public class ProductDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProductWithDetailsAndBodiesDTO{
+    public static class ProductWithDetailsAndBodiesDTO {
 
         private Long id;
         private String name;

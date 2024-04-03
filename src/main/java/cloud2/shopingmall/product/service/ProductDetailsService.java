@@ -22,7 +22,8 @@ public class ProductDetailsService {
     private final ProductMainMapper.ProductDetailsMapper productDetailsMapper;
 
     @Autowired
-    public ProductDetailsService(ProductDetailsRepository productDetailsRepository, ProductRepository productRepository, ProductMainMapper.ProductDetailsMapper productDetailsMapper) {
+    public ProductDetailsService(ProductDetailsRepository productDetailsRepository, ProductRepository productRepository,
+                                 ProductMainMapper.ProductDetailsMapper productDetailsMapper) {
         this.productDetailsRepository = productDetailsRepository;
         this.productRepository = productRepository;
         this.productDetailsMapper = productDetailsMapper;

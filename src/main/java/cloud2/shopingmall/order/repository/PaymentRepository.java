@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 @Transactional
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    List<Payment> findById(Payment payment);;
+    List<Payment> findById(Payment payment);
+
+    ;
 }

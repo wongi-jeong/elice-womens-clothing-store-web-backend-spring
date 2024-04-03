@@ -2,13 +2,12 @@ package cloud2.shopingmall.jwt;
 
 
 import cloud2.shopingmall.user.entity.User;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-public class CustomUserDetails  implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
@@ -27,7 +26,6 @@ public class CustomUserDetails  implements UserDetails {
 
             @Override
             public String getAuthority() {
-
 
                 return user.getUserRole();
 
