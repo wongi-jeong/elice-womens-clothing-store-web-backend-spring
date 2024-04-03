@@ -1,10 +1,13 @@
 package cloud2.shopingmall.product.service;
 
+import cloud2.shopingmall.product.dto.ProductAndCategoryResponseDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
+import cloud2.shopingmall.product.entity.Category;
+import cloud2.shopingmall.product.entity.CategoryProduct;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
-import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
+import cloud2.shopingmall.product.repository.CategoryProductRepository;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,16 +28,19 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductBodyRepository productBodyRepository;
-
+    private final CategoryProductRepository categoryProductRepository;
     private final ProductMainMapper.ProductMapper productMapper;
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
 
+
+
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper) {
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper, CategoryProductRepository categoryProductRepository) {
         this.productRepository = productRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
+        this.categoryProductRepository = categoryProductRepository;
     }
 
 
@@ -143,7 +151,7 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         Product product = productRepository.getReferenceById(id);
-        if (product.getProductDetails().size() != 0) {
+        if (!product.getProductDetails().isEmpty()) {
             throw new RuntimeException();
         }
         List<ProductBody> productBodies = productBodyRepository.findByProduct_Id(id);
@@ -158,5 +166,25 @@ public class ProductService {
 
     }
 
+    // Product를 조회했을때 Product가 가지고 있는 Category 함께 조회
+    public ProductAndCategoryResponseDTO findById(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        List<CategoryProduct> categoryProducts = categoryProductRepository.findByProduct(product.get());
+        List<Category> categories = new ArrayList<>();
+
+        for (CategoryProduct categoryProduct : categoryProducts) {
+            categories.add(categoryProduct.getCategory());
+        }
+
+        return ProductAndCategoryResponseDTO.builder()
+                .entity(product.get())
+                .categories(categories)
+                .build();
+    }
 
 }
