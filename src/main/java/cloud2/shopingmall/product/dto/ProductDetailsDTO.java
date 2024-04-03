@@ -1,5 +1,7 @@
 package cloud2.shopingmall.product.dto;
 
+import cloud2.shopingmall.product.entity.ProductDetails;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductDetailsDTO {
 
+    private Long id;
     private String name;
     private Integer price;
+    private ProductDetails.Size size;
+    private ProductDetails.Color color;
     private Integer quantity;
-    private ProductStatus productStatus;
+    private ProductDetails.ProductStatus status;
 
-    public enum ProductStatus {
-        ONE, TWO, THREE
-    }
+
 }

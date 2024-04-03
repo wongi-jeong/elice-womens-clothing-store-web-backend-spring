@@ -16,6 +16,9 @@ public class ProductBody {
     private Long id;
 
     @Column
+    private Integer sequence;
+
+    @Column
     private String imageUrl;
 
     @Column
@@ -29,4 +32,12 @@ public class ProductBody {
         this.imageUrl = imageUrl;
         this.imageDescription = imageDescription;
     }
+
+    public ProductBody(Integer sequence, String imageUrl, String imageDescription) {
+        this.sequence = sequence;
+        this.imageUrl = imageUrl;
+        this.imageDescription = imageDescription;
+    }
+
+
 }

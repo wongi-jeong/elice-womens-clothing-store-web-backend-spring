@@ -60,7 +60,8 @@ public class OrderController {
         return ResponseEntity.ok(modifyDelivery);
     }
     //밑에서부터 테스트
-    @PostMapping("/creat/cart/{userName}")
+
+    @PostMapping("/creaet/cart")
     public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                               @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
         //장바구니 주문
