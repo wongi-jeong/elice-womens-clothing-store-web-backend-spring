@@ -2,9 +2,13 @@ package cloud2.shopingmall.order.controller;
 
 import cloud2.shopingmall.common.exception.OrderException;
 import cloud2.shopingmall.jwt.CustomUserDetails;
-import cloud2.shopingmall.jwt.JWTUtil;
-import cloud2.shopingmall.order.dto.*;
-import cloud2.shopingmall.order.service.*;
+import cloud2.shopingmall.order.dto.OrderCreateRequest;
+import cloud2.shopingmall.order.dto.OrderDTO;
+import cloud2.shopingmall.order.dto.OrderInfoDTO;
+import cloud2.shopingmall.order.service.DeliveryService;
+import cloud2.shopingmall.order.service.OrderManagementService;
+import cloud2.shopingmall.order.service.OrderQueryService;
+import cloud2.shopingmall.order.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,43 +57,33 @@ public class OrderController {
         }
         return ResponseEntity.ok(orderDTO);
     }
-<<<<<<< HEAD
-    @PostMapping("/create")
-=======
+
     @PostMapping("/creat/cart")
->>>>>>> 297794162e3d170644c2ba94b526f8f5bd90c0b8
     public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
         //장바구니 주문
 //json으로 여러 객체 받아와야할때 복합 객체를 사용하게 되면 언제 검증을 하게 되는지 그리고 검증에 관한 로직은 어디서 구현하면 좋을 지
         OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername());
         orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(),orderDTO.getId());
-<<<<<<< HEAD
         return ResponseEntity.ok(orderDTO);
 
     }
-    @PostMapping("/create")
-=======
-        deliveryService.createDelivery(orderCreateRequest.getDeliveryDTO(),orderDTO.getId());
-        paymentService.createPayment(customUserDetails.getUsername(), orderCreateRequest.getTotalPrice(),orderDTO.getId());
-        return ResponseEntity.ok(orderDTO);
 
     }
-    @PostMapping("/create/product")
->>>>>>> 297794162e3d170644c2ba94b526f8f5bd90c0b8
-    public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                      @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){
-        //상품 주문
-        OrderDTO orderDTO = orderManagementService.createOrderForProduct(customUserDetails.getUsername());
-        orderManagementService.createOrderProduct(orderByProduct.getOrderProductDTOS(),orderDTO.getId());
-        deliveryService.createDelivery(orderByProduct.getDeliveryDTO(),orderDTO.getId());
-        paymentService.createPayment(customUserDetails.getUsername(), orderByProduct.getTotalPrice(),orderDTO.getId());
-        return ResponseEntity.ok(orderDTO);
-
-    }
+//    @PostMapping("/create/product")
+//    public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+//                                                      @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){
+//        //상품 주문
+//        OrderDTO orderDTO = orderManagementService.createOrderForProduct(customUserDetails.getUsername());
+//        orderManagementService.createOrderProduct(orderByProduct.getOrderProductDTOS(),orderDTO.getId());
+//        deliveryService.createDelivery(orderByProduct.getDeliveryDTO(),orderDTO.getId());
+//        paymentService.createPayment(customUserDetails.getUsername(), orderByProduct.getTotalPrice(),orderDTO.getId());
+//        return ResponseEntity.ok(orderDTO);
+//
+//    }
 //    @PostMapping("/{id}/modify")
 //    public ResponseEntity<OrderInfoDTO> modifyDelivery(@PathVariable("id") Long id){
 //      //상품 주문지 변경
 //    }
 
-}
+//}
