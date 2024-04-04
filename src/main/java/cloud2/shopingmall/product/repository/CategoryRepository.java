@@ -6,6 +6,4 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.categoryProducts WHERE c.id = : id")
-    Category findCategoryWithCategoryProducts(@Param("id") Long id);
 }
