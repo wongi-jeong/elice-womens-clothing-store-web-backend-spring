@@ -62,6 +62,7 @@ public class OrderManagementService {
     @Transactional
     public OrderDTO canceledOrder(Long orderId){
         //주문 상태가 결제완료 혹은 배송 준비일때만 주문 취소 가능
+        //추후 환불 로직 추가
 
         Orders order = orderRepository.findById(orderId).orElseThrow(()->new OrderException.OrderNotFoundException(orderId));
         if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {

@@ -5,6 +5,7 @@ import cloud2.shopingmall.order.entity.OrderProduct;
 import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.mapper.OrderMainMapper;
 import cloud2.shopingmall.order.repository.OrderRepository;
+import cloud2.shopingmall.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ public class OrderQueryService {
     private final OrderRepository orderRepository;
     private final OrderMainMapper.OrderInfoMapper orderInfoMapper ;
     private final OrderMainMapper.OrderDetailMapper orderDetailMapper;
+    private final UserRepository userRepository;
     @Transactional
     public Page<OrderInfoDTO> findAllOrder(Pageable pageable){
         //관리자 입장에서 전체 주문 목록 조회(주문번호, 주문 상태, 주문 날짜, 변경 날짜, 총 금액, 주문자 아이디)
@@ -47,7 +49,7 @@ public class OrderQueryService {
     @Transactional
     public List<OrderInfoDTO.OrderDetailInfo> findByUser(String userName){
         //주문자로 주문 목록 검색(주문번호, 주문 상태, 주문 날짜, 변경 날짜, 총 금액, 상품, 수량 , 상품 금액)
-        List<Orders> orderDetailsByUsername = orderRepository.findOrdersByUsername(userName);
+        List<Orders> orderDetailsByUsername = userRepository.findByUsername(userName).getOrdersList();
 
 
         return orderDetailsByUsername.stream()
