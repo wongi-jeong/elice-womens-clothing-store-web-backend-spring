@@ -3,10 +3,13 @@ package cloud2.shopingmall.order.mapper;
 import cloud2.shopingmall.common.mapper.EntityMapper;
 import cloud2.shopingmall.order.dto.*;
 import cloud2.shopingmall.order.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -42,12 +45,18 @@ public interface OrderMainMapper {
         OrderInfoDTO.OrderDetailInfo toDto(Orders order);
         @AfterMapping
         default void customMapping(@MappingTarget OrderInfoDTO.OrderDetailInfo target, Orders source) {
-            // 상품 맵핑 로직
-            Map<Long, Integer> productsMap = new HashMap<>();
+            List<OrderInfoDTO.ProductInfo> productInfoList = new ArrayList<>();
             for (OrderProduct op : source.getOrderProducts()) {
-                productsMap.put(op.getId(), op.getProductCount());
+                OrderInfoDTO.ProductInfo productInfo = new OrderInfoDTO.ProductInfo();
+                Map<String, Integer> productsMap = new HashMap<>();
+                productsMap.put(op.getName(), op.getCount());
+                productInfo.setProductNameAndCount(productsMap);
+                productInfo.setColor(op.getColor());
+                productInfo.setSize(op.getSize());
+                productInfo.setPrice(op.getPrice());
+                productInfoList.add(productInfo);
             }
-            target.setProducts(productsMap);
+            target.setProducts(productInfoList);
         }
     }
 

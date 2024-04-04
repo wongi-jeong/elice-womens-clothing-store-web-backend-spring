@@ -24,29 +24,43 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final OrderMainMapper.DeliveryMapper deliveryMapper;
     private final OrderRepository orderRepository;
-
+    private final PaymentService paymentService;
     public List<Delivery> getAllDeliveries() {
         return deliveryRepository.findAll();
     }
 
-
-    public DeliveryDTO createDelivery(DeliveryDTO deliveryDTO,Long orderId) {
+    @Transactional
+    public DeliveryDTO createDelivery(DeliveryDTO deliveryDTO,Long orderId,String userName,Integer totalPrice) {
+        boolean isPaymentSuccessful = paymentService.verifyPayment(userName, totalPrice);
+        if (!isPaymentSuccessful) {
+            throw new OrderException.CustomException();
+        }
         Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
         delivery.setSenderStatus(Delivery.SenderStatus.PREPARING_FOR_DELIVERY);
-        delivery.setOrder(orderRepository.findById(orderId).orElseThrow(()->new OrderException.OrderNotFoundException(orderId)));
+        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+        delivery.setOrder(order);
         Delivery save = deliveryRepository.save(delivery);
+        order.setDelivery(save);
+        orderRepository.save(order);
         return  deliveryMapper.toDto(save);
     }
 
+    @Transactional
     public void verifyModify(Long orderId){
         Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
         if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {
             throw new OrderException.OrderCancellationNotAllowedException(order.getId());
         }
     }
-    public DeliveryDTO modifyDelivery(DeliveryDTO deliveryDTO){
-        //배송지 변경(기존 배송지 어떻게 찾을 것인가 무엇을 받을 것인가)
-        return deliveryDTO;
+    @Transactional
+    public DeliveryDTO modifyDelivery(DeliveryDTO deliveryDTO,Long orderId){
+        //배송지 변경
+        Delivery delivery = deliveryRepository.findByOrderId(orderId);
+        delivery.setSenderAddress(deliveryDTO.getSenderAddress());
+        delivery.setSenderName(deliveryDTO.getSenderName());
+        delivery.setSenderPhoneNumber(deliveryDTO.getSenderPhoneNumber());
+        Delivery save = deliveryRepository.save(delivery);
+        return deliveryMapper.toDto(save);
     }
 
  /*public Delivery getDeliveryById(Long deliveryId) {

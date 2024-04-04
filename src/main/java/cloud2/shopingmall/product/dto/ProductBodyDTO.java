@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductBodyDTO {
 
+    private Long id;
+    private Integer sequence;
     private String imageUrl;
     private String imageDescription;
 

@@ -15,14 +15,27 @@ public class ProductDTO {
     private String name;
     private String description;
     private String imageUrl;
-    private List<ProductBodyDTO> productBodyDTOList;
-    private List<ProductDetailsDTO> productDetailsDTOList;
+
 
 
     public ProductDTO(String name, String description, String imageUrl) {
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductWithDetailsAndBodiesDTO{
+
+        private Long id;
+        private String name;
+        private String description;
+        private String imageUrl;
+        private List<ProductBodyDTO> productBodyDTOList;
+        private List<ProductDetailsDTO> productDetailsDTOList;
+
     }
 
 }

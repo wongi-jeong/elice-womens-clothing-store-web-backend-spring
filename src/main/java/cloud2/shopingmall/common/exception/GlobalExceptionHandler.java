@@ -16,4 +16,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handlePasswordMissMatchException(PasswordMismatchException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler({
+            OrderException.OrderNotFoundException.class,
+            OrderException.CustomException.class,
+            OrderException.OrderNotFoundOrderProductException.class,
+            OrderException.OrderCancellationNotAllowedException.class
+    })
+    public ResponseEntity<Object> handleOrderException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
+    }
 }
