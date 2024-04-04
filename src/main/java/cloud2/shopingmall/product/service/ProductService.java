@@ -1,12 +1,18 @@
 package cloud2.shopingmall.product.service;
 
+import cloud2.shopingmall.product.dto.ProductAndCategoryResponseDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
+import cloud2.shopingmall.product.entity.Category;
+import cloud2.shopingmall.product.entity.CategoryProduct;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
 import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
+import cloud2.shopingmall.product.repository.CategoryProductRepository;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,13 +32,15 @@ public class ProductService {
 
     private final ProductMainMapper.ProductMapper productMapper;
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
+    private final CategoryProductRepository categoryProductRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper) {
+    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper, CategoryProductRepository categoryProductRepository) {
         this.productRepository = productRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
+        this.categoryProductRepository = categoryProductRepository;
     }
 
 
@@ -158,5 +166,25 @@ public class ProductService {
 
     }
 
+    // Product를 조회했을때 Product가 가지고 있는 Category 함께 조회
+    public ProductAndCategoryResponseDTO findById(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        List<CategoryProduct> categoryProducts = categoryProductRepository.findByProduct(product.get());
+        List<Category> categories = new ArrayList<>();
+
+        for (CategoryProduct categoryProduct : categoryProducts) {
+            categories.add(categoryProduct.getCategory());
+        }
+
+        return ProductAndCategoryResponseDTO.builder()
+                .entity(product.get())
+                .categories(categories)
+                .build();
+    }
 
 }
