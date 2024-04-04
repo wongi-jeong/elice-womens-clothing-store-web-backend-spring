@@ -29,9 +29,8 @@ class OrderMainMapperTest {
         //사용자 결제, 주문 상품 목객체 설정
         when(mockUser.getUsername()).thenReturn("user123");
         when(mockPayment.getPayTotalPrice()).thenReturn(10000);
-        when(mockOrderProduct.getId()).thenReturn(1L);
-        when(mockOrderProduct.getProductCount()).thenReturn(2);
-
+        when(mockOrderProduct.getName()).thenReturn("product");
+        when(mockOrderProduct.getCount()).thenReturn(2);
         when(mockOrder.getUser()).thenReturn(mockUser);
         when(mockOrder.getPayment()).thenReturn(mockPayment);
         when(mockOrder.getOrderProducts()).thenReturn(List.of(mockOrderProduct));
@@ -41,7 +40,7 @@ class OrderMainMapperTest {
         assertThat(result.getUserName()).isEqualTo("user123");
         assertThat(result.getTotalPrice()).isEqualTo(10000);
         assertThat(result.getProducts()).isNotEmpty();
-        assertThat(result.getProducts().get(1L)).isEqualTo(2);
+        assertThat(result.getProducts().get("product")).isEqualTo(2);
 
 
 

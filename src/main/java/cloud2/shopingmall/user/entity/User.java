@@ -1,10 +1,13 @@
 package cloud2.shopingmall.user.entity;
 
 import cloud2.shopingmall.common.entity.BaseEntity;
+import cloud2.shopingmall.order.entity.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -34,6 +37,8 @@ public class User extends BaseEntity {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserProfile userProfile;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Orders> ordersList;
 
     @Getter
     public enum Status {
@@ -48,4 +53,5 @@ public class User extends BaseEntity {
         }
 
     }
+
 }
