@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class CategoryDTO {
 
     private Long id;
-    private String categoryName;
-    private Integer categoryRank;
+    private String name;
+    private Integer level;
 
 }

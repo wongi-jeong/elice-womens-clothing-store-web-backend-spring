@@ -11,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +31,15 @@ public class OrderManagementService {
     private final UserRepository userRepository;
     private final OrderMainMapper.OrderProductMapper orderProductMapper;
     private final OrderMainMapper.OrderMapper orderMapper;
-    private final OrderMainMapper.PaymentMapper paymentMapper;
-    private final OrderMainMapper.DeliveryMapper deliveryMapper;
     private final OrderProductRepository orderProductRepository;
+    private final PaymentService paymentService;
     @Transactional
-    public OrderDTO createOrderForProduct(String userName){
+    public OrderDTO createOrderForProduct(String userName,Integer totalPrice){
         //개별상품 주문
+        boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
+        if (!isPaymentSuccessful) {
+            throw new OrderException.CustomException();
+        }
         Orders order = new Orders();
        order.setUser(userRepository.findByUsername(userName));
        order.setStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
@@ -41,8 +47,12 @@ public class OrderManagementService {
        return  orderMapper.toDto(savedOrder);
     }
     @Transactional
-    public OrderDTO createOrderForCart(String userName){
+    public OrderDTO createOrderForCart(String userName,Integer totalPrice){
         //장바구니 상품 주문
+        boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
+        if (!isPaymentSuccessful) {
+            throw new OrderException.CustomException();
+        }
         Orders order = new Orders();
         order.setUser(userRepository.findByUsername(userName));
         order.setStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
@@ -50,41 +60,63 @@ public class OrderManagementService {
         return  orderMapper.toDto(savedOrder);
     }
     @Transactional
-    public OrderDTO canceledOrder(OrderDTO orderDTO){
+    public OrderDTO canceledOrder(Long orderId){
         //주문 상태가 결제완료 혹은 배송 준비일때만 주문 취소 가능
-        Orders order = orderRepository.findById(orderDTO.getId()).orElseThrow(()->new OrderException.OrderNotFoundException(orderDTO.getId()));
+
+        Orders order = orderRepository.findById(orderId).orElseThrow(()->new OrderException.OrderNotFoundException(orderId));
         if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {
             throw new OrderException.OrderCancellationNotAllowedException(order.getId());
         }
 
         order.setStatus(Orders.OrderStatus.ORDER_CANCELLED);
-        return orderMapper.toDto(order);
+        Orders save = orderRepository.save(order);
+        return orderMapper.toDto(save);
 
     }
-
-    public void createOrderProduct(List<OrderProductDTO> orderProductDTOS, Long orderId){
+    @Transactional
+    public void createOrderProduct(List<OrderProductDTO> orderProductDTOS, Long orderId,String userName, Integer totalPrice){
+        boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
+        if (!isPaymentSuccessful) {
+            throw new OrderException.CustomException();
+        }
         //장바구니 주문 결제시
         if(orderProductDTOS.isEmpty()){
             throw new OrderException.OrderNotFoundOrderProductException();
         }
-        orderProductDTOS.stream().forEach(orderProductDTO -> {OrderProduct orderProduct = new OrderProduct();
-                                                    orderProduct.setId(orderProductDTO.getProductId());
-                                                    orderProduct.setProductCount(orderProductDTO.getProductCount());
-                                                    orderProduct.setOrders(orderRepository.findById(orderId).orElseThrow(()->
-                                                            new OrderException.OrderNotFoundException(orderId)));
-                                                    orderProductRepository.save(orderProduct);});
+        Orders orders = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+
+        List<OrderProduct> orderProducts = orderProductDTOS.stream()
+                .map(orderProductMapper::toEntity)
+                .peek(orderProduct -> orderProduct.setOrders(orders))
+                .collect(Collectors.toList());
+
+        orderProductRepository.saveAll(orderProducts);
     }
-    public void createOrderProduct(OrderProductDTO orderProductDTO, Long orderId){
-            //상품 주문 결제시
-        if(orderProductDTO == null){
+
+    @Transactional
+    public void createOrderProduct(OrderProductDTO orderProductDTO, Long orderId,String userName, Integer totalPrice) {
+        boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
+        if (!isPaymentSuccessful) {
+            throw new OrderException.CustomException();
+        }
+        //상품 주문 결제시
+        if (orderProductDTO == null) {
             throw new OrderException.OrderNotFoundOrderProductException();
         }
-        OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setId(orderProductDTO.getProductId());
-        orderProduct.setProductCount(orderProductDTO.getProductCount());
-        orderProduct.setOrders(orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId)));
+        OrderProduct orderProduct = orderProductMapper.toEntity(orderProductDTO);
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+        orderProduct.setOrders(order);
+        if (order.getOrderProducts() == null) {
+            order.setOrderProducts(new ArrayList<>());
+        }
+        order.getOrderProducts().add(orderProduct);
+
         orderProductRepository.save(orderProduct);
+        orderRepository.save(order);
     }
+
     public void updateOrder(Long orderId){
         Orders order = orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId));
 

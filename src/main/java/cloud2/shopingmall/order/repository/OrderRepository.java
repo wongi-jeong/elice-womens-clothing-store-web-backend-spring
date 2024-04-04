@@ -18,10 +18,10 @@ public interface OrderRepository extends JpaRepository<Orders,Long> {
     @Query("SELECT o FROM Orders o LEFT JOIN FETCH o.user LEFT JOIN FETCH o.payment")
     Page<Orders> findAllWithOrderUserAndPayment(Pageable pageable);
 
-    @Query("SELECT o FROM Orders o JOIN FETCH o.user JOIN FETCH o.payment JOIN FETCH o.orderProducts WHERE o.user.username = :username")
+    @Query("SELECT o FROM Orders o LEFT JOIN FETCH o.user LEFT JOIN FETCH o.payment p LEFT JOIN FETCH o.orderProducts op WHERE o.user.username = :username")
     List<Orders> findOrdersByUsername(@Param("username") String username);
 
 
-    @Query("SELECT o FROM Orders o JOIN FETCH o.user JOIN FETCH o.payment  WHERE o.id = :orderId")
+    @Query("SELECT o FROM Orders o LEFT JOIN FETCH o.user LEFT JOIN FETCH o.payment LEFT JOIN FETCH o.orderProducts op WHERE o.id = :orderId")
     Orders findOrdersByOrderId(@Param("orderId") Long orderId);
 }
