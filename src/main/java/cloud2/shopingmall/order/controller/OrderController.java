@@ -39,20 +39,6 @@ public class OrderController {
         return ResponseEntity.ok(orderDetail);
     }
 
-<<<<<<< HEAD
-    @PostMapping("/cancel")
-    public ResponseEntity<OrderDTO> cancelOrder(@RequestBody OrderDTO orderDTO){
-        try {
-            OrderDTO orderDTO1 = orderManagementService.canceledOrder(orderDTO);
-        } catch (OrderException.OrderNotFoundException e) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (OrderException.OrderCancellationNotAllowedException e){
-            ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }
-        return ResponseEntity.ok(orderDTO);
-    }
-
-=======
     @PostMapping("/{orderId}/cancel")
     public ResponseEntity<OrderDTO> cancelOrder(@PathVariable Long orderId){
 
@@ -90,7 +76,6 @@ public class OrderController {
 
     }
     @PostMapping("/create/product")
->>>>>>> dev
     public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                       @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){
         //상품 주문
