@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDTO {
     private Long id;
-    private OrderStatus orderStatus;
-    private LocalDateTime orderCreatedAt;
-    private LocalDateTime orderModifiedAt;
+    private OrderStatus Status;
+    private LocalDateTime CreatedAt;
+    private LocalDateTime ModifiedAt;
     private List<OrderProductDTO> products;
 
     public enum OrderStatus {

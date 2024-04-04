@@ -2,7 +2,6 @@ package cloud2.shopingmall.product.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@Builder(toBuilder = true)
 @AllArgsConstructor
 public class Category {
 
@@ -22,17 +20,17 @@ public class Category {
     private Long id;
 
     @Column(nullable = false)
-    private String categoryName;
+    private String name;
 
     @Column(nullable = false)
-    private Integer categoryRank;
+    private Integer level;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<CategoryProduct> categoryProducts = new ArrayList<>();
 
-    public Category(String categoryName, Integer categoryRank) {
-        this.categoryName = categoryName;
-        this.categoryRank = categoryRank;
+    public Category(String name, Integer level) {
+        this.name = name;
+        this.level = level;
     }
 
 }
