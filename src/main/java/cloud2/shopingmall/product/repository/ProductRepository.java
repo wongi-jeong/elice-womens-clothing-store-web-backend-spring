@@ -14,6 +14,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT distinct p FROM Product p left join fetch p.productBodies where p.id = :id")
     Product findProductWithBodies(@Param("id") Long id);
 
+    @Query("SELECT distinct p FROM Product p left join fetch p.productImages where p.id = :id")
+    Product findProductWithImages(@Param("id") Long id);
+
     @Query("""
             SELECT DISTINCT p \s
             FROM Product p

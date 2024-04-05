@@ -2,9 +2,7 @@ package cloud2.shopingmall.product.controller;
 
 
 import cloud2.shopingmall.product.dto.ProductBodyDTO;
-import cloud2.shopingmall.product.dto.ProductDetailsDTO;
 import cloud2.shopingmall.product.service.ProductBodyService;
-import cloud2.shopingmall.product.service.ProductDetailsService;
 import cloud2.shopingmall.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -33,6 +33,7 @@ public class ProductDTO {
         private String name;
         private String description;
         private String imageUrl;
+        private List<ProductImageDTO> productImageDTOList;
         private List<ProductBodyDTO> productBodyDTOList;
         private List<ProductDetailsDTO> productDetailsDTOList;
 
