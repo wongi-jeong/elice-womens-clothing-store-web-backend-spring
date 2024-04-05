@@ -59,6 +59,21 @@ public class UserDTO {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginRequest {
+
+        @NotNull(message = "아이디를 입력해 주세요.")
+        private String username;
+
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@])[A-Za-z\\d!@]{8,}$",
+                message = "비밀번호는 영문 , 숫자, 특수문자(!@)를 모두 포함해야 하며, 적어도 8자 이상이어야 합니다.")
+        private String password;
+
+
+    }
+
 
 
 
