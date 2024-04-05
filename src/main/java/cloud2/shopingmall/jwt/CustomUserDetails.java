@@ -17,7 +17,6 @@ public class CustomUserDetails  implements UserDetails {
         this.user = user;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -49,24 +48,28 @@ public class CustomUserDetails  implements UserDetails {
         return user.getUsername();
     }
 
+    // 계정이 만료 되었는지 나타내는 메서드
     @Override
     public boolean isAccountNonExpired() {
 
         return true;
     }
 
+    // 계정이 잠겼는지 나타내는 메서드
     @Override
     public boolean isAccountNonLocked() {
 
         return true;
     }
 
+    // 사용자의 인증 자격이 만료되지 않았는지를 나타내는 메서드
     @Override
     public boolean isCredentialsNonExpired() {
 
         return true;
     }
 
+    // 사용자 계정이 활성화되었는지를 나타내는 메서드
     @Override
     public boolean isEnabled() {
 

@@ -17,8 +17,6 @@ import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +97,7 @@ public class UserService {
         User savedUser = userRepository.save(user); // DB에 저장
 
         // UserProfile DB에 생성
-        userProfile.setUser(savedUser);
+        userProfile.setUser(savedUser); //
         userProfile.setGender(userProfileDTO.getGender().getKey());
         userProfile.setPoint(100000); // 처음 가입 시 10만 포인트 증정
         userProfileRepository.save(userProfile);
