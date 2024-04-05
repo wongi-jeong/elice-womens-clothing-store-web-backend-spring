@@ -33,10 +33,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-            //조건이 해당되면 메소드 종료 (필수)
+            // "Authorization" 헤더가 존재하지 않거나 "Bearer "로 시작하지 않으면 인증 실패
+            // 다음 필터로 요청을 전달
             return;
         }
 
+        // 토큰의 "Bearer" 의 뒷 부분 토큰 키 값 가져오기
         String token = authorization.split(" ")[1];
 
         //토큰 소멸 시간 검증
@@ -44,7 +46,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-            //조건이 해당되면 메소드 종료 (필수)
+            // 토큰의 인증시간이 만료일 경우 인증 실패
+            // 다음 필터로 요청을 전달
             return;
         }
 
