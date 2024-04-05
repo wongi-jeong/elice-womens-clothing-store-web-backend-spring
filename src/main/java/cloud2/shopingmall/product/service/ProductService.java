@@ -63,10 +63,11 @@ public class ProductService {
 
     }
 
-    public ProductDTO.ProductWithDetailsAndBodiesDTO getProductWithDetailsAndBodiesDTO(Long id) {
+    public ProductDTO.ProductWithDetailsAndBodiesDTO getProductWithAllDTO(Long id) {
 //        Product product = productRepository.findProductWithDetailsAndBodies(id);
         Product product = productRepository.findProductWithDetails(id);
         product = productRepository.findProductWithBodies(id);
+        product = productRepository.findProductWithImages(id);
         if(product == null){
             //TO DO
             throw new RuntimeException();

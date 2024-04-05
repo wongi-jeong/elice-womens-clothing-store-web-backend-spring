@@ -40,7 +40,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO.ProductWithDetailsAndBodiesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.getProductWithDetailsAndBodiesDTO(id));
+                .body(productService.getProductWithAllDTO(id));
 
     }
 

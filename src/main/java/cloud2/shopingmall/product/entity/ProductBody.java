@@ -1,5 +1,7 @@
 package cloud2.shopingmall.product.entity;
 
+import cloud2.shopingmall.common.entity.BaseEntity;
+import cloud2.shopingmall.image.entity.Image;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBody {
+public class ProductBody extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,25 +21,34 @@ public class ProductBody {
     private Integer sequence;
 
     @Column
-    private String imageUrl;
+    private String url;
 
     @Column
-    private String imageDescription;
+    private String description;
+
+    @Column
+    private Integer sizeKB;
+
+    @Column
+    private ImageFormat imageFormat;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public ProductBody(String imageUrl, String imageDescription) {
-        this.imageUrl = imageUrl;
-        this.imageDescription = imageDescription;
+    public ProductBody(String url, String description) {
+        this.url = url;
+        this.description = description;
     }
 
-    public ProductBody(Integer sequence, String imageUrl, String imageDescription) {
+    public ProductBody(Integer sequence, String url, String description) {
         this.sequence = sequence;
-        this.imageUrl = imageUrl;
-        this.imageDescription = imageDescription;
+        this.url = url;
+        this.description = description;
     }
 
-
+    public enum ImageFormat {
+        JPG, JPEG, PNG, PDF
+    }
 }
