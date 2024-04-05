@@ -33,21 +33,26 @@ public class OrderManagementService {
     private final OrderMainMapper.OrderMapper orderMapper;
     private final OrderProductRepository orderProductRepository;
     private final PaymentService paymentService;
+
     @Transactional
     public OrderDTO createOrderForProduct(String userName,Integer totalPrice){
         //개별상품 주문
-        boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
-        if (!isPaymentSuccessful) {
-            throw new OrderException.CustomException();
-        }
-        Orders order = new Orders();
+       boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
+
+       if (!isPaymentSuccessful) {
+           throw new OrderException.CustomException();
+       }
+
+       Orders order = new Orders();
        order.setUser(userRepository.findByUsername(userName));
        order.setStatus(Orders.OrderStatus.PAYMENT_COMPLETED);
        Orders savedOrder = orderRepository.save(order);
        return  orderMapper.toDto(savedOrder);
     }
+
     @Transactional
     public OrderDTO createOrderForCart(String userName,Integer totalPrice){
+
         //장바구니 상품 주문
         boolean isPaymentSuccessful = paymentService.verifyPayment(userName,totalPrice);
         if (!isPaymentSuccessful) {

@@ -1,5 +1,6 @@
 package cloud2.shopingmall.user.dto;
 
+import cloud2.shopingmall.user.entity.UserProfile;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -74,7 +75,16 @@ public class UserDTO {
 
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShowAllUser {
 
+        private String username;
 
+        private String password;
+
+        private UserProfile userProfile;
+    }
 
 }

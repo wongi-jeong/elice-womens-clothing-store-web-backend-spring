@@ -51,7 +51,6 @@ public class OrderQueryService {
         //주문자로 주문 목록 검색(주문번호, 주문 상태, 주문 날짜, 변경 날짜, 총 금액, 상품, 수량 , 상품 금액)
         List<Orders> orderDetailsByUsername = userRepository.findByUsername(userName).getOrdersList();
 
-
         return orderDetailsByUsername.stream()
                 .map(orderDetailMapper :: toDto)
                 .collect(Collectors.toList());
