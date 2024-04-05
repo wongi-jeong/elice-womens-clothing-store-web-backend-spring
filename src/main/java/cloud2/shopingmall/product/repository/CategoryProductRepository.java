@@ -7,7 +7,4 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryProductRepository extends JpaRepository<CategoryProduct,Long> {
-    List<CategoryProduct> findByCategory(Category category);
-
-    List<CategoryProduct> findByProduct(Product product);
 }

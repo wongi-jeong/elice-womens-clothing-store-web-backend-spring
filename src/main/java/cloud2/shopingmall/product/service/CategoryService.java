@@ -6,8 +6,10 @@ import cloud2.shopingmall.product.entity.Category;
 import cloud2.shopingmall.product.entity.CategoryProduct;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
+import cloud2.shopingmall.product.mapper.ProductMainMapper.ProductMapper;
 import cloud2.shopingmall.product.repository.CategoryProductRepository;
 import cloud2.shopingmall.product.repository.CategoryRepository;
+import cloud2.shopingmall.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +21,18 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductMainMapper.CategoryMapper categoryMapper;
     private final CategoryProductRepository categoryProductRepository;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
     private Category foundCategory;
 
     public CategoryService(CategoryRepository categoryRepository, ProductMainMapper.CategoryMapper categoryMapper,
-                           CategoryProductRepository categoryProductRepository) {
+                           CategoryProductRepository categoryProductRepository, ProductRepository productRepository,
+                           ProductMapper productMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
         this.categoryProductRepository = categoryProductRepository;
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
     public List<Category> findCategories() {
@@ -61,18 +68,14 @@ public class CategoryService {
     // Category를 조회했을때 해당 Category에 속한 Product 조회
     @Transactional
     public CategoryProductDTO findById(Long id) {
-        Category entity = categoryRepository.findById(id)
+        Category category = categoryRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
 
-        List<CategoryProduct> categoryProducts = categoryProductRepository.findByCategory(entity);
-
-        List<Product> products = categoryProducts.stream()
-                .map(CategoryProduct::getProduct)
-                .toList();
+        List<Product> products = productRepository.findProductsWithCategoryId(id);
 
         return CategoryProductDTO.builder()
-                .entity(entity)
-                .products(products)
+                .categoryDTO(categoryMapper.toDto(category))
+                .productsDTOList(productMapper.toDto(products))
                 .build();
     }
 }

@@ -166,25 +166,4 @@ public class ProductService {
 
     }
 
-    // Product를 조회했을때 Product가 가지고 있는 Category 함께 조회
-    public ProductAndCategoryResponseDTO findById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-
-        if (product.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-
-        List<CategoryProduct> categoryProducts = categoryProductRepository.findByProduct(product.get());
-        List<Category> categories = new ArrayList<>();
-
-        for (CategoryProduct categoryProduct : categoryProducts) {
-            categories.add(categoryProduct.getCategory());
-        }
-
-        return ProductAndCategoryResponseDTO.builder()
-                .entity(product.get())
-                .categories(categories)
-                .build();
-    }
-
 }

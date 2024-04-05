@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryProductDTO {
-    private Category entity;
-    private List<Product> products;
+    private CategoryDTO categoryDTO;
+    private List<ProductDTO> productsDTOList;
 }
