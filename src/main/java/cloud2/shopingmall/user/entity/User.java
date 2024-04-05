@@ -40,17 +40,13 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Orders> ordersList;
 
-    @Getter
+
     public enum Status {
-        ACTIVE("User_Active"),
-        DEACTIVE("User_Deactive"),
-        DELETED("User_Deleted");
+        ACTIVE,
+        DEACTIVE,
+        DELETED
 
-        private String status;
 
-        Status(String status) {
-            this.status = status;
-        }
 
     }
 
