@@ -62,14 +62,15 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         // .anyRequest().authenticated()
                         .anyRequest().permitAll());
+
         // 사용자 정의 JWT 필터를 LoginFilter 전에 추가, JWT를 사용하여 인증 및 권한 부여를 수행합니다.
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         // 사용자 정의 로그인 필터를 UsernamePasswordAuthenticationFilter 위치에 추가
         // 사용자가 제공한 자격 증명을 사용하여 인증을 시도하고, 성공하면 JWT 토큰을 생성하여 반환
-        http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//        http
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http

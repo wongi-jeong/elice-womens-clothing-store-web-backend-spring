@@ -33,6 +33,9 @@ public class Product extends BaseEntity {
     private ProductDisplayStatus status;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private List<ProductImage> productImages = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<ProductBody> productBodies = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
