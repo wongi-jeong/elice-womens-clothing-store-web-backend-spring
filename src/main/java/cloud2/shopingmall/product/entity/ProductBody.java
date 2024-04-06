@@ -1,7 +1,6 @@
 package cloud2.shopingmall.product.entity;
 
 import cloud2.shopingmall.common.entity.BaseEntity;
-import cloud2.shopingmall.image.entity.Image;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
