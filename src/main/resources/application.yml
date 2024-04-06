@@ -5,7 +5,6 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/shoppingmall # 자신의 환경에 맞게 변경 가능
     username: root # 자신의 환경에 맞게 변경 가능
     password: 1234 # 자신의 환경에 맞게 변경 가능
-server:
 
   jackson:
     default-property-inclusion: non_null # DTO에서 null 값인 필드 전송 안됨
@@ -26,7 +25,9 @@ server:
 
     jackson:
       default-property-inclusion: non_null
+server:
   port: 80
+
 
 
 #logging:
