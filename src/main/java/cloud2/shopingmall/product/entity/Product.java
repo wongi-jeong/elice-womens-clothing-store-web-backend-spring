@@ -18,7 +18,6 @@ public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
     private Long id;
 
     @Column
@@ -32,6 +31,9 @@ public class Product extends BaseEntity {
 
     @Column
     private ProductDisplayStatus status;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private List<ProductImage> productImages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private List<ProductBody> productBodies = new ArrayList<>();

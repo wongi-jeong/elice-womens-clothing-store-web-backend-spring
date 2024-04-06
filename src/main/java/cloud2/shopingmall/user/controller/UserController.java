@@ -1,33 +1,72 @@
 package cloud2.shopingmall.user.controller;
 
+import cloud2.shopingmall.common.exception.PasswordMismatchException;
+import cloud2.shopingmall.jwt.CustomUserDetails;
+import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
+import cloud2.shopingmall.user.entity.User;
+import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService) {
+    @Autowired
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
 
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserDTO.LoginRequest request) throws PasswordMismatchException {
+
+        // 사용자 아이디 담기
+        String username = request.getUsername();
+
+        // 사용자 비밀번호 담기
+        String password = request.getPassword();
+
+        // 토큰 생성
+        String token = userService.login(username,password);
+
+        // 응답 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+
+        // 헤더에 jwt 토큰 생성하여 발급
+        headers.add("Authorization", "Bearer " + token);
+
+        // ResponseEntity 생성
+        ResponseEntity<String> responseEntity = new ResponseEntity<>("로그인에 성공했습니다.", headers, HttpStatus.OK);
+
+        return responseEntity;
     }
 
     // 회원가입 기능
+    // 하나의 메서드에서는 하나의 @RequestBody만 사용 가능하다
     @PostMapping("/join")
-    public ResponseEntity<String> joinProcess(@Valid UserDTO userDTO,
-                                              @Valid UserProfileDTO.Create userProfileDTO,
-                                              BindingResult bindingResult) {
+    public ResponseEntity<String> joinProcess(@RequestBody CommonDTO.JoinRequest request,
+                                              BindingResult bindingResult) throws PasswordMismatchException {
+        UserDTO.Join userDTO = request.getUserDTO();
+        UserProfileDTO.Join userProfileDTO = request.getUserProfileDTO();
 
         // 유효성 검사 결과 확인
         if (bindingResult.hasErrors()) {
@@ -43,7 +82,7 @@ public class UserController {
         }
 
         // 유효성 검사 통과 시 UserService의 joinProcess 메서드 호출
-        if(!userService.joinProcess(userDTO, userProfileDTO)){
+        if (!userService.joinProcess(userDTO, userProfileDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입에 실패했습니다.");
         }
 
@@ -51,19 +90,49 @@ public class UserController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    // 아이디 중복 체크
-
-
     // 아이디 찾기 기능
     @GetMapping("/findID")
-    public ResponseEntity<String> findId(UserProfileDTO.FindUser findUserDTO) {
+    public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
 
         String resultId = userService.findUserId(findUserDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body("찾으시는 아이디는 " + resultId + " 입니다.");
     }
 
+    // 비밀번호 찾기 기능 필터
+    @GetMapping("/findPassword")
+    public ResponseEntity<String> findPasswordFilter(@RequestBody UserProfileDTO.FindPassword findPasswordDTO) {
 
+        if (!userService.findPasswordFilter(findPasswordDTO)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
+        }
 
+        // 정상적인 응답 반환
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 찾기 정보 입력 완료");
+    }
 
+    @PatchMapping("/findPassword")
+    public ResponseEntity<String> findPasswordChange(@RequestBody UserDTO.ChangePassword changePasswordDTO) throws PasswordMismatchException {
+
+        if (!userService.changePassword(changePasswordDTO)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 찾기에 실패했습니다.");
+        }
+
+        // 정상적인 응답 반환
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경이 완료되었습니다.");
+    }
+
+    // 마이페이지 이동시 현재 로그인한 사용자 정보 조회 기능
+    @GetMapping("/myInfor")
+    public ResponseEntity<CommonDTO.ShowResponse> showMyInfo(@AuthenticationPrincipal CustomUserDetails userInfo) {
+        CommonDTO.ShowResponse dtos = userService.showUser(userInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
+    }
+
+    // 사용자 회원정보 변경 기능
+    @PatchMapping("/changeInfo")
+    public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
+        Boolean result = userService.changeInfo(userInfo, request);
+        return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
+    }
 }

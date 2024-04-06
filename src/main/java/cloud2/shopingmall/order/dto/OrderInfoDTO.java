@@ -2,9 +2,12 @@ package cloud2.shopingmall.order.dto;
 
 import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.product.entity.Product;
+import cloud2.shopingmall.product.entity.ProductDetails;
+import cloud2.shopingmall.user.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -13,44 +16,33 @@ import java.util.Map;
 @AllArgsConstructor
 public class OrderInfoDTO {
 
-    private Long orderNumber;
-    private String orderUser;
-    private LocalDateTime orderCreatedAt;
-    private LocalDateTime orderModifiedAt;
-    private Orders.OrderStatus orderStatus;
+    private Long id;
+    private String userName;
+    private LocalDateTime CreatedAt;
+    private LocalDateTime ModifiedAt;
+    private Orders.OrderStatus Status;
     private Integer totalPrice;
-    private OrderDetailInfo orderDetail;
+    private OrderDetailInfo Detail;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class OrderDetailInfo {
+    public static class OrderDetailInfo extends OrderInfoDTO{
 
-        private Long orderNumber;
-        private String orderUser;
-        private LocalDateTime orderCreatedAt;
-        private LocalDateTime orderModifiedAt;
-        private Orders.OrderStatus orderStatus;
-        private Integer totalPrice;
-        private Map<Long,Integer> products;
-        public OrderDetailInfo(Long orderNumber,String orderUser, LocalDateTime orderCreatedAt, LocalDateTime orderModifiedAt, Orders.OrderStatus orderStatus, Integer totalPrice){
-            this.orderNumber = orderNumber;
-            this.orderUser = orderUser;
-            this.orderCreatedAt = orderCreatedAt;
-            this.orderModifiedAt = orderModifiedAt;
-            this.orderStatus = orderStatus;
-            this.totalPrice = totalPrice;
-        }
+        private List<OrderInfoDTO.ProductInfo> products;
+
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class productQuantityDTO {
-
-        private Long productId;
-        private Integer amount;
+    public static class ProductInfo{
+        private Map<String,Integer> productNameAndCount;
+        private ProductDetails.Color color;
+        private ProductDetails.Size size;
+        private Integer price;
     }
+
 }

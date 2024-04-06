@@ -1,13 +1,13 @@
 package cloud2.shopingmall.order.entity;
 
+import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductDetails;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderProduct {
@@ -17,7 +17,18 @@ public class OrderProduct {
     private Long id;
 
     @Column
-    private Integer productCount;
+    private String name;
+    @Column
+    private Integer Count;
+
+    @Column
+    private Integer price;
+
+    @Column
+    private ProductDetails.Color color;
+
+    @Column
+    private ProductDetails.Size size;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -26,4 +37,10 @@ public class OrderProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_details_id")
     private ProductDetails productDetails;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+
 }

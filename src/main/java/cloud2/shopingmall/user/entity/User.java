@@ -1,10 +1,13 @@
 package cloud2.shopingmall.user.entity;
 
 import cloud2.shopingmall.common.entity.BaseEntity;
+import cloud2.shopingmall.order.entity.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -23,32 +26,28 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(nullable = false)
     private String userRole;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
+    @Column
     private Status Status;
 
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserProfile userProfile;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Orders> ordersList;
 
-    @Getter
+
     public enum Status {
-        ACTIVE("User_Active"),
-        DEACTIVE("User_Deactive"),
-        DELETED("User_Deleted");
+        ACTIVE,
+        DEACTIVE,
+        DELETED
 
-        private String status;
 
-        Status(String status) {
-            this.status = status;
-        }
 
     }
-
-
 
 }

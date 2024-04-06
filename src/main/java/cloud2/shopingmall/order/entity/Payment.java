@@ -1,11 +1,8 @@
 package cloud2.shopingmall.order.entity;
 
-import cloud2.shopingmall.common.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,10 +11,12 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment extends BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +28,27 @@ public class Payment extends BaseEntity {
     @Column
     private PayStatus payStatus;
 
-    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+    @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime payCreatedAt;
+
+    @LastModifiedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime payModifiedAt;
+
+    @OneToOne
+    @JoinColumn(name = "order_id")
     private Orders order;
 
     public enum PayStatus {
-        ONE, TWO, THREE,
+        PENDING_PAYMENT("결제대기"),
+        PAYMENT_COMPLETE("결제완료"),
+        PAYMENT_CANCELED("결제취소");
+
+        private final String description;
+
+        PayStatus(String description) {
+            this.description = description;
+        }
     }
 }

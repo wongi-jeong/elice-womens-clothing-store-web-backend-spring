@@ -13,7 +13,6 @@ public class ProductDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_details_id")
     private Long id;
 
     @Column
@@ -29,15 +28,11 @@ public class ProductDetails {
     private Integer quantity;
 
     @Column
-    private ProductStatus status;
+    private ProductStatus status = ProductStatus.ON;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_Body_id")
-    private ProductBody productBody;
 
     public ProductDetails(String name, Size size, Color color, Integer quantity, ProductStatus status) {
         this.name = name;
