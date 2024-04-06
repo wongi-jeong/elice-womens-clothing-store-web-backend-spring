@@ -1,0 +1,94 @@
+package cloud2.shopingmall.order.controller;
+
+import cloud2.shopingmall.jwt.CustomUserDetails;
+import cloud2.shopingmall.order.dto.*;
+import cloud2.shopingmall.order.service.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/order")
+@RequiredArgsConstructor
+public class OrderController {
+    private final OrderQueryService orderQueryService;
+    private final OrderManagementService orderManagementService;
+    private final PaymentService paymentService;
+    private final DeliveryService deliveryService;
+
+    @GetMapping("")
+    public ResponseEntity<Page<OrderInfoDTO>> findAllOrder(@PageableDefault(size = 20) Pageable pageable){
+        Page<OrderInfoDTO> allOrder = orderQueryService.findAllOrder(pageable);
+        return ResponseEntity.ok(allOrder);
+    }
+    @GetMapping("/user")
+    public ResponseEntity<List<OrderInfoDTO.OrderDetailInfo>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        List<OrderInfoDTO.OrderDetailInfo> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
+        return ResponseEntity.ok(orderDetailList);
+    }
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderInfoDTO.OrderDetailInfo> findOrderById(@PathVariable Long orderId){
+        OrderInfoDTO.OrderDetailInfo orderDetail = orderQueryService.findByOrderId(orderId);
+        return ResponseEntity.ok(orderDetail);
+    }
+
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable Long orderId){
+
+          OrderDTO  orderDTO = orderManagementService.canceledOrder(orderId);
+        return ResponseEntity.ok(orderDTO);
+    }
+    @GetMapping("/{id}/modify")
+    public ResponseEntity<String> modifyDelivery(@PathVariable("id") Long orderId){
+        //상품 주문지 변경
+
+        deliveryService.verifyModify(orderId);
+        return ResponseEntity.ok("배송지 변경 가능");
+    }
+
+    @PostMapping("/{id}/modify")
+    public ResponseEntity<DeliveryDTO> modifyDelivery(@PathVariable("id") Long orderId,
+                                                      @RequestBody @Validated DeliveryDTO deliveryDTO){
+        DeliveryDTO modifyDelivery = deliveryService.modifyDelivery(deliveryDTO,orderId);
+        return ResponseEntity.ok(modifyDelivery);
+    }
+    //밑에서부터 테스트
+
+    @PostMapping("/creaet/cart")
+    public ResponseEntity<OrderDTO> createOrderByCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                              @RequestBody @Validated OrderCreateRequest.OrderByCart orderCreateRequest){
+        //장바구니 주문
+    //json으로 여러 객체 받아와야할때 복합 객체를 사용하게 되면 언제 검증을 하게 되는지 그리고 검증에 관한 로직은 어디서 구현하면 좋을 지
+
+        OrderDTO orderDTO = orderManagementService.createOrderForCart(customUserDetails.getUsername(),orderCreateRequest.getTotalPrice());
+        orderManagementService.createOrderProduct(orderCreateRequest.getOrderProductDTOS(),orderDTO.getId(),customUserDetails.getUsername(),orderCreateRequest.getTotalPrice());
+        deliveryService.createDelivery(orderCreateRequest.getDeliveryDTO(),orderDTO.getId(),customUserDetails.getUsername(),orderCreateRequest.getTotalPrice());
+        paymentService.createPayment(customUserDetails.getUsername(), orderCreateRequest.getTotalPrice(),orderDTO.getId());
+
+        return ResponseEntity.ok(orderDTO);
+
+    }
+    @PostMapping("/create/product")
+    public ResponseEntity<OrderDTO> createOrderByProduct(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                      @RequestBody @Validated OrderCreateRequest.OrderByProduct orderByProduct){
+        //상품 주문
+
+          OrderDTO orderDTO = orderManagementService.createOrderForProduct(customUserDetails.getUsername(),orderByProduct.getTotalPrice());
+          orderManagementService.createOrderProduct(orderByProduct.getOrderProductDTOS(),orderDTO.getId(),customUserDetails.getUsername(),orderByProduct.getTotalPrice());
+          deliveryService.createDelivery(orderByProduct.getDeliveryDTO(),orderDTO.getId(),customUserDetails.getUsername(),orderByProduct.getTotalPrice());
+          paymentService.createPayment(customUserDetails.getUsername(), orderByProduct.getTotalPrice(),orderDTO.getId());
+
+        return ResponseEntity.ok(orderDTO);
+
+    }
+
+
+
+}

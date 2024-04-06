@@ -1,7 +1,7 @@
 package cloud2.shopingmall.jwt;
 
 
-import cloud2.shopingmall.user.entity.UserEntity;
+import cloud2.shopingmall.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,34 +22,32 @@ public class JWTFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-
-    // securityconfig에서 permit all 로 된 부분도 검사를 하지만 허가가 되어 있어 필터에 걸리지 않는다
-    // -> doFilterInternal 메소드가 실행되지만 모든 사용자에 대한 경로에 대해 허가가 되어 있는경우 그냥 넘어감
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //request에서 Authorization 헤더를 찾음
-        String authorization= request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
-        // Authorization 헤더 검증
+        //Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
 
-            System.out.println("token null");
             filterChain.doFilter(request, response);
 
-            //조건이 해당되면 메소드 종료 (필수)
+            // "Authorization" 헤더가 존재하지 않거나 "Bearer "로 시작하지 않으면 인증 실패
+            // 다음 필터로 요청을 전달
             return;
         }
 
+        // 토큰의 "Bearer" 의 뒷 부분 토큰 키 값 가져오기
         String token = authorization.split(" ")[1];
 
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
 
-            System.out.println("token expired");
             filterChain.doFilter(request, response);
 
-            //조건이 해당되면 메소드 종료 (필수)
+            // 토큰의 인증시간이 만료일 경우 인증 실패
+            // 다음 필터로 요청을 전달
             return;
         }
 
@@ -57,15 +55,17 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(username);
-        userEntity.setPassword("temppassword");
-        userEntity.setUserRole(role);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword("temppassword"); // 임시로 패스워드를 설정 ( 실제로는 JWT 토큰에서 패스워드를 추출 X )
+        user.setUserRole(role);
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
+        // UsernamePasswordAuthenticationToken을 사용하여 사용자의 인증 정보를 생성 이 때, 인증된 사용자의 상세 정보인 customUserDetails와 사용자의 권한 정보를 전달
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
+        // 생성된 인증 정보를 SecurityContextHolder에 저장, 이를 통해 스프링 시큐리티는 현재 사용자가 인증되었음을 파악하고, 해당 사용자의 정보와 권한을 사용하여 인증 및 권한 부여를 수행
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);

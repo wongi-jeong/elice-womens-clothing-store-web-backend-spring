@@ -3,30 +3,62 @@ package cloud2.shopingmall.product.mapper;
 import cloud2.shopingmall.common.mapper.EntityMapper;
 import cloud2.shopingmall.product.dto.*;
 import cloud2.shopingmall.product.entity.*;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+
 public interface ProductMainMapper {
 
-    interface CategoryMapper extends EntityMapper<CategoryEntity, CategoryDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     }
 
-    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProductDisplayEntity, CategoryProductDisplayDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface CategoryProductDisplayMapper extends EntityMapper<CategoryProduct, CategoryProductDTO> {
 
     }
 
-    interface ProductDisplayMapper extends EntityMapper<ProductDisplayEntity, ProductDisplayDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface ProductMapper extends EntityMapper<Product, ProductDTO> {
+
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(ProductDTO dto, @MappingTarget Product entity);
 
     }
 
-    interface ProductDisplayImageMapper extends EntityMapper<ProductDisplayImageEntity, ProductDisplayImageDTO> {
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface ProductWithDetailsAndBodiesMapper extends EntityMapper<Product, ProductDTO.ProductWithDetailsAndBodiesDTO> {
 
+        @Mapping(source = "productBodies", target = "productBodyDTOList")
+        @Mapping(source = "productImages", target = "productImageDTOList")
+        @Mapping(source = "productDetails", target = "productDetailsDTOList")
+        ProductDTO.ProductWithDetailsAndBodiesDTO toDto(Product product);
+
+        @Mapping(source = "productBodyDTOList", target = "productBodies")
+        @Mapping(source = "productDetailsDTOList", target = "productDetails")
+        @Mapping(source = "productImageDTOList", target = "productImages")
+        Product toEntity(ProductDTO.ProductWithDetailsAndBodiesDTO productWithDetailsAndBodiesDTO);
 
     }
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface ProductBodyMapper extends EntityMapper<ProductBody, ProductBodyDTO> {
 
-    interface ProductMapper extends EntityMapper<ProductEntity, ProductDTO> {
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(ProductBodyDTO dto, @MappingTarget ProductBody entity);
+    }
+
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface ProductImageMapper extends EntityMapper<ProductImage, ProductImageDTO> {
+
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(ProductImageDTO dto, @MappingTarget ProductImage entity);
+    }
+
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface ProductDetailsMapper extends EntityMapper<ProductDetails, ProductDetailsDTO> {
+
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(ProductDetailsDTO dto, @MappingTarget ProductDetails entity);
 
     }
 }
