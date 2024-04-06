@@ -9,8 +9,13 @@ import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -22,20 +27,37 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService) {
+    @Autowired
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
 
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserDTO.LoginRequest request) {
-        // 간단히 사용자가 제공한 아이디와 패스워드를 출력하는 예시
-        System.out.println("사용자 아이디: " + request.getUsername());
-        System.out.println("비밀번호: " + request.getPassword());
+    public ResponseEntity<String> login(@RequestBody UserDTO.LoginRequest request) throws PasswordMismatchException {
 
-        // 로그인 성공 시 메시지 반환
-        return "로그인 성공";
+        // 사용자 아이디 담기
+        String username = request.getUsername();
+
+        // 사용자 비밀번호 담기
+        String password = request.getPassword();
+
+        // 토큰 생성
+        String token = userService.login(username,password);
+
+        // 응답 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+
+        // 헤더에 jwt 토큰 생성하여 발급
+        headers.add("Authorization", "Bearer " + token);
+
+        // ResponseEntity 생성
+        ResponseEntity<String> responseEntity = new ResponseEntity<>("로그인에 성공했습니다.", headers, HttpStatus.OK);
+
+        return responseEntity;
     }
 
     // 회원가입 기능

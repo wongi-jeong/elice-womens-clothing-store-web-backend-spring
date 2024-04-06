@@ -3,6 +3,7 @@ package cloud2.shopingmall.user.service;
 
 import cloud2.shopingmall.common.exception.PasswordMismatchException;
 import cloud2.shopingmall.jwt.CustomUserDetails;
+import cloud2.shopingmall.jwt.JWTUtil;
 import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
@@ -21,10 +22,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -39,12 +47,17 @@ public class UserService {
     private final UserProfileRepository userProfileRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final AuthenticationManager authenticationManager;
+
+    private final JWTUtil jwtUtil;
+
 
     @Autowired
     public UserService(UserJoinMapper userJoinMapper, UserProfileJoinMapper userProfileJoinMapper,
                        UserRepository userRepository, UserProfileRepository userProfileRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder, UserShowMapper userShowMapper,
-                       UserProfileShowMapper userProfileShowMapper, UserProfileChangeMapper userProfileChangeMapper) {
+                       UserProfileShowMapper userProfileShowMapper, UserProfileChangeMapper userProfileChangeMapper,
+                       AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
 
         this.userProfileJoinMapper = userProfileJoinMapper;
         this.userJoinMapper = userJoinMapper;
@@ -54,7 +67,45 @@ public class UserService {
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
 
+    }
+
+    // 회원 로그인 기능
+    public String login(String username, String password) throws UsernameNotFoundException, PasswordMismatchException {
+        // 1. 사용자 DB에서 사용자 조회
+        // 주어진 사용자의 이름으로 DB에서 사용자 정보 조회
+        User userData = userRepository.findByUsername(username);
+
+        if (userData == null) {
+            throw new UsernameNotFoundException("회원가입을 해주세요");
+        }
+
+        // DB에 사용자가 존재해 데이터가 있을 경우 '사용자의 인증 및 권한 정보를 제공하는 역할'을 하는 UserDetails 객체 반환
+        CustomUserDetails userDetails = new CustomUserDetails(userData);
+
+        // 입력한 비밀번호가 DB에 저장된 비밀번호와 같은지 확인하기
+        if (!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
+            throw new PasswordMismatchException("입력한 비밀번호가 틀립니다.");
+        }
+        // Authentication의 구현체, 사용자 이름과 비밀번호를 저장
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+
+        // AuthenticationManager를 사용하여 사용자를 인증
+        // 주어진 Authentication 객체를 사용하여 사용자를 인증하고, 성공하면 Authentication 객체를 반환, 인증이 실패하면 AuthenticationException이 발생합니다.
+        Authentication authentication = authenticationManager.authenticate(authToken);
+
+        // 사용자의 권한 목록을 Collection 형태로 바꾼 후, 권한을 반복자를 통해 가져온다
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+
+        String role = auth.getAuthority();
+
+        String token = jwtUtil.createJwt(username, role, 6000*6000*1L);
+
+        return token;
     }
 
 
