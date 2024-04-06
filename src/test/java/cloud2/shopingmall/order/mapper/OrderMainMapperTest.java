@@ -40,7 +40,7 @@ class OrderMainMapperTest {
         assertThat(result.getUserName()).isEqualTo("user123");
         assertThat(result.getTotalPrice()).isEqualTo(10000);
         assertThat(result.getProducts()).isNotEmpty();
-        assertThat(result.getProducts().get("product")).isEqualTo(2);
+        assertThat(result.getProducts().get(1)).isEqualTo(2);
 
 
 

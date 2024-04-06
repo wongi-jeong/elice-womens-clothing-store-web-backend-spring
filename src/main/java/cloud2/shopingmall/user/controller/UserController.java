@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
     private final UserService userService;
 
@@ -27,25 +28,15 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PostMapping("/login")
-//    public String login(@RequestBody UserDTO.LoginRequest request) {
-//        // 간단히 사용자가 제공한 아이디와 패스워드를 출력하는 예시
-//        System.out.println("사용자 아이디: " + request.getUsername());
-//        System.out.println("비밀번호: " + request.getPassword());
-//
-//        // 로그인 성공 시 메시지 반환
-//        return "로그인 성공";
-//    }
+    @PostMapping("/login")
+    public String login(@RequestBody UserDTO.LoginRequest request) {
+        // 간단히 사용자가 제공한 아이디와 패스워드를 출력하는 예시
+        System.out.println("사용자 아이디: " + request.getUsername());
+        System.out.println("비밀번호: " + request.getPassword());
 
-//    @PostMapping("/login")
-//    public String login(@RequestBody UserDTO.LoginRequest request) {
-//        // 간단히 사용자가 제공한 아이디와 패스워드를 출력하는 예시
-//        System.out.println("사용자 아이디: " + request.getUsername());
-//        System.out.println("비밀번호: " + requestg.getPassword());
-//
-//        // 로그인 성공 시 메시지 반환
-//        return "로그인 성공";
-//    }
+        // 로그인 성공 시 메시지 반환
+        return "로그인 성공";
+    }
 
     // 회원가입 기능
     // 하나의 메서드에서는 하나의 @RequestBody만 사용 가능하다

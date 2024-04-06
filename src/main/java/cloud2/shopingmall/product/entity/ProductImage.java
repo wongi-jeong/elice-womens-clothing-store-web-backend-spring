@@ -1,6 +1,5 @@
 package cloud2.shopingmall.product.entity;
 
-import cloud2.shopingmall.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBody extends BaseEntity {
+public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,23 +24,24 @@ public class ProductBody extends BaseEntity {
     @Column
     private String description;
 
+
     @Column
     private Integer sizeKB;
 
     @Column
-    private ImageFormat imageFormat;
+    private ProductBody.ImageFormat imageFormat;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public ProductBody(String url, String description) {
+    public ProductImage(String url, String description) {
         this.url = url;
         this.description = description;
     }
 
-    public ProductBody(Integer sequence, String url, String description) {
+    public ProductImage(Integer sequence, String url, String description) {
         this.sequence = sequence;
         this.url = url;
         this.description = description;

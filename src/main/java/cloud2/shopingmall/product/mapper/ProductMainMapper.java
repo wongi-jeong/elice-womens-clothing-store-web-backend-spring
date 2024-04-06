@@ -30,11 +30,13 @@ public interface ProductMainMapper {
     interface ProductWithDetailsAndBodiesMapper extends EntityMapper<Product, ProductDTO.ProductWithDetailsAndBodiesDTO> {
 
         @Mapping(source = "productBodies", target = "productBodyDTOList")
+        @Mapping(source = "productImages", target = "productImageDTOList")
         @Mapping(source = "productDetails", target = "productDetailsDTOList")
         ProductDTO.ProductWithDetailsAndBodiesDTO toDto(Product product);
 
         @Mapping(source = "productBodyDTOList", target = "productBodies")
         @Mapping(source = "productDetailsDTOList", target = "productDetails")
+        @Mapping(source = "productImageDTOList", target = "productImages")
         Product toEntity(ProductDTO.ProductWithDetailsAndBodiesDTO productWithDetailsAndBodiesDTO);
 
     }
@@ -43,6 +45,13 @@ public interface ProductMainMapper {
 
         @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
         void updateFromDto(ProductBodyDTO dto, @MappingTarget ProductBody entity);
+    }
+
+    @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+    interface ProductImageMapper extends EntityMapper<ProductImage, ProductImageDTO> {
+
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(ProductImageDTO dto, @MappingTarget ProductImage entity);
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
