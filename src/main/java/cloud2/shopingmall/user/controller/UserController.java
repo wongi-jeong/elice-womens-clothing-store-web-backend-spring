@@ -46,7 +46,7 @@ public class UserController {
         String password = request.getPassword();
 
         // 토큰 생성
-        String token = userService.login(username,password);
+        String token = userService.login(username, password);
 
         // 응답 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -134,5 +134,13 @@ public class UserController {
     public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
         Boolean result = userService.changeInfo(userInfo, request);
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
+    }
+
+    // 적립금 충전 기능
+    @PatchMapping("/addPoint")
+    public ResponseEntity<String> addPonit(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody UserProfileDTO.AddPoint addPointDTO ) {
+
+        Boolean result = userService.addPoint(userInfo, addPointDTO);
+        return ResponseEntity.ok("적립금 충전이 완료됐습니다");
     }
 }

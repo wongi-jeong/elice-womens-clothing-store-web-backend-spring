@@ -154,7 +154,7 @@ public class UserService {
         User savedUser = userRepository.save(user); // DB에 저장
 
         // UserProfile DB에 생성
-        userProfile.setUser(savedUser); //
+        userProfile.setUser(savedUser); // user Entity 맵핑
         userProfile.setGender(userProfileDTO.getGender().getKey());
         userProfile.setPoint(100000); // 처음 가입 시 10만 포인트 증정
         userProfileRepository.save(userProfile);
@@ -281,13 +281,13 @@ public class UserService {
     }
 
     // 회원정보 변경 기능
+    @Transactional
     public Boolean changeInfo(CustomUserDetails userInfo, CommonDTO.ChangeInfoRequest changeInfoRequest) throws PasswordMismatchException {
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
         String username = userInfo.getUsername();
 
         // 현재 인증된 사용자의 정보 담기
         User targetUser = userRepository.findByUsername(username);
-        UserProfile targetUserProfile = targetUser.getUserProfile();
 
         // 클라이언트에서 입력한 데이터 담기
         UserDTO.ChangeInfo userDTO = changeInfoRequest.getUserDTO();
@@ -309,11 +309,32 @@ public class UserService {
             targetUser.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         }
 
-        targetUserProfile = userProfileChangeMapper.toEntity(userProfileDTO);
+        UserProfile targetUserProfile = userProfileChangeMapper.toEntity(userProfileDTO);
 
         targetUser.setUserProfile(targetUserProfile);
         // 사용자의 정보 변경하기
         userRepository.save(targetUser);
+
+        return true;
+    }
+
+    // 적립금 충전 기능
+    @Transactional
+    public Boolean addPoint(CustomUserDetails userInfo, UserProfileDTO.AddPoint addPointDTO) {
+        // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
+        String username = userInfo.getUsername();
+
+        // 현재 인증된 사용자의 정보 담기
+        User targetUser = userRepository.findByUsername(username);
+        UserProfile targetUserProfile = targetUser.getUserProfile();
+
+        // 포인트 충전
+        Integer targetPoint = targetUserProfile.getPoint();
+        targetPoint += addPointDTO.getPoint();
+        targetUserProfile.setPoint(targetPoint);
+
+        // 포인트 충전 후 저장
+        userProfileRepository.save(targetUserProfile);
 
         return true;
     }
