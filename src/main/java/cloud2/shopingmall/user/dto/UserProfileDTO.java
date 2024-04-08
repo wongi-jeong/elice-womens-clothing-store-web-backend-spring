@@ -1,5 +1,6 @@
 package cloud2.shopingmall.user.dto;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -123,6 +124,14 @@ public class UserProfileDTO {
 
         @NotNull(message = "생년월일을 입력해 주세요.")
         private String birthDate;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddPoint {
+        @NotNull(message = "충전할 포인트를 선택해주세요.")
+        private Integer point;
     }
 
     @Getter
