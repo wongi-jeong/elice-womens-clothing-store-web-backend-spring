@@ -56,6 +56,10 @@ public class UserProfileDTO {
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "올바른 이메일 주소 형식이 아닙니다.")
         private String email;
 
+        @NotNull(message = "이름을 입력해 주세요.")
+        @Pattern(regexp = "^[가-힣]*$", message = "한글만 입력 가능합니다.")
+        private String name;
+
         private Source source;
 
         @Getter

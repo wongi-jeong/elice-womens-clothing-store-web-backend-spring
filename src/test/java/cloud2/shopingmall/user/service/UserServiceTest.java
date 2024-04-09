@@ -57,7 +57,7 @@ class UserServiceTest {
     void testJoinProcess() throws PasswordMismatchException {
         // 유저 DTO 및 유저 프로필 DTO 생성
         UserDTO.Join userDTO = new UserDTO.Join("testuser", "Test123!", "Test123!");
-        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("Test Name", "test@example.com", "010-1234-5678",
+        UserProfileDTO.Join userProfileDTO = new UserProfileDTO.Join("Test Name", "test@example.com", "010-1234-5678",123,"test",
                 "123 Test St", UserProfileDTO.Gender.MALE, "1990-01-01");
         // 유저 Entity 및 유저 프로필 Entity 생성
         User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null,null);
@@ -87,7 +87,7 @@ class UserServiceTest {
     @DisplayName("아이디 찾기 테스트")
     void findUserId() {
         // 유저 프로필 DTO 생성
-        UserProfileDTO.FindUser userProfileDTO = new UserProfileDTO.FindUser("010-1234-5678", "test@exampl.com", UserProfileDTO.FindUser.Source.PHONE);
+        UserProfileDTO.FindUser userProfileDTO = new UserProfileDTO.FindUser("010-1234-5678", "test@exampl.com", "test_name",UserProfileDTO.FindUser.Source.PHONE);
         // 유저 Entity 생성
         User user = new User(1L,"testuser", "Test123!", "Role_ADMIN", User.Status.ACTIVE, null,null);
         UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678",11325,"test address", "123 Test St","Male","1990-01-01",100000,null);
@@ -154,7 +154,7 @@ class UserServiceTest {
         UserProfile userProfile = new UserProfile(1L, "Test Name", "test@example.com", "010-1234-5678",11325,"test address", "123 Test St","Male","1990-01-01",100000,null);
 
         UserDTO.Show userDTO = new UserDTO.Show(user.getUsername(), user.getPassword());
-        UserProfileDTO.Show userProfileDTO = new UserProfileDTO.Show(userProfile.getName(), userProfile.getEmail(), userProfile.getPhoneNumber(), userProfile.getAddress(), userProfile.getGender(), userProfile.getBirthDate());
+        UserProfileDTO.Show userProfileDTO = new UserProfileDTO.Show(userProfile.getName(), userProfile.getEmail() ,userProfile.getPhoneNumber(),userProfile.getPostNumber(),userProfile.getAddress(), userProfile.getAddressDetail(), userProfile.getGender(), userProfile.getBirthDate());
 
         // userRepository가 findByUsername 메소드를 호출할 때 가짜 사용자를 반환하도록 설정
         when(userRepository.findByUsername("testuser")).thenReturn(user);

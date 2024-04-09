@@ -167,6 +167,7 @@ public class UserService {
     public String findUserId(UserProfileDTO.FindUser findIdUserDTO) {
 
         UserProfile userProfile = new UserProfile();
+        String name = findIdUserDTO.getName();
         String email = findIdUserDTO.getEmail();
         String phoneNumber = findIdUserDTO.getPhoneNumber();
         String source = findIdUserDTO.getSource().getKey();
@@ -193,6 +194,11 @@ public class UserService {
             }
             userProfile = userProfileRepository.findByEmail(findIdUserDTO.getEmail());
         }
+
+        if (!userProfile.getName().equals(name)){
+            throw new IllegalArgumentException("이름을 정확히 입력해주세요");
+        }
+
 
         String findID = userProfile.getUser().getUsername();
 
