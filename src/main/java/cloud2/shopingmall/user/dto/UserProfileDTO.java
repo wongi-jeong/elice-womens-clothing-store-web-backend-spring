@@ -27,8 +27,14 @@ public class UserProfileDTO {
         @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "올바른 핸드폰 번호 형식이 아닙니다.")
         private String phoneNumber;
 
+        @NotNull(message = "우편번호를 입력해 주세요.")
+        private Integer postNumber;
+
         @NotNull(message = "주소를 입력해 주세요.")
         private String address;
+
+        @NotNull(message = "상세주소를 입력해 주세요.")
+        private String addressDetail;
 
         @NotNull(message = "성별을 선택해 주세요.")
         private Gender gender;
@@ -92,7 +98,11 @@ public class UserProfileDTO {
 
         private String phoneNumber;
 
+        private Integer postNumber;
+
         private String address;
+
+        private String addressDetail;
 
         private String gender;
 
@@ -116,8 +126,14 @@ public class UserProfileDTO {
         @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "올바른 핸드폰 번호 형식이 아닙니다.")
         private String phoneNumber;
 
+        @NotNull(message = "우편번호를 입력해 주세요.")
+        private Integer postNumber;
+
         @NotNull(message = "주소를 입력해 주세요.")
         private String address;
+
+        @NotNull(message = "상세주소를 입력해 주세요.")
+        private String addressDetail;
 
         @NotNull(message = "성별을 선택해 주세요.")
         private Gender gender;

@@ -40,7 +40,7 @@ public class UserService {
 
     private final UserShowMapper userShowMapper;
     private final UserProfileShowMapper userProfileShowMapper;
-    private final UserMainMapper.UserJoinMapper userJoinMapper;
+    private final UserJoinMapper userJoinMapper;
     private final UserProfileJoinMapper userProfileJoinMapper;
     private final UserProfileChangeMapper userProfileChangeMapper;
     private final UserRepository userRepository;
@@ -163,13 +163,15 @@ public class UserService {
     }
 
     // 아이디 찾기 기능
+    @Transactional
     public String findUserId(UserProfileDTO.FindUser findIdUserDTO) {
 
+        UserProfile userProfile = new UserProfile();
         String email = findIdUserDTO.getEmail();
         String phoneNumber = findIdUserDTO.getPhoneNumber();
         String source = findIdUserDTO.getSource().getKey();
 
-        UserProfile userProfile = new UserProfile();
+
 
         if (source.equals("phone")) {
             if (phoneNumber == null) {
