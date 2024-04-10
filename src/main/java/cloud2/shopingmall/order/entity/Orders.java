@@ -25,7 +25,7 @@ public class Orders extends BaseEntity {
     private Long id;
 
     @Column
-    private OrderStatus Status;
+    private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -55,6 +55,20 @@ public class Orders extends BaseEntity {
         OrderStatus(String description){
             this.description = description;
         }
-
+        public String getDescription() {
+            return description;
+        }
+        public static Orders.OrderStatus fromDescription(String description) {
+            for (Orders.OrderStatus status : Orders.OrderStatus.values()) {
+                if (status.getDescription().equals(description)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("No constant with text " + description + " found");
+        }
+    }
+    public Orders(Long id,OrderStatus orderStatus){
+        this.id = id;
+        this.status =orderStatus;
     }
 }

@@ -15,14 +15,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DeliveryDTO {
     @NotEmpty(message = "배송 받으실 분을 입력해주세요.")
-    private String senderName;
+    private String Name;
     @NotEmpty
     @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$",
             message = "전화번호는 010-0000-0000 형식이어야 합니다.")
-    private String senderPhoneNumber;
+    private String PhoneNumber;
     @NotEmpty
-    private String senderAddress;
-    private String senderStatus;
+    private String Address;
+    @NotEmpty
+    private String PostNumber;
+    @NotEmpty
+    private String addressDetail;
+    private String Status;
     private LocalDateTime deliveredAt;
 
     public enum SenderStatus {
@@ -31,8 +35,8 @@ public class DeliveryDTO {
         DELIVERED,
     }
 
-    public String getSenderStatus() {
-        return senderStatus;
+    public String getStatus() {
+        return Status;
     }
 
     /*public void setSenderStatus(String senderStatus) {

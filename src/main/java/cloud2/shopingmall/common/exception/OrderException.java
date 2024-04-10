@@ -26,4 +26,9 @@ public class OrderException{
             super("결제 실패: 유저 적립금 부족 또는 결제 오류");
         }
     }
+    public static class DeliveryException extends RuntimeException {
+        public DeliveryException() {
+            super("배송 정보를 다시 한번 확인해주세요");
+        }
+    }
 }
