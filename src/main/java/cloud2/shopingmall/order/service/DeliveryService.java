@@ -36,7 +36,7 @@ public class DeliveryService {
             throw new OrderException.CustomException();
         }
         Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
-        delivery.setSenderStatus(Delivery.SenderStatus.PREPARING_FOR_DELIVERY);
+        delivery.setStatus(Delivery.SenderStatus.PREPARING_FOR_DELIVERY);
         Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
         delivery.setOrder(order);
         Delivery save = deliveryRepository.save(delivery);
@@ -56,11 +56,19 @@ public class DeliveryService {
     public DeliveryDTO modifyDelivery(DeliveryDTO deliveryDTO,Long orderId){
         //배송지 변경
         Delivery delivery = deliveryRepository.findByOrderId(orderId);
-        delivery.setSenderAddress(deliveryDTO.getSenderAddress());
-        delivery.setSenderName(deliveryDTO.getSenderName());
-        delivery.setSenderPhoneNumber(deliveryDTO.getSenderPhoneNumber());
+        delivery.setAddressDetail(deliveryDTO.getAddressDetail());
+        delivery.setPostNumber(delivery.getPostNumber());
+        delivery.setAddress(deliveryDTO.getAddress());
+        delivery.setName(deliveryDTO.getName());
+        delivery.setPhoneNumber(deliveryDTO.getPhoneNumber());
         Delivery save = deliveryRepository.save(delivery);
         return deliveryMapper.toDto(save);
+    }
+    @Transactional
+    public DeliveryDTO findDelivery(Long orderId){
+        Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundOrderProductException());
+        Delivery delivery = orders.getDelivery();
+        return deliveryMapper.toDto(delivery);
     }
 
  /*public Delivery getDeliveryById(Long deliveryId) {

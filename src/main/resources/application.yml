@@ -3,8 +3,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/shoppingmall # 자신의 환경에 맞게 변경 가능
-    username: team1 # 자신의 환경에 맞게 변경 가능
-    password: team111 # 자신의 환경에 맞게 변경 가능
+    username: root # 자신의 환경에 맞게 변경 가능
+    password: 4231 # 자신의 환경에 맞게 변경 가능
 
 
   jackson:
@@ -19,13 +19,14 @@ spring:
   # spring data jpa 설정
   jpa:
     hibernate:
-      ddl-auto: update # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
+      ddl-auto: none # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
     show-sql: true
     defer-datasource-initialization: true
     open-in-view: false
 
     jackson:
       default-property-inclusion: non_null
+
 
 #server:
 #  port: 80

@@ -23,16 +23,20 @@ public class Delivery {
     private Long id;
 
     @Column
-    private String senderName;
+    private String Name;
 
     @Column
-    private String senderPhoneNumber;
+    private String PhoneNumber;
 
     @Column
-    private String senderAddress;
+    private String PostNumber;
+    @Column
+    private String Address;
+    @Column
+    private String addressDetail;
 
     @Column
-    private SenderStatus senderStatus;
+    private SenderStatus status;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -54,6 +58,22 @@ public class Delivery {
         SenderStatus(String description) {
             this.description = description;
         }
+        public String getDescription() {
+            return description;
+        }
+        public static SenderStatus fromDescription(String description) {
+            for (SenderStatus status : SenderStatus.values()) {
+                if (status.getDescription().equals(description)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("No constant with text " + description + " found");
+        }
+
+    }
+    public Delivery(Long id, SenderStatus status){
+        this.id = id;
+        this.status = status;
     }
 
 

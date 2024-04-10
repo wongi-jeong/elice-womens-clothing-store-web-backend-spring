@@ -66,6 +66,15 @@ public class PaymentService {
         return paymentMapper.toDto(save);
 
     }
+    @Transactional
+    public void refundPoint(String userName,Long orderId){
+        UserProfile userProfile = userProfileRepository.findByUserUsername(userName);
+        Integer userPoint = userProfile.getPoint();
+        Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException());
+        Integer payTotalPrice = order.getPayment().getPayTotalPrice();
+        userProfile.setPoint(userPoint += payTotalPrice);
+        userProfileRepository.save(userProfile);
+    }
 
     /*public PaymentDTO getPaymentById(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId);
