@@ -4,6 +4,7 @@ import cloud2.shopingmall.common.exception.OrderException;
 import cloud2.shopingmall.order.dto.*;
 import cloud2.shopingmall.order.entity.*;
 import cloud2.shopingmall.order.mapper.OrderMainMapper;
+import cloud2.shopingmall.order.repository.DeliveryRepository;
 import cloud2.shopingmall.order.repository.OrderProductRepository;
 import cloud2.shopingmall.order.repository.OrderRepository;
 import cloud2.shopingmall.user.repository.UserRepository;
@@ -29,6 +30,7 @@ public class OrderManagementService {
      */
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final DeliveryRepository deliveryRepository;
     private final OrderMainMapper.OrderProductMapper orderProductMapper;
     private final OrderMainMapper.OrderMapper orderMapper;
     private final OrderProductRepository orderProductRepository;
@@ -65,17 +67,18 @@ public class OrderManagementService {
         return  orderMapper.toDto(savedOrder);
     }
     @Transactional
-    public OrderDTO canceledOrder(Long orderId){
+    public OrderDTO canceledOrder(String userName,Long orderId){
         //주문 상태가 결제완료 혹은 배송 준비일때만 주문 취소 가능
         //추후 환불 로직 추가
 
         Orders order = orderRepository.findById(orderId).orElseThrow(()->new OrderException.OrderNotFoundException(orderId));
-        if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {
+        if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED)) {
             throw new OrderException.OrderCancellationNotAllowedException(order.getId());
         }
 
         order.setStatus(Orders.OrderStatus.ORDER_CANCELLED);
         Orders save = orderRepository.save(order);
+        paymentService.refundPoint(userName,orderId);
         return orderMapper.toDto(save);
 
     }
@@ -122,10 +125,17 @@ public class OrderManagementService {
         orderProductRepository.save(orderProduct);
         orderRepository.save(order);
     }
-
-    public void updateOrder(Long orderId){
+    @Transactional
+    public void updateOrder(Long orderId,String orderStatus){
         Orders order = orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId));
-
+        Orders.OrderStatus orderStatus1 = Orders.OrderStatus.fromDescription(orderStatus);
+        if(orderStatus1 == Orders.OrderStatus.PREPARING_FOR_DELIVERY||
+                orderStatus1 == Orders.OrderStatus.IN_TRANSIT ||
+                orderStatus1 == Orders.OrderStatus.DELIVERED) {
+            Delivery delivery = deliveryRepository.findByOrderId(orderId);
+            delivery.setStatus(Delivery.SenderStatus.fromDescription(orderStatus)); // enum 직접 설정
+        }
+        order.setStatus(orderStatus1);
     }
 
 }

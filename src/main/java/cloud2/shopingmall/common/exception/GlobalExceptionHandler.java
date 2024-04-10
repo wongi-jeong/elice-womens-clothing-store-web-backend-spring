@@ -21,7 +21,8 @@ public class GlobalExceptionHandler {
             OrderException.OrderNotFoundException.class,
             OrderException.CustomException.class,
             OrderException.OrderNotFoundOrderProductException.class,
-            OrderException.OrderCancellationNotAllowedException.class
+            OrderException.OrderCancellationNotAllowedException.class,
+            OrderException.DeliveryException.class
     })
     public ResponseEntity<Object> handleOrderException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
