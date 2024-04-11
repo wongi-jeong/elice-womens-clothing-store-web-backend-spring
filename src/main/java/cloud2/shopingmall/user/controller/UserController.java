@@ -95,6 +95,7 @@ public class UserController {
     @GetMapping("/findID")
     public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
 
+
         String resultId = userService.findUserId(findUserDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body("찾으시는 아이디는 " + resultId + " 입니다.");
