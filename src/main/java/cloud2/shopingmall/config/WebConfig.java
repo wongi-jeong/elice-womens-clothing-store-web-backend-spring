@@ -12,8 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")                  // 다음 경로로 들어오는 요청에 대해
                 .allowedOrigins("http://localhost:5173", "http://localhost:8080") // 다음 경로에서 오는 요청을 허용 하며 (현재는 전부)
                 .allowedMethods("GET", "POST", "PUT", "DELETE")   // 허용되는 메서드
-                .allowedHeaders("Authorization", "Content-Type")  // 허용되는 헤드
-                .exposedHeaders("Custom-Header")                  // 클라이언트측 응답에서 노출되는 헤더를 지정합니다.
+                .allowedHeaders("Authorization")  // 허용되는 헤드
+                .exposedHeaders("Authorization")  // 클라이언트측 응답에서 노출되는 헤더를 지정합니다.
                 .allowCredentials(true)                           // 클라이언트 측에 대한 응답에 credentials(예: 쿠키, 인증 헤더)를 포함할 수 있는지 여부를 지정
                 .maxAge(3600);                                    // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
     }
