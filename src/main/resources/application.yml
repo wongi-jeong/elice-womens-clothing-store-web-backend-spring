@@ -19,7 +19,7 @@ spring:
   # spring data jpa 설정
   jpa:
     hibernate:
-      ddl-auto: none # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
+      ddl-auto: update # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
     show-sql: true
     defer-datasource-initialization: true
     open-in-view: false

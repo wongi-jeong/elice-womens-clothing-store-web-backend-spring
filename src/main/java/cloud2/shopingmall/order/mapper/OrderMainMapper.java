@@ -35,16 +35,31 @@ public interface OrderMainMapper {
     interface OrderInfoMapper extends EntityMapper<Orders, OrderInfoDTO> {
         @Mapping(source = "user.username",target = "userName")
         @Mapping(source = "payment.payTotalPrice",target = "totalPrice")
+        @Mapping(target = "status", ignore = true)
          OrderInfoDTO toDto(Orders order);
+        @AfterMapping
+        default void defineStatusDescription(Orders order, @MappingTarget OrderInfoDTO orderInfoDTO) {
+        if (order.getStatus() != null) {
+            orderInfoDTO.setStatus(order.getStatus().getIndex());
+        }
+
+    }
+            default Orders.OrderStatus map(int value) {
+            return Orders.OrderStatus.findByIndex(value);
+        }
     }
     @Mapper(componentModel = "spring")
     interface OrderDetailMapper extends EntityMapper<Orders, OrderInfoDTO.OrderDetailInfo> {
         @Mapping(source = "user.username",target = "userName")
         @Mapping(source = "payment.payTotalPrice",target = "totalPrice")
         @Mapping(target = "products", ignore = true)
+        @Mapping(target = "status", ignore = true)
         OrderInfoDTO.OrderDetailInfo toDto(Orders order);
         @AfterMapping
         default void customMapping(@MappingTarget OrderInfoDTO.OrderDetailInfo target, Orders source) {
+            if (source.getStatus() != null) {
+                target.setStatus(source.getStatus().getIndex());
+            }
             List<OrderInfoDTO.ProductInfo> productInfoList = new ArrayList<>();
             for (OrderProduct op : source.getOrderProducts()) {
                 OrderInfoDTO.ProductInfo productInfo = new OrderInfoDTO.ProductInfo();
@@ -57,6 +72,9 @@ public interface OrderMainMapper {
                 productInfoList.add(productInfo);
             }
             target.setProducts(productInfoList);
+        }
+        default Orders.OrderStatus map(int value) {
+            return Orders.OrderStatus.findByIndex(value);
         }
     }
 
