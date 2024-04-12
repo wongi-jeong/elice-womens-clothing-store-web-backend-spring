@@ -23,15 +23,15 @@ public class Delivery {
     private Long id;
 
     @Column
-    private String Name;
+    private String name;
 
     @Column
-    private String PhoneNumber;
+    private String phoneNumber;
 
     @Column
-    private String PostNumber;
+    private String postNumber;
     @Column
-    private String Address;
+    private String address;
     @Column
     private String addressDetail;
 
@@ -48,26 +48,25 @@ public class Delivery {
 
 
     public enum SenderStatus {
-        PREPARING_FOR_DELIVERY("배송준비"),
-        IN_TRANSIT("배송중"),
-        DELIVERED("배송완료"),
-        ;
+        배송준비(0),
+        배송중(1),
+        배송완료(2);
 
-        private String description;
+        private final int index;
 
-        SenderStatus(String description) {
-            this.description = description;
+        SenderStatus(int index){
+            this.index = index;
         }
-        public String getDescription() {
-            return description;
+        public  int getIndex() {
+            return index;
         }
-        public static SenderStatus fromDescription(String description) {
-            for (SenderStatus status : SenderStatus.values()) {
-                if (status.getDescription().equals(description)) {
+        public static Delivery.SenderStatus findByIndex(int index){
+            for (Delivery.SenderStatus status : Delivery.SenderStatus.values()) {
+                if (status.index == index) {
                     return status;
                 }
             }
-            throw new IllegalArgumentException("No constant with text " + description + " found");
+            throw new IllegalArgumentException("No constant with index " + index + " found");
         }
 
     }

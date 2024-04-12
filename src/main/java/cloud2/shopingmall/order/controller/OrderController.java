@@ -6,6 +6,7 @@ import cloud2.shopingmall.order.dto.*;
 import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
@@ -54,6 +55,7 @@ public class OrderController {
         //상품 주문지 변경
 
         deliveryService.verifyModify(orderId);
+        log.info("검증완료");
         return ResponseEntity.ok("배송지 변경 가능");
     }
 
@@ -106,7 +108,8 @@ public class OrderController {
     }
     @PostMapping("/{orderId}/update")
     public ResponseEntity<Void> update(@PathVariable("orderId") Long orderId,
-                                   @RequestBody String status){
+                                   @RequestBody int status){
+        log.info("status = {}",status);
         orderManagementService.updateOrder(orderId,status);
         return ResponseEntity.ok().build();
     }

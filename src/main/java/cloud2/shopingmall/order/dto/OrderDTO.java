@@ -18,11 +18,12 @@ public class OrderDTO {
     private List<OrderProductDTO> products;
 
     public enum OrderStatus {
-        PAYMENT_COMPLETED,
-        PREPARING_FOR_DELIVERY,
-        IN_TRANSIT,
-        DELIVERED,
-        ORDER_CANCELLED,
-        REFUND_COMPLETED,
+        결제완료,
+        배송준비,
+        배송중,
+        배송완료,
+        주문취소,
+        환불완료;
+
     }
 }
