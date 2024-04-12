@@ -1,18 +1,15 @@
 package cloud2.shopingmall.product.service;
 
-import cloud2.shopingmall.product.dto.ProductAndCategoryResponseDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
-import cloud2.shopingmall.product.entity.Category;
-import cloud2.shopingmall.product.entity.CategoryProduct;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
 import cloud2.shopingmall.product.entity.ProductDetails;
+import cloud2.shopingmall.product.entity.ProductImage;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.CategoryProductRepository;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
+import cloud2.shopingmall.product.repository.ProductImageRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,14 +26,16 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductBodyRepository productBodyRepository;
+    private final ProductImageRepository productImageRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
     private final CategoryProductRepository categoryProductRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper, CategoryProductRepository categoryProductRepository) {
+    public ProductService(ProductRepository productRepository, ProductImageRepository productImageRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper, CategoryProductRepository categoryProductRepository) {
         this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
@@ -63,7 +62,7 @@ public class ProductService {
 
     }
 
-    public ProductDTO.ProductWithDetailsAndBodiesDTO getProductWithAllDTO(Long id) {
+    public ProductDTO.ProductWithDetailsAndImagesDTO getProductWithAllDTO(Long id) {
 //        Product product = productRepository.findProductWithDetailsAndBodies(id);
         Product product = productRepository.findProductWithDetails(id);
         product = productRepository.findProductWithBodies(id);
@@ -103,6 +102,28 @@ public class ProductService {
 
         return productMapper.toDto(productRepository.save(productMapper.toEntity(productDTO)));
     }
+
+    public ProductDTO.ProductWithDetailsAndImagesDTO saveProductWithImagesDTO(ProductDTO.ProductWithDetailsAndImagesDTO productDTO) {
+
+        Product product = productWithDetailsAndBodiesMapper.toEntity(productDTO);
+
+        System.out.println(product);
+
+        for (ProductBody productBody : product.getProductBodies()) {
+            productBody.setProduct(product);
+
+        }
+        for (ProductImage productImage : product.getProductImages()) {
+            productImage.setProduct(product);
+
+        }
+        Product createdProduct = productRepository.save(product);
+        productBodyRepository.saveAll(product.getProductBodies());
+        productImageRepository.saveAll(product.getProductImages());
+
+        return getProductWithAllDTO(createdProduct.getId());
+    }
+
 
     public Product updateProduct(Product product) {
 

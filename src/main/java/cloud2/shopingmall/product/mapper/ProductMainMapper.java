@@ -27,17 +27,17 @@ public interface ProductMainMapper {
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
-    interface ProductWithDetailsAndBodiesMapper extends EntityMapper<Product, ProductDTO.ProductWithDetailsAndBodiesDTO> {
+    interface ProductWithDetailsAndBodiesMapper extends EntityMapper<Product, ProductDTO.ProductWithDetailsAndImagesDTO> {
 
         @Mapping(source = "productBodies", target = "productBodyDTOList")
         @Mapping(source = "productImages", target = "productImageDTOList")
         @Mapping(source = "productDetails", target = "productDetailsDTOList")
-        ProductDTO.ProductWithDetailsAndBodiesDTO toDto(Product product);
+        ProductDTO.ProductWithDetailsAndImagesDTO toDto(Product product);
 
         @Mapping(source = "productBodyDTOList", target = "productBodies")
         @Mapping(source = "productDetailsDTOList", target = "productDetails")
         @Mapping(source = "productImageDTOList", target = "productImages")
-        Product toEntity(ProductDTO.ProductWithDetailsAndBodiesDTO productWithDetailsAndBodiesDTO);
+        Product toEntity(ProductDTO.ProductWithDetailsAndImagesDTO productWithDetailsAndImagesDTO);
 
     }
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
