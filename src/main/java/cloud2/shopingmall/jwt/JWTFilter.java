@@ -45,6 +45,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (jwtUtil.isExpired(token)) {
 
             filterChain.doFilter(request, response);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 시간이 만료되었습니다.");
 
             // 토큰의 인증시간이 만료일 경우 인증 실패
             // 다음 필터로 요청을 전달
