@@ -18,8 +18,7 @@ public class ProductDetails {
     @Column
     private String name;
 
-    @Column
-    private Integer price;
+
     @Column
     private Size size;
     @Column

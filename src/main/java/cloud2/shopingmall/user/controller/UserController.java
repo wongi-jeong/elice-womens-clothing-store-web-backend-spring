@@ -8,6 +8,7 @@ import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +47,7 @@ public class UserController {
         String password = request.getPassword();
 
         // 토큰 생성
-        String token = userService.login(username,password);
+        String token = userService.login(username, password);
 
         // 응답 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -63,7 +64,7 @@ public class UserController {
     // 회원가입 기능
     // 하나의 메서드에서는 하나의 @RequestBody만 사용 가능하다
     @PostMapping("/join")
-    public ResponseEntity<String> joinProcess(@RequestBody CommonDTO.JoinRequest request,
+    public ResponseEntity<String> joinProcess(@RequestBody @Valid CommonDTO.JoinRequest request,
                                               BindingResult bindingResult) throws PasswordMismatchException {
         UserDTO.Join userDTO = request.getUserDTO();
         UserProfileDTO.Join userProfileDTO = request.getUserProfileDTO();
@@ -93,6 +94,7 @@ public class UserController {
     // 아이디 찾기 기능
     @GetMapping("/findID")
     public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
+
 
         String resultId = userService.findUserId(findUserDTO);
 
@@ -134,5 +136,13 @@ public class UserController {
     public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
         Boolean result = userService.changeInfo(userInfo, request);
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
+    }
+
+    // 적립금 충전 기능
+    @PatchMapping("/addPoint")
+    public ResponseEntity<String> addPonit(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody UserProfileDTO.AddPoint addPointDTO ) {
+
+        Boolean result = userService.addPoint(userInfo, addPointDTO);
+        return ResponseEntity.ok("적립금 충전이 완료됐습니다");
     }
 }

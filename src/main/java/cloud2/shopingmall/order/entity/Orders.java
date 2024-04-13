@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Setter
 @Getter
@@ -25,7 +26,7 @@ public class Orders extends BaseEntity {
     private Long id;
 
     @Column
-    private OrderStatus Status;
+    private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -42,19 +43,42 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
+    @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime modifiedAt;
+
     public enum OrderStatus {
-        PAYMENT_COMPLETED("결제완료"),
-        PREPARING_FOR_DELIVERY("배송준비"),
-        IN_TRANSIT("배송중"),
-        DELIVERED("배송완료"),
-        ORDER_CANCELLED("주문취소"),
-        REFUND_COMPLETED("환불완료");
+        결제완료(0),
+        배송준비(1),
+        배송중(2),
+        배송완료(3),
+        주문취소(4),
+        환불완료(5);
 
-        private final String description;
+        private final int index;
 
-        OrderStatus(String description){
-            this.description = description;
+        OrderStatus(int index){
+            this.index = index;
         }
+        public  int getIndex() {
+            return index;
+         }
 
+        public static OrderStatus findByIndex(int index){
+            for (OrderStatus status : OrderStatus.values()) {
+                if (status.index == index) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("No constant with index " + index + " found");
+        }
+    }
+    public Orders(Long id,OrderStatus orderStatus){
+        this.id = id;
+        this.status =orderStatus;
     }
 }

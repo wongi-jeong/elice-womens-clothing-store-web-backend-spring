@@ -45,9 +45,6 @@ public class User extends BaseEntity {
         ACTIVE,
         DEACTIVE,
         DELETED
-
-
-
     }
 
 }

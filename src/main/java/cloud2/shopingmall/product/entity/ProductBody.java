@@ -23,9 +23,6 @@ public class ProductBody extends BaseEntity {
     private String url;
 
     @Column
-    private String description;
-
-    @Column
     private Integer sizeKB;
 
     @Column
@@ -36,18 +33,34 @@ public class ProductBody extends BaseEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public ProductBody(String url, String description) {
+    public ProductBody(String url) {
         this.url = url;
-        this.description = description;
     }
 
-    public ProductBody(Integer sequence, String url, String description) {
+    public ProductBody(Integer sequence, String url) {
         this.sequence = sequence;
         this.url = url;
-        this.description = description;
     }
 
     public enum ImageFormat {
-        JPG, JPEG, PNG, PDF
+        JPG("jpg"), JPEG("jpeg"), PNG("png"), PDF("pdf");
+
+        private final String format;
+
+        ImageFormat(String format){
+            this.format = format;
+        }
+        public String getFormat() {
+            return format;
+        }
+        public static ProductBody.ImageFormat fromFormat(String format) {
+            for (ProductBody.ImageFormat imageFormat : ProductBody.ImageFormat.values()) {
+                if (imageFormat.getFormat().equals(format)) {
+                    return imageFormat;
+                }
+            }
+            throw new IllegalArgumentException("No constant with imageFormat " + format + " found");
+        }
+
     }
 }

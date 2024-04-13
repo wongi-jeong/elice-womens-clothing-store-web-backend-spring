@@ -1,6 +1,8 @@
 package cloud2.shopingmall.user.dto;
 
 import cloud2.shopingmall.user.entity.UserProfile;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -13,6 +15,7 @@ public class UserDTO {
     @AllArgsConstructor
     public static class Join {
         @NotNull(message = "아이디를 입력해 주세요.")
+        @NotEmpty(message = "아이디를 입력해 주세요.")
         private String username;
 
         @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@])[A-Za-z\\d!@]{8,}$",
@@ -27,6 +30,8 @@ public class UserDTO {
     @AllArgsConstructor
     public static class ChangePassword {
 
+        @NotNull(message = "아이디를 입력해 주세요.")
+        @NotEmpty(message = "아이디를 입력해 주세요.")
         private String username;
 
         @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@])[A-Za-z\\d!@]{8,}$",
@@ -52,6 +57,7 @@ public class UserDTO {
     public static class ChangeInfo {
 
         @NotNull(message = "현재 비밀번호를 입력해주세요.")
+        @NotBlank(message = "현재 비밀번호를 입력해주세요.")
         private String currentPassword;
 
         private String password;
@@ -66,6 +72,7 @@ public class UserDTO {
     public static class LoginRequest {
 
         @NotNull(message = "아이디를 입력해 주세요.")
+        @NotEmpty(message = "아이디를 입력해 주세요.")
         private String username;
 
         @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)(?=.*[!@])[A-Za-z\\d!@]{8,}$",

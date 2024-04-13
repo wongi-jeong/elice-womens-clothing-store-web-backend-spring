@@ -13,7 +13,6 @@ public class ProductDetailsDTO {
 
     private Long id;
     private String name;
-    private Integer price;
     private ProductDetails.Size size;
     private ProductDetails.Color color;
     private Integer quantity;

@@ -7,6 +7,7 @@ import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.mapper.OrderMainMapper;
 import cloud2.shopingmall.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import cloud2.shopingmall.order.entity.Delivery;
 import cloud2.shopingmall.order.repository.DeliveryRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeliveryService {
     /**
      * 배송 시작
@@ -36,7 +38,7 @@ public class DeliveryService {
             throw new OrderException.CustomException();
         }
         Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
-        delivery.setSenderStatus(Delivery.SenderStatus.PREPARING_FOR_DELIVERY);
+        delivery.setStatus(Delivery.SenderStatus.배송준비);
         Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
         delivery.setOrder(order);
         Delivery save = deliveryRepository.save(delivery);
@@ -48,7 +50,7 @@ public class DeliveryService {
     @Transactional
     public void verifyModify(Long orderId){
         Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
-        if(!(order.getStatus() == Orders.OrderStatus.PAYMENT_COMPLETED || order.getStatus() == Orders.OrderStatus.PREPARING_FOR_DELIVERY)) {
+        if(!(order.getStatus() == Orders.OrderStatus.결제완료 || order.getStatus() == Orders.OrderStatus.배송준비)) {
             throw new OrderException.OrderCancellationNotAllowedException(order.getId());
         }
     }
@@ -56,11 +58,19 @@ public class DeliveryService {
     public DeliveryDTO modifyDelivery(DeliveryDTO deliveryDTO,Long orderId){
         //배송지 변경
         Delivery delivery = deliveryRepository.findByOrderId(orderId);
-        delivery.setSenderAddress(deliveryDTO.getSenderAddress());
-        delivery.setSenderName(deliveryDTO.getSenderName());
-        delivery.setSenderPhoneNumber(deliveryDTO.getSenderPhoneNumber());
+        delivery.setAddressDetail(deliveryDTO.getAddressDetail());
+        delivery.setPostNumber(deliveryDTO.getPostNumber());
+        delivery.setAddress(deliveryDTO.getAddress());
+        delivery.setName(deliveryDTO.getName());
+        delivery.setPhoneNumber(deliveryDTO.getPhoneNumber());
         Delivery save = deliveryRepository.save(delivery);
         return deliveryMapper.toDto(save);
+    }
+    @Transactional
+    public DeliveryDTO findDelivery(Long orderId){
+        Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundOrderProductException());
+        Delivery delivery = orders.getDelivery();
+        return deliveryMapper.toDto(delivery);
     }
 
  /*public Delivery getDeliveryById(Long deliveryId) {

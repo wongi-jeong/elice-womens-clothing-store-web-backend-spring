@@ -23,16 +23,20 @@ public class Delivery {
     private Long id;
 
     @Column
-    private String senderName;
+    private String name;
 
     @Column
-    private String senderPhoneNumber;
+    private String phoneNumber;
 
     @Column
-    private String senderAddress;
+    private String postNumber;
+    @Column
+    private String address;
+    @Column
+    private String addressDetail;
 
     @Column
-    private SenderStatus senderStatus;
+    private SenderStatus status;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -44,16 +48,31 @@ public class Delivery {
 
 
     public enum SenderStatus {
-        PREPARING_FOR_DELIVERY("배송준비"),
-        IN_TRANSIT("배송중"),
-        DELIVERED("배송완료"),
-        ;
+        배송준비(0),
+        배송중(1),
+        배송완료(2);
 
-        private String description;
+        private final int index;
 
-        SenderStatus(String description) {
-            this.description = description;
+        SenderStatus(int index){
+            this.index = index;
         }
+        public  int getIndex() {
+            return index;
+        }
+        public static Delivery.SenderStatus findByIndex(int index){
+            for (Delivery.SenderStatus status : Delivery.SenderStatus.values()) {
+                if (status.index == index) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("No constant with index " + index + " found");
+        }
+
+    }
+    public Delivery(Long id, SenderStatus status){
+        this.id = id;
+        this.status = status;
     }
 
 

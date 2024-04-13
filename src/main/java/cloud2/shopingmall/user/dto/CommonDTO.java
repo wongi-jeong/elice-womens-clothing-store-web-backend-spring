@@ -4,16 +4,18 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+
 
 public class CommonDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class JoinRequest {
-        @Valid
+
         private UserDTO.Join userDTO;
 
-        @Valid
+
         private UserProfileDTO.Join userProfileDTO;
     }
 
@@ -31,9 +33,9 @@ public class CommonDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChangeInfoRequest {
-        @Valid
+
         private UserDTO.ChangeInfo userDTO;
-        @Valid
+
         private UserProfileDTO.ChangeInfo userProfileDTO;
     }
 
