@@ -92,7 +92,7 @@ public class UserController {
     }
 
     // 아이디 찾기 기능
-    @GetMapping("/findID")
+    @PostMapping("/findID")
     public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
 
 
@@ -102,7 +102,7 @@ public class UserController {
     }
 
     // 비밀번호 찾기 기능 필터
-    @GetMapping("/findPassword")
+    @PostMapping("/findPassword")
     public ResponseEntity<String> findPasswordFilter(@RequestBody UserProfileDTO.FindPassword findPasswordDTO) {
 
         if (!userService.findPasswordFilter(findPasswordDTO)) {
@@ -127,6 +127,9 @@ public class UserController {
     // 마이페이지 이동시 현재 로그인한 사용자 정보 조회 기능
     @GetMapping("/myInfor")
     public ResponseEntity<CommonDTO.ShowResponse> showMyInfo(@AuthenticationPrincipal CustomUserDetails userInfo) {
+        if(userInfo == null){
+            throw new NullPointerException("Token is null");
+        }
         CommonDTO.ShowResponse dtos = userService.showUser(userInfo);
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }

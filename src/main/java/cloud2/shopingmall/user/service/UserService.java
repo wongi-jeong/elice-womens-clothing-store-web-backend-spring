@@ -79,7 +79,7 @@ public class UserService {
         User userData = userRepository.findByUsername(username);
 
         if (userData == null) {
-            throw new UsernameNotFoundException("회원가입을 해주세요");
+            throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
         }
 
         // DB에 사용자가 존재해 데이터가 있을 경우 '사용자의 인증 및 권한 정보를 제공하는 역할'을 하는 UserDetails 객체 반환
