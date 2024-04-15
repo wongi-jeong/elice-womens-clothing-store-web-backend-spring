@@ -148,4 +148,11 @@ public class UserController {
         Boolean result = userService.addPoint(userInfo, addPointDTO);
         return ResponseEntity.ok("적립금 충전이 완료됐습니다");
     }
+
+    /////////////////////////////////////// 관리자 기능 /////////////////////////////////////////////////
+    @GetMapping("/allUser")
+    public ResponseEntity<List<UserDTO.ShowAllUser>> showAllUser() {
+        List<UserDTO.ShowAllUser> dtos = userService.showUserList();
+        return ResponseEntity.ok(dtos);
+    }
 }
