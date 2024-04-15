@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -79,7 +80,7 @@ public class UserService {
         User userData = userRepository.findByUsername(username);
 
         if (userData == null) {
-            throw new UsernameNotFoundException("회원가입을 해주세요");
+            throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
         }
 
         // DB에 사용자가 존재해 데이터가 있을 경우 '사용자의 인증 및 권한 정보를 제공하는 역할'을 하는 UserDetails 객체 반환
@@ -273,6 +274,11 @@ public class UserService {
     // 로그인한 사용자 정보 조회 기능
     public CommonDTO.ShowResponse showUser(CustomUserDetails userInfo) {
 
+        if(userInfo == null){
+            throw new AuthenticationCredentialsNotFoundException("Token is null");
+        }
+
+
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
         String username = userInfo.getUsername();
 
@@ -291,44 +297,45 @@ public class UserService {
     // 회원정보 변경 기능
     @Transactional
     public Boolean changeInfo(CustomUserDetails userInfo, CommonDTO.ChangeInfoRequest changeInfoRequest) throws PasswordMismatchException {
+        if (userInfo == null) {
+            throw new AuthenticationCredentialsNotFoundException("Token is null");
+        }
+
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
         String username = userInfo.getUsername();
 
         // 현재 인증된 사용자의 정보 담기
         User targetUser = userRepository.findByUsername(username);
+        UserProfile targetUserProfile = targetUser.getUserProfile();
 
         // 클라이언트에서 입력한 데이터 담기
-        UserDTO.ChangeInfo userDTO = changeInfoRequest.getUserDTO();
         UserProfileDTO.ChangeInfo userProfileDTO = changeInfoRequest.getUserProfileDTO();
 
-        // 등록되어 있는 비밀번호가 입력한 비밀번호와 맞는지 비교하기
-        String currentPassword = userDTO.getCurrentPassword();
-        if (!bCryptPasswordEncoder.matches(currentPassword, targetUser.getPassword())) {
-            throw new PasswordMismatchException("정확한 비밀번호를 입력해 주세요.");
-        }
+        targetUserProfile.setName(userProfileDTO.getName());
+        targetUserProfile.setEmail(userProfileDTO.getEmail());
+        targetUserProfile.setPhoneNumber(userProfileDTO.getPhoneNumber());
+        targetUserProfile.setGender(userProfileDTO.getGender().getKey());
+        targetUserProfile.setBirthDate(userProfileDTO.getBirthDate());
+        targetUserProfile.setPostNumber(userProfileDTO.getPostNumber());
+        targetUserProfile.setAddress(userProfileDTO.getAddress());
+        targetUserProfile.setAddressDetail(userProfileDTO.getAddressDetail());
 
-        // 비밀번호를 바꿀 경우 == 입력한 비밀번호가 null 값이 아닌 경우
-        if (userDTO.getPassword() != null) {
-            // 비밀번호를 두 번 제대로 입력했는지 확인하기
-            if (!userDTO.getPassword().equals(userDTO.getSecondPassword())) {
-                throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
-            }
-            // 입력한 비밀번호를 암호화하여 Entity에 저장
-            targetUser.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-        }
 
-        UserProfile targetUserProfile = userProfileChangeMapper.toEntity(userProfileDTO);
-
-        targetUser.setUserProfile(targetUserProfile);
         // 사용자의 정보 변경하기
-        userRepository.save(targetUser);
+        userProfileRepository.save(targetUserProfile); // UserProfile 엔티티 먼저 저장
 
         return true;
     }
 
+
+
     // 적립금 충전 기능
     @Transactional
     public Boolean addPoint(CustomUserDetails userInfo, UserProfileDTO.AddPoint addPointDTO) {
+        if(userInfo == null){
+            throw new AuthenticationCredentialsNotFoundException("Token is null");
+        }
+
         // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
         String username = userInfo.getUsername();
 
