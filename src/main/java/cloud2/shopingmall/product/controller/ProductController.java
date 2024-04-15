@@ -1,6 +1,7 @@
 package cloud2.shopingmall.product.controller;
 
 
+import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.dto.ProductBodyDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
 import cloud2.shopingmall.product.dto.ProductImageDTO;
@@ -67,6 +68,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> postProductWithImages(@RequestParam("title") String title,
                                                         @RequestParam("price") Integer price,
+                                                                                           @RequestPart("categoryDTO") CategoryDTO categoryDTO,
                                               @RequestPart("productImages") List<MultipartFile> productImagesFile,
                                               @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
 
@@ -143,7 +145,7 @@ public class ProductController {
         System.out.println(productDTO);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.saveProductWithImagesDTO(productDTO));
+                .body(productService.saveProductWithImagesAndCategoryDTO(productDTO, categoryDTO));
     }
 
 
