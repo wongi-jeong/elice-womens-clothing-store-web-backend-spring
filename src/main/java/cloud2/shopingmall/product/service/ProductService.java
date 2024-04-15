@@ -2,6 +2,7 @@ package cloud2.shopingmall.product.service;
 
 import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
+import cloud2.shopingmall.product.dto.ProductDetailsDTO;
 import cloud2.shopingmall.product.entity.*;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.*;
@@ -22,6 +23,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductBodyRepository productBodyRepository;
     private final ProductImageRepository productImageRepository;
+    private final ProductDetailsRepository productDetailsRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
@@ -30,10 +32,12 @@ public class ProductService {
 
     @Autowired
     public ProductService(ProductRepository productRepository, ProductImageRepository productImageRepository, ProductBodyRepository productBodyRepository,
+                          ProductDetailsRepository productDetailsRepository,
                           ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper,
                           CategoryProductRepository categoryProductRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
+        this.productDetailsRepository = productDetailsRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
@@ -116,9 +120,16 @@ public class ProductService {
             productImage.setProduct(product);
 
         }
+
+        for (ProductDetails productDetails : product.getProductDetails()) {
+            productDetails.setProduct(product);
+
+        }
+
         Product createdProduct = productRepository.save(product);
         productBodyRepository.saveAll(product.getProductBodies());
         productImageRepository.saveAll(product.getProductImages());
+        productDetailsRepository.saveAll(product.getProductDetails());
         CategoryProduct categoryProduct = new CategoryProduct();
         Category category = categoryRepository.getReferenceById(categoryDTO.getId());
         categoryProduct.setCategory(category);
