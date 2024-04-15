@@ -42,15 +42,15 @@ public class ProductDetails {
     }
 
     public enum ProductStatus {
-        ON, OFF, ONE, TWO
+        ON, OFF
     }
 
     public enum Size {
-        ONE, TWO, THREE
+        S, M, L, XL, XXL
     }
 
     public enum Color {
-        ONE, TWO, THREE
+        BLACK, WHITE, RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO, PURPLE, BROWN, GRAY, NAVY, KHAKI
     }
 
 
