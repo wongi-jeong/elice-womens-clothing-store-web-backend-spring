@@ -73,6 +73,23 @@ public class UserService {
 
     }
 
+    public void createAdminIfNotExists() {
+        if (!userRepository.existsByUsername("admin")) {
+            // 운영자 계정 생성 로직
+            User user = new User();
+            UserProfile userProfile = new UserProfile();
+
+            userProfile.setName("ADMIN");
+            user.setUsername("admin");
+            user.setUserRole("ROLE_ADMIN");
+            user.setPassword(bCryptPasswordEncoder.encode("1234")); // 패스워드 암호화는 필요한 경우에만
+            userRepository.save(user);
+
+            userProfile.setUser(user);
+            userProfileRepository.save(userProfile);
+        }
+    }
+
     // 회원 로그인 기능
     public String login(String username, String password) throws UsernameNotFoundException, PasswordMismatchException {
         // 1. 사용자 DB에서 사용자 조회
@@ -151,7 +168,7 @@ public class UserService {
         // User DB에 생성
         user.setStatus(User.Status.ACTIVE); // 처음 가입시 계정상태 활성화 상태
         user.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
-        user.setUserRole("ROLE_ADMIN"); // Role 부여
+        user.setUserRole("ROLE_USER"); // Role 부여
         User savedUser = userRepository.save(user); // DB에 저장
 
         // UserProfile DB에 생성
