@@ -9,19 +9,15 @@ import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
-import cloud2.shopingmall.user.mapper.UserMainMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileShowMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileChangeMapper;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowAllMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +37,7 @@ import java.util.List;
 public class UserService {
 
     private final UserShowMapper userShowMapper;
+    private final UserShowAllMapper userShowAllMapper;
     private final UserProfileShowMapper userProfileShowMapper;
     private final UserJoinMapper userJoinMapper;
     private final UserProfileJoinMapper userProfileJoinMapper;
@@ -58,6 +56,7 @@ public class UserService {
                        UserRepository userRepository, UserProfileRepository userProfileRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder, UserShowMapper userShowMapper,
                        UserProfileShowMapper userProfileShowMapper, UserProfileChangeMapper userProfileChangeMapper,
+                       UserShowAllMapper userShowAllMapper,
                        AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
 
         this.userProfileJoinMapper = userProfileJoinMapper;
@@ -66,11 +65,29 @@ public class UserService {
         this.userProfileChangeMapper = userProfileChangeMapper;
         this.userShowMapper = userShowMapper;
         this.userRepository = userRepository;
+        this.userShowAllMapper = userShowAllMapper;
         this.userProfileRepository = userProfileRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
 
+    }
+
+    public void createAdminIfNotExists() {
+        if (!userRepository.existsByUsername("admin")) {
+            // 운영자 계정 생성 로직
+            User user = new User();
+            UserProfile userProfile = new UserProfile();
+
+            userProfile.setName("ADMIN");
+            user.setUsername("admin");
+            user.setUserRole("ROLE_ADMIN");
+            user.setPassword(bCryptPasswordEncoder.encode("1234")); // 패스워드 암호화는 필요한 경우에만
+            userRepository.save(user);
+
+            userProfile.setUser(user);
+            userProfileRepository.save(userProfile);
+        }
     }
 
     // 회원 로그인 기능
@@ -151,7 +168,7 @@ public class UserService {
         // User DB에 생성
         user.setStatus(User.Status.ACTIVE); // 처음 가입시 계정상태 활성화 상태
         user.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
-        user.setUserRole("ROLE_ADMIN"); // Role 부여
+        user.setUserRole("ROLE_USER"); // Role 부여
         User savedUser = userRepository.save(user); // DB에 저장
 
         // UserProfile DB에 생성
@@ -311,6 +328,8 @@ public class UserService {
         // 클라이언트에서 입력한 데이터 담기
         UserProfileDTO.ChangeInfo userProfileDTO = changeInfoRequest.getUserProfileDTO();
 
+
+        targetUserProfile.setUser(targetUser);
         targetUserProfile.setName(userProfileDTO.getName());
         targetUserProfile.setEmail(userProfileDTO.getEmail());
         targetUserProfile.setPhoneNumber(userProfileDTO.getPhoneNumber());
@@ -352,5 +371,25 @@ public class UserService {
         userProfileRepository.save(targetUserProfile);
 
         return true;
+    }
+
+    /////////////////////////////////// 관리자 기능 /////////////////////////////////////
+    // 로그인한 사용자 정보 조회 기능
+    public List<UserDTO.ShowAllUser> showUserList() {
+
+        List<User> userList = userRepository.findAll();
+
+        List<UserDTO.ShowAllUser> userDTOList = new ArrayList<>();
+
+        for(int i=0; i<userList.size(); i++){
+            UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
+            User user = userList.get(i);
+            UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setUserProfileDTO(userProfileDTO);
+            userDTOList.add(userDTO);
+        }
+
+        return userDTOList;
     }
 }

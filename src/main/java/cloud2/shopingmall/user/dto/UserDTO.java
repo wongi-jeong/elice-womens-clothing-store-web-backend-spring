@@ -89,9 +89,7 @@ public class UserDTO {
 
         private String username;
 
-        private String password;
-
-        private UserProfile userProfile;
+        private UserProfileDTO.Show userProfileDTO;
     }
 
 }
