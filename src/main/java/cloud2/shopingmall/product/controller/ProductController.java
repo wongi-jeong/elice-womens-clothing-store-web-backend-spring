@@ -1,9 +1,7 @@
 package cloud2.shopingmall.product.controller;
 
 
-import cloud2.shopingmall.product.dto.ProductBodyDTO;
-import cloud2.shopingmall.product.dto.ProductDTO;
-import cloud2.shopingmall.product.dto.ProductImageDTO;
+import cloud2.shopingmall.product.dto.*;
 import cloud2.shopingmall.product.entity.ProductBody;
 import cloud2.shopingmall.product.entity.ProductImage;
 import cloud2.shopingmall.product.service.ProductService;
@@ -67,12 +65,15 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> postProductWithImages(@RequestParam("title") String title,
                                                         @RequestParam("price") Integer price,
+                                                                                           @RequestPart("categoryDTO") CategoryDTO categoryDTO,
+                                                                                           @RequestPart("productDetails") List<ProductDetailsDTO> productDetailsDTOList,
                                               @RequestPart("productImages") List<MultipartFile> productImagesFile,
                                               @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
 
 
-        String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/images";
+        String uploadDir = System.getProperty("user.dir") + "/static/images";
         String baseUrl = "http://localhost:8080/files/";
+
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
@@ -136,6 +137,7 @@ public class ProductController {
         ProductDTO.ProductWithDetailsAndImagesDTO productDTO = ProductDTO.ProductWithDetailsAndImagesDTO.builder()
                 .productBodyDTOList(productBodyDTOList)
                 .productImageDTOList(productImageDTOList)
+                .productDetailsDTOList(productDetailsDTOList)
                 .name(title)
                 .price(price)
                 .imageUrl(productImageDTOList.get(0).getUrl())
@@ -143,7 +145,7 @@ public class ProductController {
         System.out.println(productDTO);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.saveProductWithImagesDTO(productDTO));
+                .body(productService.saveProductWithImagesAndCategoryDTO(productDTO, categoryDTO));
     }
 
 
