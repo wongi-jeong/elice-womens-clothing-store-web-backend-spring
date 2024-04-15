@@ -34,8 +34,6 @@ public class CommonDTO {
     @AllArgsConstructor
     public static class ChangeInfoRequest {
 
-        private UserDTO.ChangeInfo userDTO;
-
         private UserProfileDTO.ChangeInfo userProfileDTO;
     }
 

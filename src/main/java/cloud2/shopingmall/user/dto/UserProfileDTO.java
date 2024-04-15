@@ -105,6 +105,8 @@ public class UserProfileDTO {
 
         private String birthDate;
 
+        private Integer point;
+
     }
 
     @Data
