@@ -18,6 +18,9 @@ import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowAllMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -377,19 +381,38 @@ public class UserService {
     // 로그인한 사용자 정보 조회 기능
     public List<UserDTO.ShowAllUser> showUserList() {
 
-        List<User> userList = userRepository.findAll();
+        int page = 0;
+        int size = 5;
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
 
-        List<UserDTO.ShowAllUser> userDTOList = new ArrayList<>();
+        PageRequest pageRequest = PageRequest.of(page,size,sort);
+        Page<User> userPage = userRepository.findAll(pageRequest);
 
-        for(int i=0; i<userList.size(); i++){
-            UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
-            User user = userList.get(i);
-            UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
-            userDTO.setUsername(user.getUsername());
-            userDTO.setUserProfileDTO(userProfileDTO);
-            userDTOList.add(userDTO);
-        }
+        List<UserDTO.ShowAllUser> dtos = userPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        System.out.println(dtos);
 
-        return userDTOList;
+//        List<User> userList = userRepository.findAll();
+//
+//        List<UserDTO.ShowAllUser> userDTOList = new ArrayList<>();
+//
+//        for(int i=0; i<userList.size(); i++){
+//            UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
+//            User user = userList.get(i);
+//            UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
+//            userDTO.setUsername(user.getUsername());
+//            userDTO.setUserProfileDTO(userProfileDTO);
+//            userDTOList.add(userDTO);
+//        }
+
+        return dtos;
+    }
+
+    private UserDTO.ShowAllUser convertToDto(User user) {
+        UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
+        userDTO.setUsername(user.getUsername());
+        userDTO.setUserProfileDTO(userProfileShowMapper.toDto(user.getUserProfile()));
+        return userDTO;
     }
 }
