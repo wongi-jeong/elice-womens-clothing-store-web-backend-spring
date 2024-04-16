@@ -2,6 +2,7 @@ package cloud2.shopingmall.order.dto;
 
 import cloud2.shopingmall.order.entity.Delivery;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
