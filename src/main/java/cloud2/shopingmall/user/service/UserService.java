@@ -378,7 +378,7 @@ public class UserService {
     }
 
     /////////////////////////////////// 관리자 기능 /////////////////////////////////////
-    // 로그인한 사용자 정보 조회 기능
+    // 사용자 정보 조회 기능
     public List<UserDTO.ShowAllUser> showUserList() {
 
         int page = 0;
@@ -391,20 +391,6 @@ public class UserService {
         List<UserDTO.ShowAllUser> dtos = userPage.getContent().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-        System.out.println(dtos);
-
-//        List<User> userList = userRepository.findAll();
-//
-//        List<UserDTO.ShowAllUser> userDTOList = new ArrayList<>();
-//
-//        for(int i=0; i<userList.size(); i++){
-//            UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
-//            User user = userList.get(i);
-//            UserProfileDTO.Show userProfileDTO = userProfileShowMapper.toDto(user.getUserProfile());
-//            userDTO.setUsername(user.getUsername());
-//            userDTO.setUserProfileDTO(userProfileDTO);
-//            userDTOList.add(userDTO);
-//        }
 
         return dtos;
     }
