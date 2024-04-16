@@ -7,10 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    // 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")                  // 다음 경로로 들어오는 요청에 대해
-                .allowedOrigins("http://localhost:80", "http://localhost:8080", "http://localhost:5173","http://localhost","http://34.64.51.12","http://34.64.51.12:80") // 다음 경로에서 오는 요청을 허용 하며 (현재는 전부)
+
+                .allowedOrigins("http://localhost:80" , "http://localhost:5173", "http://localhost:8080","http://localhost","http://34.64.51.12","http://34.64.51.12:80" ) // 다음 경로에서 오는 요청을 허용 하며 (현재는 전부)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")   // 허용되는 메서드
                 .allowedHeaders("Authorization", "Content-Type")  // 허용되는 헤드
                 .exposedHeaders("Authorization", "Content-Type")  // 클라이언트측 응답에서 노출되는 헤더를 지정합니다.
