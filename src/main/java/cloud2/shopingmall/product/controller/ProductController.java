@@ -6,6 +6,7 @@ import cloud2.shopingmall.product.entity.ProductBody;
 import cloud2.shopingmall.product.entity.ProductImage;
 import cloud2.shopingmall.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+//
+//    @Value("${app.images.path}")
+//    private String uploadDir;
+//
+//    @Value("${app.images.path}")
+//    private String imagePath;
 
     private final ProductService productService;
 
@@ -72,8 +79,7 @@ public class ProductController {
 
 
         String uploadDir = System.getProperty("user.dir") + "/static/images";
-        String baseUrl = "http://localhost:8080/files/";
-
+        String imagePath = "/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
@@ -88,7 +94,7 @@ public class ProductController {
         for (MultipartFile file : productImagesFile) {
             String fileName = file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
-            String imageUrl = "/images/" + fileName;
+            String imageUrl = imagePath + fileName;
 
             try {
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -113,7 +119,7 @@ public class ProductController {
         for (MultipartFile file : productBodiesFile) {
             String fileName = file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
-            String imageUrl = "/images/" + fileName;
+            String imageUrl = imagePath + fileName;
 
             try {
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
