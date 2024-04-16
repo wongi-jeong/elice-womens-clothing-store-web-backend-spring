@@ -25,11 +25,12 @@ public class OrderUpdateService {
                 byIndex == Orders.OrderStatus.배송중) {
             Delivery delivery = order.getDelivery();
             delivery.setStatus(Delivery.SenderStatus.findByIndex(status-1)); // enum 직접 설정
+            order.setStatus(byIndex);
         } else if (byIndex == Orders.OrderStatus.주문취소) {
             Payment payment = order.getPayment();
             payment.setPayStatus(Payment.PayStatus.PAYMENT_CANCELED);
             orderManagementService.canceledOrder(order.getUser().getUsername(),orderId);
-        }
-        order.setStatus(byIndex);
+        }else {
+        order.setStatus(byIndex);}
     }
 }
