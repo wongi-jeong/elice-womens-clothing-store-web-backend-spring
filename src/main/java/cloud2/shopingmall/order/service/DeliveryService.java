@@ -37,7 +37,6 @@ public class DeliveryService {
         if (!isPaymentSuccessful) {
             throw new OrderException.CustomException();
         }
-        log.info("delivery = {}",deliveryDTO);
         Delivery delivery = deliveryMapper.toEntity(deliveryDTO);
         delivery.setStatus(Delivery.SenderStatus.배송준비);
         Orders order = orderRepository.findById(orderId).orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
