@@ -78,8 +78,9 @@ public class ProductController {
                                               @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
 
 
-        String uploadDir = System.getProperty("user.dir") + "/static/images";
-        String imagePath = "/images/";
+        // String uploadDir = System.getProperty("user.dir") + "/static/images";
+        String uploadDir = "/home/elice/test/static/images";
+        String imagePath = "/static/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
