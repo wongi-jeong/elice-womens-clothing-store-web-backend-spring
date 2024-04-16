@@ -10,6 +10,7 @@ import cloud2.shopingmall.order.repository.OrderRepository;
 import cloud2.shopingmall.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,7 +72,7 @@ public class OrderManagementService {
         //주문 상태가 결제완료 혹은 배송 준비일때만 주문 취소 가능
 
         Orders order = orderRepository.findById(orderId).orElseThrow(()->new OrderException.OrderNotFoundException(orderId));
-        if(!(order.getStatus() == Orders.OrderStatus.결제완료 || order.getStatus() == Orders.OrderStatus.환불완료)) {
+        if(!(order.getStatus() == Orders.OrderStatus.결제완료 || order.getStatus() == Orders.OrderStatus.주문취소)) {
             throw new OrderException.OrderCancellationNotAllowedException(order.getId());
         }
 
@@ -125,16 +126,9 @@ public class OrderManagementService {
         orderRepository.save(order);
     }
     @Transactional
-    public void updateOrder(Long orderId,int status){
+    public void deleteOrder(Long orderId){
         Orders order = orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId));
-        Orders.OrderStatus byIndex = Orders.OrderStatus.findByIndex(status);
-        if(byIndex == Orders.OrderStatus.배송완료||
-                byIndex == Orders.OrderStatus.배송준비 ||
-                byIndex == Orders.OrderStatus.배송중) {
-            Delivery delivery = deliveryRepository.findByOrderId(orderId);
-            delivery.setStatus(Delivery.SenderStatus.findByIndex(status-1)); // enum 직접 설정
-        }
-        order.setStatus(byIndex);
+        orderRepository.delete(order);
     }
 
 }
