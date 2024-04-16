@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderUpdateService {
     private final OrderRepository orderRepository;
     private final OrderManagementService orderManagementService;
+
     @Transactional
     public void updateOrder(Long orderId,int status){
         Orders order = orderRepository.findById(orderId).orElseThrow(()-> new OrderException.OrderNotFoundException(orderId));
@@ -25,12 +26,11 @@ public class OrderUpdateService {
                 byIndex == Orders.OrderStatus.배송중) {
             Delivery delivery = order.getDelivery();
             delivery.setStatus(Delivery.SenderStatus.findByIndex(status-1)); // enum 직접 설정
-            order.setStatus(byIndex);
         } else if (byIndex == Orders.OrderStatus.주문취소) {
             Payment payment = order.getPayment();
             payment.setPayStatus(Payment.PayStatus.PAYMENT_CANCELED);
             orderManagementService.canceledOrder(order.getUser().getUsername(),orderId);
-        }else {
-        order.setStatus(byIndex);}
+        }
+        order.setStatus(byIndex);
     }
 }
