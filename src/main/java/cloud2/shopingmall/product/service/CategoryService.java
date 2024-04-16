@@ -35,8 +35,11 @@ public class CategoryService {
         this.productMapper = productMapper;
     }
 
-    public List<Category> findCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryDTO> findCategories() {
+        return categoryMapper.toDto(categoryRepository.findAll());
+    }
+    public List<CategoryDTO> findCategoriesBySuperId(Long superId) {
+        return categoryMapper.toDto(categoryRepository.findBySuperId(superId));
     }
 
     public Category findCategory(Long id) {
@@ -53,7 +56,7 @@ public class CategoryService {
                 .orElseThrow(NoSuchElementException::new);
 
         foundCategory.setName(categoryDTO.getName());
-        foundCategory.setLevel(categoryDTO.getLevel());
+        foundCategory.setSuperId(categoryDTO.getSuperId());
 
         return categoryRepository.save(foundCategory);
     }

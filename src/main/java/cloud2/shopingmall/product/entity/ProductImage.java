@@ -1,5 +1,6 @@
 package cloud2.shopingmall.product.entity;
 
+import cloud2.shopingmall.order.entity.Orders;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,9 +22,6 @@ public class ProductImage {
     @Column
     private String url;
 
-    @Column
-    private String description;
-
 
     @Column
     private Integer sizeKB;
@@ -36,18 +34,34 @@ public class ProductImage {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public ProductImage(String url, String description) {
+    public ProductImage(String url) {
         this.url = url;
-        this.description = description;
     }
 
-    public ProductImage(Integer sequence, String url, String description) {
+    public ProductImage(Integer sequence, String url){
         this.sequence = sequence;
         this.url = url;
-        this.description = description;
     }
 
     public enum ImageFormat {
-        JPG, JPEG, PNG, PDF
+        JPG("jpg"), JPEG("jpeg"), PNG("png"), PDF("pdf");
+
+        private final String format;
+
+        ImageFormat(String format){
+            this.format = format;
+        }
+        public String getFormat() {
+            return format;
+        }
+        public static ImageFormat fromFormat(String format) {
+            for (ImageFormat imageFormat : ImageFormat.values()) {
+                if (imageFormat.getFormat().equals(format)) {
+                    return imageFormat;
+                }
+            }
+            throw new IllegalArgumentException("No constant with imageFormat " + format + " found");
+        }
+
     }
 }

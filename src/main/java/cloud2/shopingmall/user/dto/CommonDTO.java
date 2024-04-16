@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 
 public class CommonDTO {
     @Data
@@ -34,9 +36,17 @@ public class CommonDTO {
     @AllArgsConstructor
     public static class ChangeInfoRequest {
 
-        private UserDTO.ChangeInfo userDTO;
-
         private UserProfileDTO.ChangeInfo userProfileDTO;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShowAllUser {
+
+        private List<UserDTO.Show> userDTOList;
+
+        private List<UserProfileDTO.Show> userProfileDTOList;
     }
 
 }

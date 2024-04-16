@@ -1,6 +1,7 @@
 package cloud2.shopingmall.product.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,30 +14,32 @@ public class ProductDTO {
 
     private Long id;
     private String name;
-    private String description;
+    private Integer price;
     private String imageUrl;
 
 
 
-    public ProductDTO(String name, String description, String imageUrl) {
+    public ProductDTO(String name, Integer price, String imageUrl) {
         this.name = name;
-        this.description = description;
+        this.price = price;
         this.imageUrl = imageUrl;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProductWithDetailsAndBodiesDTO{
+    @Builder
+    public static class ProductWithDetailsAndImagesDTO {
 
         private Long id;
         private String name;
-        private String description;
+        private Integer price;
         private String imageUrl;
         private List<ProductImageDTO> productImageDTOList;
         private List<ProductBodyDTO> productBodyDTOList;
         private List<ProductDetailsDTO> productDetailsDTOList;
 
     }
+
 
 }
