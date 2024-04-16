@@ -1,18 +1,11 @@
 package cloud2.shopingmall.product.service;
 
-import cloud2.shopingmall.product.dto.ProductAndCategoryResponseDTO;
+import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
-import cloud2.shopingmall.product.entity.Category;
-import cloud2.shopingmall.product.entity.CategoryProduct;
-import cloud2.shopingmall.product.entity.Product;
-import cloud2.shopingmall.product.entity.ProductBody;
-import cloud2.shopingmall.product.entity.ProductDetails;
+import cloud2.shopingmall.product.dto.ProductDetailsDTO;
+import cloud2.shopingmall.product.entity.*;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
-import cloud2.shopingmall.product.repository.CategoryProductRepository;
-import cloud2.shopingmall.product.repository.ProductBodyRepository;
-import cloud2.shopingmall.product.repository.ProductRepository;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import cloud2.shopingmall.product.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,18 +22,27 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductBodyRepository productBodyRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ProductDetailsRepository productDetailsRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
+    private final CategoryRepository categoryRepository;
     private final CategoryProductRepository categoryProductRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductBodyRepository productBodyRepository, ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper, CategoryProductRepository categoryProductRepository) {
+    public ProductService(ProductRepository productRepository, ProductImageRepository productImageRepository, ProductBodyRepository productBodyRepository,
+                          ProductDetailsRepository productDetailsRepository,
+                          ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper,
+                          CategoryProductRepository categoryProductRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
+        this.productDetailsRepository = productDetailsRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
         this.categoryProductRepository = categoryProductRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
@@ -63,7 +65,7 @@ public class ProductService {
 
     }
 
-    public ProductDTO.ProductWithDetailsAndBodiesDTO getProductWithAllDTO(Long id) {
+    public ProductDTO.ProductWithDetailsAndImagesDTO getProductWithAllDTO(Long id) {
 //        Product product = productRepository.findProductWithDetailsAndBodies(id);
         Product product = productRepository.findProductWithDetails(id);
         product = productRepository.findProductWithBodies(id);
@@ -103,6 +105,40 @@ public class ProductService {
 
         return productMapper.toDto(productRepository.save(productMapper.toEntity(productDTO)));
     }
+
+    public ProductDTO.ProductWithDetailsAndImagesDTO saveProductWithImagesAndCategoryDTO(ProductDTO.ProductWithDetailsAndImagesDTO productDTO, CategoryDTO categoryDTO) {
+
+        Product product = productWithDetailsAndBodiesMapper.toEntity(productDTO);
+
+        System.out.println(product);
+
+        for (ProductBody productBody : product.getProductBodies()) {
+            productBody.setProduct(product);
+
+        }
+        for (ProductImage productImage : product.getProductImages()) {
+            productImage.setProduct(product);
+
+        }
+
+        for (ProductDetails productDetails : product.getProductDetails()) {
+            productDetails.setProduct(product);
+
+        }
+
+        Product createdProduct = productRepository.save(product);
+        productBodyRepository.saveAll(product.getProductBodies());
+        productImageRepository.saveAll(product.getProductImages());
+        productDetailsRepository.saveAll(product.getProductDetails());
+        CategoryProduct categoryProduct = new CategoryProduct();
+        Category category = categoryRepository.getReferenceById(categoryDTO.getId());
+        categoryProduct.setCategory(category);
+        categoryProduct.setProduct(product);
+        categoryProductRepository.save(categoryProduct);
+
+        return getProductWithAllDTO(createdProduct.getId());
+    }
+
 
     public Product updateProduct(Product product) {
 

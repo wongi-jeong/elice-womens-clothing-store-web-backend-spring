@@ -57,34 +57,14 @@ public class UserProfileDTO {
     @AllArgsConstructor
     public static class FindUser{
 
-        @NotNull(message = "핸드폰 번호를 입력해 주세요.")
-        @NotEmpty(message = "핸드폰 번호를 입력해 주세요.")
-        @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "올바른 핸드폰 번호 형식이 아닙니다.")
         private String phoneNumber;
 
-        @NotNull(message = "이메일을 입력해 주세요.")
-        @NotEmpty(message = "이메일을 입력해 주세요.")
-        @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "올바른 이메일 주소 형식이 아닙니다.")
         private String email;
 
-        @NotNull(message = "이름을 입력해 주세요.")
-        @NotEmpty(message = "이름을 입력해 주세요.")
-        @Pattern(regexp = "^[가-힣]*$", message = "한글만 입력 가능합니다.")
         private String name;
 
         private Source source;
 
-        @Getter
-        public enum Source {
-            PHONE("phone"), EMAIL("email");
-
-            private String key;
-
-
-            Source(String source) {
-                this.key = source;
-            }
-        }
     }
 
     @Data
@@ -125,6 +105,7 @@ public class UserProfileDTO {
 
         private String birthDate;
 
+        private Integer point;
     }
 
     @Data

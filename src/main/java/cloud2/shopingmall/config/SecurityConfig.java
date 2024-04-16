@@ -1,9 +1,12 @@
 package cloud2.shopingmall.config;
 
 
+import cloud2.shopingmall.jwt.ExceptionHandlerFilter;
 import cloud2.shopingmall.jwt.JWTFilter;
 import cloud2.shopingmall.jwt.JWTUtil;
 import cloud2.shopingmall.jwt.LoginFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,16 +15,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+
     private final JWTUtil jwtUtil;
 
+    @Autowired
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 
         this.authenticationConfiguration = authenticationConfiguration;
@@ -65,7 +70,10 @@ public class SecurityConfig {
 
         // 사용자 정의 JWT 필터를 LoginFilter 전에 추가, JWT를 사용하여 인증 및 권한 부여를 수행합니다.
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(), JWTFilter.class);
+
+
 
         // 사용자 정의 로그인 필터를 UsernamePasswordAuthenticationFilter 위치에 추가
         // 사용자가 제공한 자격 증명을 사용하여 인증을 시도하고, 성공하면 JWT 토큰을 생성하여 반환

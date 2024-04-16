@@ -36,6 +36,16 @@ public interface OrderMainMapper {
         @Mapping(source = "user.username",target = "userName")
         @Mapping(source = "payment.payTotalPrice",target = "totalPrice")
          OrderInfoDTO toDto(Orders order);
+        @AfterMapping
+        default void defineStatusDescription(Orders order, @MappingTarget OrderInfoDTO orderInfoDTO) {
+        if (order.getStatus() != null) {
+            orderInfoDTO.setStatusIndex(order.getStatus().getIndex());
+        }
+
+    }
+            default Orders.OrderStatus map(int value) {
+            return Orders.OrderStatus.findByIndex(value);
+        }
     }
     @Mapper(componentModel = "spring")
     interface OrderDetailMapper extends EntityMapper<Orders, OrderInfoDTO.OrderDetailInfo> {
@@ -57,6 +67,9 @@ public interface OrderMainMapper {
                 productInfoList.add(productInfo);
             }
             target.setProducts(productInfoList);
+        }
+        default Orders.OrderStatus map(int value) {
+            return Orders.OrderStatus.findByIndex(value);
         }
     }
 

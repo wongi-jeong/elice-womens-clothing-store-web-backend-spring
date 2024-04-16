@@ -1,14 +1,24 @@
 package cloud2.shopingmall.product.controller;
 
 
-import cloud2.shopingmall.product.dto.ProductDTO;
+import cloud2.shopingmall.product.dto.*;
+import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.entity.ProductImage;
 import cloud2.shopingmall.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,19 +48,117 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO.ProductWithDetailsAndBodiesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
+    public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductWithAllDTO(id));
 
     }
 
+//    @PostMapping
+//    public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductDTO productDTO){
+//
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(productService.saveProductDTO(productDTO));
+//
+//    }
+
     @PostMapping
-    public ResponseEntity<ProductDTO> postProduct(@RequestBody ProductDTO productDTO){
+    public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> postProductWithImages(@RequestParam("title") String title,
+                                                        @RequestParam("price") Integer price,
+                                                                                           @RequestPart("categoryDTO") CategoryDTO categoryDTO,
+                                                                                           @RequestPart("productDetails") List<ProductDetailsDTO> productDetailsDTOList,
+                                              @RequestPart("productImages") List<MultipartFile> productImagesFile,
+                                              @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productService.saveProductDTO(productDTO));
 
+        String uploadDir = System.getProperty("user.dir") + "/static/images";
+        String baseUrl = "http://localhost:8080/files/";
+
+
+        // 제목 디렉토리 생성
+        File titleDir = new File(uploadDir);
+        if (!titleDir.exists()) {
+            titleDir.mkdirs();
+        }
+
+        List<ProductImageDTO> productImageDTOList = new ArrayList<>();
+        List<ProductBodyDTO> productBodyDTOList = new ArrayList<>();
+
+        // 이미지 파일 저장
+        for (MultipartFile file : productImagesFile) {
+            String fileName = file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+            String imageUrl = "/images/" + fileName;
+
+            try {
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int index = fileName.lastIndexOf(".");
+            String ext = fileName.substring(index + 1).toLowerCase();
+            Integer sizeKB = (int) file.getSize()/1000;
+
+            ProductImageDTO productImageDTO = ProductImageDTO.builder()
+                    .url(imageUrl)
+                    .sizeKB(sizeKB)
+                    .sequence(productImageDTOList.size()+1)
+                    .imageFormat(ProductImage.ImageFormat.fromFormat(ext))
+                    .build();
+            productImageDTOList.add(productImageDTO);
+        }
+
+        // 본문 파일 저장
+        for (MultipartFile file : productBodiesFile) {
+            String fileName = file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, fileName);
+            String imageUrl = "/images/" + fileName;
+
+            try {
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int index = fileName.lastIndexOf(".");
+            String ext = fileName.substring(index + 1).toLowerCase();
+            Integer sizeKB = (int) file.getSize()/1000;
+
+            ProductBodyDTO productBodyDTO = ProductBodyDTO.builder()
+                    .url(imageUrl)
+                    .sizeKB(sizeKB)
+                    .sequence(productBodyDTOList.size()+1)
+                    .imageFormat(ProductBody.ImageFormat.fromFormat(ext))
+                    .build();
+            productBodyDTOList.add(productBodyDTO);
+        }
+
+        ProductDTO.ProductWithDetailsAndImagesDTO productDTO = ProductDTO.ProductWithDetailsAndImagesDTO.builder()
+                .productBodyDTOList(productBodyDTOList)
+                .productImageDTOList(productImageDTOList)
+                .productDetailsDTOList(productDetailsDTOList)
+                .name(title)
+                .price(price)
+                .imageUrl(productImageDTOList.get(0).getUrl())
+                .build();
+        System.out.println(productDTO);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.saveProductWithImagesAndCategoryDTO(productDTO, categoryDTO));
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){

@@ -5,6 +5,7 @@ import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductDetails;
 import cloud2.shopingmall.user.entity.User;
 import lombok.*;
+import org.hibernate.query.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,9 +19,10 @@ public class OrderInfoDTO {
 
     private Long id;
     private String userName;
-    private LocalDateTime CreatedAt;
-    private LocalDateTime ModifiedAt;
-    private Orders.OrderStatus Status;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+    private int statusIndex;
+    private Orders.OrderStatus status;
     private Integer totalPrice;
     private OrderDetailInfo Detail;
 

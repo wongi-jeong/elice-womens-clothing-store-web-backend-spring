@@ -5,7 +5,11 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/shoppingmall # 자신의 환경에 맞게 변경 가능
     username: team1 # 자신의 환경에 맞게 변경 가능
     password: team111 # 자신의 환경에 맞게 변경 가능
-
+  mvc:
+    static-path-pattern: /images/**
+  web:
+    resources:
+      static-locations: classpath:/static/images/
 
   jackson:
     default-property-inclusion: non_null # DTO에서 null 값인 필드 전송 안됨
@@ -19,21 +23,10 @@ spring:
   # spring data jpa 설정
   jpa:
     hibernate:
-      ddl-auto: none # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
+      ddl-auto: update # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
     show-sql: true
     defer-datasource-initialization: true
     open-in-view: false
 
     jackson:
       default-property-inclusion: non_null
-
-
-server:
- port: 80
-
-
-
-#logging:
-#  level:
-#    root: DEBUG
-
