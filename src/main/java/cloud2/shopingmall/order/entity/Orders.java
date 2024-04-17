@@ -56,8 +56,7 @@ public class Orders extends BaseEntity {
         배송준비(1),
         배송중(2),
         배송완료(3),
-        주문취소(4),
-        환불완료(5);
+        주문취소(4);
 
         private final int index;
 
