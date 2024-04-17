@@ -2,6 +2,7 @@ package cloud2.shopingmall.product.service;
 
 import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
+import cloud2.shopingmall.product.dto.ProductDetailsDTO;
 import cloud2.shopingmall.product.entity.*;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.*;
@@ -22,20 +23,26 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductBodyRepository productBodyRepository;
     private final ProductImageRepository productImageRepository;
+    private final ProductDetailsRepository productDetailsRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
+    private final ProductMainMapper.CategoryMapper categoryMapper;
     private final ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper;
     private final CategoryRepository categoryRepository;
     private final CategoryProductRepository categoryProductRepository;
 
     @Autowired
     public ProductService(ProductRepository productRepository, ProductImageRepository productImageRepository, ProductBodyRepository productBodyRepository,
+                          ProductDetailsRepository productDetailsRepository,
                           ProductMainMapper.ProductMapper productMapper, ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper,
+                          ProductMainMapper.CategoryMapper categoryMapper,
                           CategoryProductRepository categoryProductRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
+        this.productDetailsRepository = productDetailsRepository;
         this.productBodyRepository = productBodyRepository;
         this.productMapper = productMapper;
+        this.categoryMapper = categoryMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
         this.categoryProductRepository = categoryProductRepository;
         this.categoryRepository = categoryRepository;
@@ -57,12 +64,15 @@ public class ProductService {
 
     public Product getProduct(Long id) {
         return productRepository.findById(id).orElse(null);
-
-
     }
 
+    public List<ProductDTO> getProductsByNameOrIdDTO(String nameOrId) {
+        return productMapper.toDto(productRepository.findByNameOrId(nameOrId));
+    }
+
+
     public ProductDTO.ProductWithDetailsAndImagesDTO getProductWithAllDTO(Long id) {
-//        Product product = productRepository.findProductWithDetailsAndBodies(id);
+
         Product product = productRepository.findProductWithDetails(id);
         product = productRepository.findProductWithBodies(id);
         product = productRepository.findProductWithImages(id);
@@ -116,9 +126,16 @@ public class ProductService {
             productImage.setProduct(product);
 
         }
+
+        for (ProductDetails productDetails : product.getProductDetails()) {
+            productDetails.setProduct(product);
+
+        }
+
         Product createdProduct = productRepository.save(product);
         productBodyRepository.saveAll(product.getProductBodies());
         productImageRepository.saveAll(product.getProductImages());
+        productDetailsRepository.saveAll(product.getProductDetails());
         CategoryProduct categoryProduct = new CategoryProduct();
         Category category = categoryRepository.getReferenceById(categoryDTO.getId());
         categoryProduct.setCategory(category);
@@ -135,13 +152,20 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public ProductDTO updateProductDTO(ProductDTO productDTO) {
+    public ProductDTO updateProductDTO(ProductDTO.ProductWithCategoryDTO productDTO) {
         if (productDTO.getId() == null) {
             //TO DO: need new customException
             throw new RuntimeException();
         }
         Product Product = productRepository.getReferenceById(productDTO.getId());
         productMapper.updateFromDto(productDTO, Product);
+        if(productDTO.getCategoryDTO() != null){
+            CategoryProduct categoryProduct = categoryProductRepository.findByProduct_Id(productDTO.getId());
+            Category category = categoryRepository.getReferenceById(productDTO.getCategoryDTO().getId());
+            categoryProduct.setCategory(category);
+        }
+
+
 
         return productMapper.toDto(Product);
     }
