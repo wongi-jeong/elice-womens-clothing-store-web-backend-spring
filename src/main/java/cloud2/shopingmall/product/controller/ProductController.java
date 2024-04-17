@@ -35,10 +35,9 @@ public class ProductController {
     private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
-
 
 //    @GetMapping
 //    public ResponseEntity<List<ProductDTO>> getProducts(){
@@ -48,17 +47,26 @@ public class ProductController {
 //    }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> getProducts(@RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "size",  defaultValue = "10") int size){
+    public ResponseEntity<Page<ProductDTO>> getProducts(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                        @RequestParam(name = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductsDTO(page - 1, size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
+    public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> getProductWithDetailsAndBodies(
+            @PathVariable(name = "id") Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductWithAllDTO(id));
 
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam(value = "keyword") String keyword) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.searchProducts(keyword));
     }
 
 //    @PostMapping
@@ -70,14 +78,13 @@ public class ProductController {
 //    }
 
     @PostMapping
-    public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> postProductWithImages(@RequestParam("title") String title,
-                                                        @RequestParam("price") Integer price,
-                                                                                           @RequestPart("categoryDTO") CategoryDTO categoryDTO,
-                                                                                           @RequestPart("productDetails") List<ProductDetailsDTO> productDetailsDTOList,
-                                              @RequestPart("productImages") List<MultipartFile> productImagesFile,
-                                              @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
-
-
+    public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> postProductWithImages(
+            @RequestParam("title") String title,
+            @RequestParam("price") Integer price,
+            @RequestPart("categoryDTO") CategoryDTO categoryDTO,
+            @RequestPart("productDetails") List<ProductDetailsDTO> productDetailsDTOList,
+            @RequestPart("productImages") List<MultipartFile> productImagesFile,
+            @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
 
         // 로컬용 이미지 경로 설정
         String uploadDir = System.getProperty("user.dir") + "/static/images";
@@ -86,7 +93,6 @@ public class ProductController {
         // 서버용 이미지 경로 설정
         // String uploadDir = "/home/elice/test/static/images";
         // String imagePath = "/static/images/";
-
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
@@ -111,12 +117,12 @@ public class ProductController {
 
             int index = fileName.lastIndexOf(".");
             String ext = fileName.substring(index + 1).toLowerCase();
-            Integer sizeKB = (int) file.getSize()/1000;
+            Integer sizeKB = (int) file.getSize() / 1000;
 
             ProductImageDTO productImageDTO = ProductImageDTO.builder()
                     .url(imageUrl)
                     .sizeKB(sizeKB)
-                    .sequence(productImageDTOList.size()+1)
+                    .sequence(productImageDTOList.size() + 1)
                     .imageFormat(ProductImage.ImageFormat.fromFormat(ext))
                     .build();
             productImageDTOList.add(productImageDTO);
@@ -136,12 +142,12 @@ public class ProductController {
 
             int index = fileName.lastIndexOf(".");
             String ext = fileName.substring(index + 1).toLowerCase();
-            Integer sizeKB = (int) file.getSize()/1000;
+            Integer sizeKB = (int) file.getSize() / 1000;
 
             ProductBodyDTO productBodyDTO = ProductBodyDTO.builder()
                     .url(imageUrl)
                     .sizeKB(sizeKB)
-                    .sequence(productBodyDTOList.size()+1)
+                    .sequence(productBodyDTOList.size() + 1)
                     .imageFormat(ProductBody.ImageFormat.fromFormat(ext))
                     .build();
             productBodyDTOList.add(productBodyDTO);
@@ -162,19 +168,9 @@ public class ProductController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){
+    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO,
+                                                   @PathVariable(name = "id") Long id) {
         productDTO.setId(id);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -183,24 +179,24 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/on")
-    public ResponseEntity onProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity onProduct(@PathVariable(name = "id") Long id) {
         productService.onProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
+
     @PutMapping("/{id}/off")
-    public ResponseEntity offProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity offProduct(@PathVariable(name = "id") Long id) {
         productService.offProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteProduct(@PathVariable(name = "id") Long id){
+    public ResponseEntity deleteProduct(@PathVariable(name = "id") Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
 
     }
-
 
 }
