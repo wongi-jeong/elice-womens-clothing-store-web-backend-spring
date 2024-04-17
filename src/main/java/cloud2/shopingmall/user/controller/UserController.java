@@ -150,7 +150,7 @@ public class UserController {
     }
 
     /////////////////////////////////////// 관리자 기능 /////////////////////////////////////////////////
-    @GetMapping("/allUser")
+    @GetMapping("/admin/showAllUser")
     public ResponseEntity<List<UserDTO.ShowAllUser>> showAllUser() {
         List<UserDTO.ShowAllUser> dtos = userService.showUserList();
         return ResponseEntity.ok(dtos);
