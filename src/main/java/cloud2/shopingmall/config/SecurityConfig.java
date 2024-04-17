@@ -63,9 +63,9 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        // .anyRequest().authenticated()
+                        .requestMatchers("/api").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().permitAll());
 
         // 사용자 정의 JWT 필터를 LoginFilter 전에 추가, JWT를 사용하여 인증 및 권한 부여를 수행합니다.
