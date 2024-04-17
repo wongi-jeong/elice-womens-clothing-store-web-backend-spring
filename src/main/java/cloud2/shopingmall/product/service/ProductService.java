@@ -216,4 +216,19 @@ public class ProductService {
 
     }
 
+    @Transactional
+    public List<ProductDTO> searchProducts(String keyword) {
+        List<Product> products = productRepository.findProductsByNameContaining(keyword);
+        List<ProductDTO> productDTOs = new ArrayList<>();
+
+        if (products.isEmpty()) {
+            return productDTOs;
+        }
+
+        for (Product product : products) {
+            productDTOs.add(productMapper.toDto(product));
+        }
+
+        return productDTOs;
+    }
 }

@@ -3,7 +3,6 @@ package cloud2.shopingmall.order.controller;
 import cloud2.shopingmall.common.exception.OrderException;
 import cloud2.shopingmall.jwt.CustomUserDetails;
 import cloud2.shopingmall.order.dto.*;
-import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,15 +25,15 @@ public class OrderController {
     private final OrderManagementService orderManagementService;
     private final PaymentService paymentService;
     private final DeliveryService deliveryService;
-
+    private final OrderUpdateService orderUpdateService;
     @GetMapping("")
     public ResponseEntity<Page<OrderInfoDTO>> findAllOrder(@PageableDefault(size = 20) Pageable pageable){
         Page<OrderInfoDTO> allOrder = orderQueryService.findAllOrder(pageable);
         return ResponseEntity.ok(allOrder);
     }
     @GetMapping("/user")
-    public ResponseEntity<List<OrderInfoDTO.OrderDetailInfo>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        List<OrderInfoDTO.OrderDetailInfo> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
+    public ResponseEntity<List<OrderInfoDTO>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        List<OrderInfoDTO> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
         return ResponseEntity.ok(orderDetailList);
     }
     @GetMapping("/{orderId}")
@@ -43,7 +42,7 @@ public class OrderController {
         return ResponseEntity.ok(orderDetail);
     }
 
-    @PostMapping("/{orderId}/cancel")
+    @GetMapping("/{orderId}/cancel")
     public ResponseEntity<OrderDTO> cancelOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @PathVariable Long orderId){
 
@@ -109,9 +108,12 @@ public class OrderController {
     @PostMapping("/{orderId}/update")
     public ResponseEntity<Void> update(@PathVariable("orderId") Long orderId,
                                    @RequestBody int status){
-        log.info("status = {}",status);
-        orderManagementService.updateOrder(orderId,status);
+        orderUpdateService.updateOrder(orderId,status);
         return ResponseEntity.ok().build();
     }
-
+    @GetMapping("/{orderId}/delete")
+    public ResponseEntity<Void> delete(@PathVariable("orderId") Long orderId){
+        orderManagementService.deleteOrder(orderId);
+        return ResponseEntity.ok().build();
+    }
 }

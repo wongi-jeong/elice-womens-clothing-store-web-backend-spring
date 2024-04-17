@@ -9,18 +9,17 @@ import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
 import cloud2.shopingmall.user.entity.User;
 import cloud2.shopingmall.user.entity.UserProfile;
-import cloud2.shopingmall.user.mapper.UserMainMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileShowMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserProfileChangeMapper;
 import cloud2.shopingmall.user.repository.UserProfileRepository;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserJoinMapper;
 import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowMapper;
+import cloud2.shopingmall.user.mapper.UserMainMapper.UserShowAllMapper;
 import cloud2.shopingmall.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,14 +31,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserShowMapper userShowMapper;
+    private final UserShowAllMapper userShowAllMapper;
     private final UserProfileShowMapper userProfileShowMapper;
     private final UserJoinMapper userJoinMapper;
     private final UserProfileJoinMapper userProfileJoinMapper;
@@ -58,6 +57,7 @@ public class UserService {
                        UserRepository userRepository, UserProfileRepository userProfileRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder, UserShowMapper userShowMapper,
                        UserProfileShowMapper userProfileShowMapper, UserProfileChangeMapper userProfileChangeMapper,
+                       UserShowAllMapper userShowAllMapper,
                        AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
 
         this.userProfileJoinMapper = userProfileJoinMapper;
@@ -66,6 +66,7 @@ public class UserService {
         this.userProfileChangeMapper = userProfileChangeMapper;
         this.userShowMapper = userShowMapper;
         this.userRepository = userRepository;
+        this.userShowAllMapper = userShowAllMapper;
         this.userProfileRepository = userProfileRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.authenticationManager = authenticationManager;
@@ -73,11 +74,32 @@ public class UserService {
 
     }
 
+    public void createAdminIfNotExists() {
+        if (!userRepository.existsByUsername("admin")) {
+            // 운영자 계정 생성 로직
+            User user = new User();
+            UserProfile userProfile = new UserProfile();
+
+            userProfile.setName("ADMIN");
+            user.setUsername("admin");
+            user.setUserRole("ROLE_ADMIN");
+            user.setPassword(bCryptPasswordEncoder.encode("1234")); // 패스워드 암호화는 필요한 경우에만
+            userRepository.save(user);
+
+            userProfile.setUser(user);
+            userProfileRepository.save(userProfile);
+        }
+    }
+
     // 회원 로그인 기능
     public String login(String username, String password) throws UsernameNotFoundException, PasswordMismatchException {
         // 1. 사용자 DB에서 사용자 조회
         // 주어진 사용자의 이름으로 DB에서 사용자 정보 조회
         User userData = userRepository.findByUsername(username);
+
+        if (userData.getStatus() == User.Status.DELETED ){
+            throw new UsernameNotFoundException("삭제된 계정입니다.");
+        }
 
         if (userData == null) {
             throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
@@ -151,7 +173,7 @@ public class UserService {
         // User DB에 생성
         user.setStatus(User.Status.ACTIVE); // 처음 가입시 계정상태 활성화 상태
         user.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
-        user.setUserRole("ROLE_ADMIN"); // Role 부여
+        user.setUserRole("ROLE_USER"); // Role 부여
         User savedUser = userRepository.save(user); // DB에 저장
 
         // UserProfile DB에 생성
@@ -172,8 +194,6 @@ public class UserService {
         String email = findIdUserDTO.getEmail();
         String phoneNumber = findIdUserDTO.getPhoneNumber();
         String source = findIdUserDTO.getSource().getKey();
-
-
 
         if (source.equals("phone")) {
             if (phoneNumber == null) {
@@ -311,6 +331,8 @@ public class UserService {
         // 클라이언트에서 입력한 데이터 담기
         UserProfileDTO.ChangeInfo userProfileDTO = changeInfoRequest.getUserProfileDTO();
 
+
+        targetUserProfile.setUser(targetUser);
         targetUserProfile.setName(userProfileDTO.getName());
         targetUserProfile.setEmail(userProfileDTO.getEmail());
         targetUserProfile.setPhoneNumber(userProfileDTO.getPhoneNumber());
@@ -350,6 +372,97 @@ public class UserService {
 
         // 포인트 충전 후 저장
         userProfileRepository.save(targetUserProfile);
+
+        return true;
+    }
+
+    public Boolean deleteUser(CustomUserDetails userInfo, UserDTO.DeleteUser deleteUserDTO) throws PasswordMismatchException {
+        if(userInfo == null){
+            throw new AuthenticationCredentialsNotFoundException("Token is null");
+        }
+
+        // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
+        String username = userInfo.getUsername();
+
+        // 현재 인증된 사용자의 정보 담기
+        User target = userRepository.findByUsername(username);
+
+        String password = deleteUserDTO.getPassword();
+        String secondPassword = deleteUserDTO.getSecondPassword();
+
+        // 비밀번호를 제대로 두 번 입력했는지 확인
+        if(!password.equals(secondPassword)){
+            throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 입력한 비밀번호가 DB에 저장된 비밀번호와 같은지 확인하기
+        if (!bCryptPasswordEncoder.matches(password, target.getPassword())) {
+            throw new PasswordMismatchException("입력한 비밀번호가 현재 비밀번호와 같지 않습니다");
+        }
+
+        target.setStatus(User.Status.DELETED);
+
+        userRepository.save(target);
+
+        return true;
+    }
+
+    /////////////////////////////////// 관리자 기능 /////////////////////////////////////
+    // 사용자 정보 조회 기능
+    public List<UserDTO.ShowAllUser> showUserList() {
+
+        int page = 0;
+        int size = 5;
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+
+        PageRequest pageRequest = PageRequest.of(page,size,sort);
+        Page<User> userPage = userRepository.findAll(pageRequest);
+
+        List<UserDTO.ShowAllUser> dtos = userPage.getContent().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+
+    private UserDTO.ShowAllUser convertToDto(User user) {
+        UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setStatus(user.getStatus());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setRole(user.getUserRole());
+        userDTO.setUserProfileDTO(userProfileShowMapper.toDto(user.getUserProfile()));
+        return userDTO;
+    }
+
+
+    public boolean adminChangeStatus(UserDTO.adminChangeStatus dto) {
+        // DTO 에서 데이터 담기
+        Long id = dto.getId();
+        String status = dto.getStatus();
+
+        // Id 로 유저 정보 가져오기
+        User user = userRepository.findById(id).orElse(null);
+
+        // 유저 정보가 없으면 예외처리 진행
+        if(user == null){
+            throw new NoSuchElementException("사용자를 찾을 수 없습니다.");
+        }
+
+        // 상태 업데이트
+        if(status.equals("ACTIVE")) {
+            user.setStatus(User.Status.ACTIVE);
+        } else if (status.equals("DEACTIVE")) {
+            user.setStatus(User.Status.DEACTIVE);
+        } else if (status.equals("DELETED")) {
+            user.setStatus(User.Status.DELETED);
+        } else {
+            throw new IllegalArgumentException("상태 업데이트 에러 발생");
+        }
+
+        // DB에 저장
+        userRepository.save(user);
 
         return true;
     }

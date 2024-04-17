@@ -148,4 +148,24 @@ public class UserController {
         Boolean result = userService.addPoint(userInfo, addPointDTO);
         return ResponseEntity.ok("적립금 충전이 완료됐습니다");
     }
+
+    // 사용자 회원정보 삭제 기능
+    @PatchMapping("/deleteUser")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody UserDTO.DeleteUser deleteUserDTO) throws PasswordMismatchException {
+        Boolean result = userService.deleteUser(userInfo, deleteUserDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("회원 삭제가 완료되었습니다.");
+    }
+
+    /////////////////////////////////////// 관리자 기능 /////////////////////////////////////////////////
+    @GetMapping("/admin/showAllUser")
+    public ResponseEntity<List<UserDTO.ShowAllUser>> showAllUser() {
+        List<UserDTO.ShowAllUser> dtos = userService.showUserList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @PatchMapping("admin/changeUserStatus")
+    public ResponseEntity<String> adminChangeStatus(@RequestBody UserDTO.adminChangeStatus dto) {
+        boolean result = userService.adminChangeStatus(dto);
+        return ResponseEntity.status(HttpStatus.OK).body("상태 변경이 완료되었습니다.");
+    }
 }

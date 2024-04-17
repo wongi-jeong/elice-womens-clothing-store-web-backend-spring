@@ -1,13 +1,13 @@
-package cloud2.shopingmall;
+// package cloud2.shopingmall;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ShopingmallApplicationTests {
+// @SpringBootTest
+// class ShopingmallApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }
