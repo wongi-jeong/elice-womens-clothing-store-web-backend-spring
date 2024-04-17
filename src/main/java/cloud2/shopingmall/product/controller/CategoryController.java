@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("api/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -19,11 +19,26 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<Category>> getAllCategories() {
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(categoryService.findCategories());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<List<CategoryDTO>> getAllCategoriesDTO() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(categoryService.findCategories());
     }
+
+    @GetMapping("/{superId}")
+    public ResponseEntity<List<CategoryDTO>> getAllCategoriesBySuperIdDTO(@PathVariable(name = "superId") Long superId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(categoryService.findCategoriesBySuperId(superId));
+    }
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable(name = "id") Long id) {
