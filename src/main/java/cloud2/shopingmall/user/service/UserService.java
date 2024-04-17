@@ -397,7 +397,10 @@ public class UserService {
 
     private UserDTO.ShowAllUser convertToDto(User user) {
         UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
+        userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
+        userDTO.setStatus(user.getStatus());
+        userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setUserProfileDTO(userProfileShowMapper.toDto(user.getUserProfile()));
         return userDTO;
     }
