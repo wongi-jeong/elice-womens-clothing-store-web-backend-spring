@@ -33,8 +33,8 @@ public class OrderController {
         return ResponseEntity.ok(allOrder);
     }
     @GetMapping("/user")
-    public ResponseEntity<List<OrderInfoDTO>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        List<OrderInfoDTO> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
+    public ResponseEntity<List<OrderInfoDTO.OrderDetailInfo>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        List<OrderInfoDTO.OrderDetailInfo> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
         return ResponseEntity.ok(orderDetailList);
     }
     @GetMapping("/{orderId}")
@@ -43,7 +43,7 @@ public class OrderController {
         return ResponseEntity.ok(orderDetail);
     }
 
-    @GetMapping("/{orderId}/cancel")
+    @PostMapping("/{orderId}/cancel")
     public ResponseEntity<OrderDTO> cancelOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @PathVariable Long orderId){
 

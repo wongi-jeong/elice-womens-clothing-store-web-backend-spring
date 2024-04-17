@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class ProductDetailsDTO {
 
     private Long id;
+    private String name;
     private ProductDetails.Size size;
     private ProductDetails.Color color;
     private Integer quantity;

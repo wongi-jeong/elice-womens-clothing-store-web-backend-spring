@@ -29,6 +29,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT distinct p FROM Product p inner join CategoryProduct cp ON cp.product = p inner join cp.category c WHERE c.id = :id")
     List<Product> findProductsWithCategoryId(@Param("id") Long id);
-
-    List<Product> findProductsByNameContaining(String keyword);
 }

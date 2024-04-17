@@ -22,16 +22,15 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-
-    @Column(nullable = true)
-    private Long superId;
+    @Column(nullable = false)
+    private Integer level;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<CategoryProduct> categoryProducts = new ArrayList<>();
 
-    public Category(String name, Long superId) {
+    public Category(String name, Integer level) {
         this.name = name;
-        this.superId = superId;
+        this.level = level;
     }
 
 }

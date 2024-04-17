@@ -22,10 +22,10 @@ public class UserProfile extends BaseEntity {
     @Column
     private String name;
 
-    @Column
+    @Column(unique = true)
     private String email;
 
-    @Column
+    @Column(unique = true)
     private String phoneNumber;
 
     @Column

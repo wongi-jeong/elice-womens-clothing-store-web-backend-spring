@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -93,7 +92,7 @@ public class UserController {
     }
 
     // 아이디 찾기 기능
-    @PostMapping("/findID")
+    @GetMapping("/findID")
     public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
 
 
@@ -103,7 +102,7 @@ public class UserController {
     }
 
     // 비밀번호 찾기 기능 필터
-    @PostMapping("/findPassword")
+    @GetMapping("/findPassword")
     public ResponseEntity<String> findPasswordFilter(@RequestBody UserProfileDTO.FindPassword findPasswordDTO) {
 
         if (!userService.findPasswordFilter(findPasswordDTO)) {
@@ -128,7 +127,6 @@ public class UserController {
     // 마이페이지 이동시 현재 로그인한 사용자 정보 조회 기능
     @GetMapping("/myInfor")
     public ResponseEntity<CommonDTO.ShowResponse> showMyInfo(@AuthenticationPrincipal CustomUserDetails userInfo) {
-
         CommonDTO.ShowResponse dtos = userService.showUser(userInfo);
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
@@ -136,7 +134,6 @@ public class UserController {
     // 사용자 회원정보 변경 기능
     @PatchMapping("/changeInfo")
     public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
-
         Boolean result = userService.changeInfo(userInfo, request);
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
     }
@@ -147,12 +144,5 @@ public class UserController {
 
         Boolean result = userService.addPoint(userInfo, addPointDTO);
         return ResponseEntity.ok("적립금 충전이 완료됐습니다");
-    }
-
-    /////////////////////////////////////// 관리자 기능 /////////////////////////////////////////////////
-    @GetMapping("/allUser")
-    public ResponseEntity<List<UserDTO.ShowAllUser>> showAllUser() {
-        List<UserDTO.ShowAllUser> dtos = userService.showUserList();
-        return ResponseEntity.ok(dtos);
     }
 }

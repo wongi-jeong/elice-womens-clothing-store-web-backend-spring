@@ -21,8 +21,7 @@ public class OrderInfoDTO {
     private String userName;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private int statusIndex;
-    private Orders.OrderStatus status;
+    private int status;
     private Integer totalPrice;
     private OrderDetailInfo Detail;
 

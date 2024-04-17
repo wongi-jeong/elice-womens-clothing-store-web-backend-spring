@@ -47,14 +47,12 @@ public class OrderQueryService {
         return orderInfoDTOPage;
     }
     @Transactional
-    public List<OrderInfoDTO> findByUser(String userName){
+    public List<OrderInfoDTO.OrderDetailInfo> findByUser(String userName){
         //주문자로 주문 목록 검색(주문번호, 주문 상태, 주문 날짜, 변경 날짜, 총 금액, 상품, 수량 , 상품 금액)
         List<Orders> orderDetailsByUsername = userRepository.findByUsername(userName).getOrdersList();
-        List<Orders> sortedOrders = orderDetailsByUsername.stream()
-                .sorted(Comparator.comparing(Orders::getCreatedAt).reversed())
-                .collect(Collectors.toList());
-        return sortedOrders.stream()
-                .map(orderInfoMapper :: toDto)
+
+        return orderDetailsByUsername.stream()
+                .map(orderDetailMapper :: toDto)
                 .collect(Collectors.toList());
     }
     @Transactional
