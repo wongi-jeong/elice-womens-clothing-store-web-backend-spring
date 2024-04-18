@@ -42,4 +42,19 @@ public class ProductDTO {
     }
 
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ProductWithCategoryDTO {
+
+        private Long id;
+        private String name;
+        private Integer price;
+        private String imageUrl;
+        private CategoryDTO categoryDTO;
+
+    }
+
+
 }
