@@ -64,8 +64,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")    // 우선순위 1등 어드민
-                         .requestMatchers("/api/user/**").authenticated()     // 우선순위 2등 사용자
-                                .requestMatchers("/api/**").permitAll()       // 3등 그외
+                        .requestMatchers("/api/user/**").authenticated()      // 우선순위 2등 사용자
+                        .requestMatchers("/api/**").permitAll()              // 3등 그외
                 );
 
         // 사용자 정의 JWT 필터를 LoginFilter 전에 추가, JWT를 사용하여 인증 및 권한 부여를 수행합니다.
