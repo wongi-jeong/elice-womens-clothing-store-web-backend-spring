@@ -34,6 +34,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findProductsByNameContaining(String keyword, Pageable pageable);
 
+
+    @Query("SELECT distinct p FROM Product p inner join CategoryProduct cp ON cp.product = p WHERE cp.category.id = :categoryId AND p.name LIKE CONCAT('%', :keyword, '%')")
+    Page<Product> findProductsByNameContainingByCategoryId(@Param("keyword") String keyword, Pageable pageable, @Param("categoryId") Long categoryId);
+
     @Query("SELECT DISTINCT p FROM Product p WHERE (CAST(:nameOrId AS LONG) IS NULL AND p.name LIKE CONCAT('%', :nameOrId, '%')) OR (CAST(:nameOrId AS LONG) IS NOT NULL AND (p.name LIKE CONCAT('%', :nameOrId, '%') OR p.id = CAST(:nameOrId AS INTEGER)))")
     List<Product> findByNameOrId(@Param("nameOrId") String nameOrId);
     List<Product> findProductsByNameContaining(String keyword);
