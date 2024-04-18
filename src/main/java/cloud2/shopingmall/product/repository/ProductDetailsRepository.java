@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface ProductDetailsRepository extends JpaRepository<ProductDetails,Long> {
     List<ProductDetails> findByProduct_Id(Long productId);
+
+    ProductDetails findByProductIdAndSizeAndColor(Long productId, ProductDetails.Size size, ProductDetails.Color color);
+
 }
