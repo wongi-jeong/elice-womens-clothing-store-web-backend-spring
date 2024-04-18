@@ -11,6 +11,10 @@ public interface ProductMainMapper {
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
     interface CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(CategoryDTO dto, @MappingTarget Category entity);
+
+
     }
 
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
@@ -23,6 +27,10 @@ public interface ProductMainMapper {
 
         @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
         void updateFromDto(ProductDTO dto, @MappingTarget Product entity);
+
+        @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        void updateFromDto(ProductDTO.ProductWithCategoryDTO dto, @MappingTarget Product entity);
+
 
     }
 
