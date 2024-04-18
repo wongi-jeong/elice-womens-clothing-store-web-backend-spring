@@ -42,18 +42,20 @@ public class ProductDetailsController {
 
     }
 
+
+
     @PutMapping("/{productId}/details")
-    public ResponseEntity<ProductDetailsDTO> patchProductDetails(@RequestBody ProductDetailsDTO productDetailsDTO, @RequestParam(name = "id") Long id){
-        productDetailsDTO.setId(id);
+    public ResponseEntity<ProductDetailsDTO> patchProductDetails(@RequestBody ProductDetailsDTO productDetailsDTO, @PathVariable(name = "productId") Long productId){
+        productDetailsDTO.setId(productId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productDetailsService.updateProductDetailsDTO(productDetailsDTO));
 
     }
 
-    @DeleteMapping("/{productId}/details")
-    public ResponseEntity deleteProductDetails(@RequestParam(name = "id") Long id){
+    @DeleteMapping("/{productId}/details/{id}")
+    public ResponseEntity deleteProductDetails(@PathVariable(name = "id") Long id){
         productDetailsService.deleteProductDetails(id);
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 

@@ -50,7 +50,31 @@ public class ProductImageService {
         return productImageMapper.toDto(productImageRepository.saveAll(productImages));
     }
 
+    public ProductImageDTO saveProductImageDTO(ProductImageDTO productImageDTO, Long productId) {
+        if(productImageDTO.getId() == null){
+            Product product = productRepository.getReferenceById(productId);
+            ProductImage productImage = productImageMapper.toEntity(productImageDTO);
+            product.getProductImages().add(productImage);
+            productImage.setProduct(product);
 
+
+            return productImageMapper.toDto(productImageRepository.save(productImage));
+        }
+        ProductImage productImage = productImageRepository.getReferenceById(productImageDTO.getId());
+        productImageMapper.updateFromDto(productImageDTO, productImage);
+
+        return productImageMapper.toDto(productImage);
+    }
+
+
+    public void deleteLastProductImage(Long productId) {
+        Product product = productRepository.getReferenceById(productId);
+        ProductImage productImage = product.getProductImages().get(product.getProductImages().size() - 1);
+        product.getProductImages().remove(product.getProductImages().size() - 1);
+        productImage.setProduct(null);
+
+        productImageRepository.delete(productImage);
+    }
 
     public void deleteProductImages(Long productId) {
         List<ProductImage> productImages = productImageRepository.findByProduct_Id(productId);
