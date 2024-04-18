@@ -8,6 +8,8 @@ import cloud2.shopingmall.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +56,13 @@ public class ProductController {
                 .body(productService.getProductsDTO(page - 1, size));
     }
 
+    @GetMapping(params = "nameOrId")
+    public ResponseEntity<List<ProductDTO>> getProductsByNameOrId(@RequestParam(name = "nameOrId") String nameOrId){
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.getProductsByNameOrIdDTO(nameOrId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> getProductWithDetailsAndBodies(
             @PathVariable(name = "id") Long id) {
@@ -62,11 +71,20 @@ public class ProductController {
 
     }
 
+//    @GetMapping("/search")
+//    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam(value = "keyword") String keyword,
+//                                                           @PageableDefault(page = 1, size = 6, sort = "id") Pageable pageable) {
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(productService.searchProducts(keyword, pageable));
+//    }
+
     @GetMapping("/search")
-    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam(value = "keyword") String keyword) {
+    public ResponseEntity<Page<ProductDTO>> searchProducts(@RequestParam(value = "keyword") String keyword,
+                                                           @PageableDefault(page = 1, size = 6, sort = "id") Pageable pageable) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.searchProducts(keyword));
+                .body(productService.searchProducts(keyword, pageable));
     }
 
 //    @PostMapping
@@ -167,16 +185,32 @@ public class ProductController {
                 .body(productService.saveProductWithImagesAndCategoryDTO(productDTO, categoryDTO));
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO,
-                                                   @PathVariable(name = "id") Long id) {
-        productDTO.setId(id);
+    public ResponseEntity patchProduct(@RequestBody ProductDTO.ProductWithCategoryDTO productDTO){
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.updateProductDTO(productDTO));
+        productService.updateProductDTO(productDTO);
+
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
 
     }
+
+
+
+
+
+
+
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){
+//        productDTO.setId(id);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(productService.updateProductDTO(productDTO));
+//
+//    }
 
     @PutMapping("/{id}/on")
     public ResponseEntity onProduct(@PathVariable(name = "id") Long id) {
