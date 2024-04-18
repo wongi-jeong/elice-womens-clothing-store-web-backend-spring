@@ -64,4 +64,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleOrderException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
     }
+
+    @ExceptionHandler(CategoryException.DuplicatedNameFoundException.class)
+    public ResponseEntity<Object> handleDuplicatedNameFoundException(CategoryException.DuplicatedNameFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
 }

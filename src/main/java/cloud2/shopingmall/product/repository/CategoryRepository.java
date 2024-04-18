@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category,Long> {
     List<Category> findBySuperId(Long superId);
+    Category findByName(String name);
 }
