@@ -100,15 +100,5 @@ public class OrderController {
         DeliveryDTO delivery = deliveryService.findDelivery(orderId);
         return ResponseEntity.ok(delivery);
     }
-    @PostMapping("/{orderId}/update")
-    public ResponseEntity<Void> update(@PathVariable("orderId") Long orderId,
-                                   @RequestBody int status){
-        orderUpdateService.updateOrder(orderId,status);
-        return ResponseEntity.ok().build();
-    }
-    @GetMapping("/{orderId}/delete")
-    public ResponseEntity<Void> delete(@PathVariable("orderId") Long orderId){
-        orderManagementService.deleteOrder(orderId);
-        return ResponseEntity.ok().build();
-    }
+
 }
