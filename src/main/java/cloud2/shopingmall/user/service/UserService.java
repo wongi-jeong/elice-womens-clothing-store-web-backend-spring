@@ -97,12 +97,12 @@ public class UserService {
         // 주어진 사용자의 이름으로 DB에서 사용자 정보 조회
         User userData = userRepository.findByUsername(username);
 
-        if (userData.getStatus() == User.Status.DELETED ){
-            throw new UsernameNotFoundException("삭제된 계정입니다.");
-        }
-
         if (userData == null) {
             throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
+        }
+
+        if (userData.getStatus() == User.Status.DELETED ){
+            throw new UsernameNotFoundException("삭제된 계정입니다.");
         }
 
         // DB에 사용자가 존재해 데이터가 있을 경우 '사용자의 인증 및 권한 정보를 제공하는 역할'을 하는 UserDetails 객체 반환
@@ -178,7 +178,7 @@ public class UserService {
 
         // UserProfile DB에 생성
         userProfile.setUser(savedUser); // user Entity 맵핑
-        userProfile.setGender(userProfileDTO.getGender().getKey());
+        userProfile.setGender(userProfileDTO.getGender());
         userProfile.setPoint(100000); // 처음 가입 시 10만 포인트 증정
         userProfileRepository.save(userProfile);
 
@@ -336,7 +336,7 @@ public class UserService {
         targetUserProfile.setName(userProfileDTO.getName());
         targetUserProfile.setEmail(userProfileDTO.getEmail());
         targetUserProfile.setPhoneNumber(userProfileDTO.getPhoneNumber());
-        targetUserProfile.setGender(userProfileDTO.getGender().getKey());
+        targetUserProfile.setGender(userProfileDTO.getGender());
         targetUserProfile.setBirthDate(userProfileDTO.getBirthDate());
         targetUserProfile.setPostNumber(userProfileDTO.getPostNumber());
         targetUserProfile.setAddress(userProfileDTO.getAddress());

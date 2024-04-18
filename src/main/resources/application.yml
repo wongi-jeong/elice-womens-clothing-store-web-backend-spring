@@ -3,8 +3,13 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/shoppingmall # 자신의 환경에 맞게 변경 가능
+<<<<<<< HEAD
     username: team1 # 자신의 환경에 맞게 변경 가능
     password: team111 # 자신의 환경에 맞게 변경 가능
+=======
+    username: root # 자신의 환경에 맞게 변경 가능
+    password: 4231 # 자신의 환경에 맞게 변경 가능
+>>>>>>> 126608ba729f3578ac930b2d1a1c1ef906c899a5
   mvc:
     static-path-pattern: /images/**
   web:
@@ -36,7 +41,5 @@ spring:
 
     jackson:
       default-property-inclusion: non_null
-
-#  port: 80
 
 

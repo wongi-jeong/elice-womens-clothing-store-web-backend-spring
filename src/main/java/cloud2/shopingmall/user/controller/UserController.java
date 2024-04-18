@@ -5,27 +5,23 @@ import cloud2.shopingmall.jwt.CustomUserDetails;
 import cloud2.shopingmall.user.dto.CommonDTO;
 import cloud2.shopingmall.user.dto.UserDTO;
 import cloud2.shopingmall.user.dto.UserProfileDTO;
-import cloud2.shopingmall.user.entity.User;
-import cloud2.shopingmall.user.entity.UserProfile;
 import cloud2.shopingmall.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
@@ -96,7 +92,6 @@ public class UserController {
     @PostMapping("/findID")
     public ResponseEntity<String> findId(@RequestBody UserProfileDTO.FindUser findUserDTO) {
 
-
         String resultId = userService.findUserId(findUserDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body("찾으시는 아이디는 " + resultId + " 입니다.");
@@ -135,7 +130,20 @@ public class UserController {
 
     // 사용자 회원정보 변경 기능
     @PatchMapping("/changeInfo")
-    public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody CommonDTO.ChangeInfoRequest request) throws PasswordMismatchException {
+    public ResponseEntity<String> changeInfo(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody @Valid CommonDTO.ChangeInfoRequest request, BindingResult bindingResult) throws PasswordMismatchException {
+
+        // 유효성 검사 결과 확인
+        if (bindingResult.hasErrors()) {
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            StringBuilder errorMessage = new StringBuilder();
+
+            for (FieldError error : errors) {
+                errorMessage.append(error.getDefaultMessage()).append("; ");
+            }
+
+            // 클라이언트에게 유효성 검사 실패 메시지 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
+        }
 
         Boolean result = userService.changeInfo(userInfo, request);
         return ResponseEntity.status(HttpStatus.OK).body("회원정보 변경이 완료되었습니다.");
@@ -143,7 +151,21 @@ public class UserController {
 
     // 적립금 충전 기능
     @PatchMapping("/addPoint")
-    public ResponseEntity<String> addPonit(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody UserProfileDTO.AddPoint addPointDTO ) {
+    public ResponseEntity<String> addPonit(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody @Valid UserProfileDTO.AddPoint addPointDTO, BindingResult bindingResult ) {
+
+        // 유효성 검사 결과 확인
+        if (bindingResult.hasErrors()) {
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            StringBuilder errorMessage = new StringBuilder();
+
+            for (FieldError error : errors) {
+                errorMessage.append(error.getDefaultMessage()).append("; ");
+            }
+
+            // 클라이언트에게 유효성 검사 실패 메시지 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
+        }
+
 
         Boolean result = userService.addPoint(userInfo, addPointDTO);
         return ResponseEntity.ok("적립금 충전이 완료됐습니다");
@@ -151,7 +173,21 @@ public class UserController {
 
     // 사용자 회원정보 삭제 기능
     @PatchMapping("/deleteUser")
-    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody UserDTO.DeleteUser deleteUserDTO) throws PasswordMismatchException {
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal CustomUserDetails userInfo, @RequestBody UserDTO.DeleteUser deleteUserDTO, BindingResult bindingResult) throws PasswordMismatchException {
+
+        // 유효성 검사 결과 확인
+        if (bindingResult.hasErrors()) {
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            StringBuilder errorMessage = new StringBuilder();
+
+            for (FieldError error : errors) {
+                errorMessage.append(error.getDefaultMessage()).append("; ");
+            }
+
+            // 클라이언트에게 유효성 검사 실패 메시지 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
+        }
+
         Boolean result = userService.deleteUser(userInfo, deleteUserDTO);
         return ResponseEntity.status(HttpStatus.OK).body("회원 삭제가 완료되었습니다.");
     }
@@ -164,7 +200,21 @@ public class UserController {
     }
 
     @PatchMapping("admin/changeUserStatus")
-    public ResponseEntity<String> adminChangeStatus(@RequestBody UserDTO.adminChangeStatus dto) {
+    public ResponseEntity<String> adminChangeStatus(@RequestBody UserDTO.adminChangeStatus dto, BindingResult bindingResult) {
+
+        // 유효성 검사 결과 확인
+        if (bindingResult.hasErrors()) {
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            StringBuilder errorMessage = new StringBuilder();
+
+            for (FieldError error : errors) {
+                errorMessage.append(error.getDefaultMessage()).append("; ");
+            }
+
+            // 클라이언트에게 유효성 검사 실패 메시지 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage.toString());
+        }
+
         boolean result = userService.adminChangeStatus(dto);
         return ResponseEntity.status(HttpStatus.OK).body("상태 변경이 완료되었습니다.");
     }

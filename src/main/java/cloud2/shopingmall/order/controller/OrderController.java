@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Slf4j
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/user/order")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderQueryService orderQueryService;
@@ -26,11 +26,6 @@ public class OrderController {
     private final PaymentService paymentService;
     private final DeliveryService deliveryService;
     private final OrderUpdateService orderUpdateService;
-    @GetMapping("")
-    public ResponseEntity<Page<OrderInfoDTO>> findAllOrder(@PageableDefault(size = 20) Pageable pageable){
-        Page<OrderInfoDTO> allOrder = orderQueryService.findAllOrder(pageable);
-        return ResponseEntity.ok(allOrder);
-    }
     @GetMapping("/user")
     public ResponseEntity<List<OrderInfoDTO>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
         List<OrderInfoDTO> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
@@ -105,15 +100,5 @@ public class OrderController {
         DeliveryDTO delivery = deliveryService.findDelivery(orderId);
         return ResponseEntity.ok(delivery);
     }
-    @PostMapping("/{orderId}/update")
-    public ResponseEntity<Void> update(@PathVariable("orderId") Long orderId,
-                                   @RequestBody int status){
-        orderUpdateService.updateOrder(orderId,status);
-        return ResponseEntity.ok().build();
-    }
-    @GetMapping("/{orderId}/delete")
-    public ResponseEntity<Void> delete(@PathVariable("orderId") Long orderId){
-        orderManagementService.deleteOrder(orderId);
-        return ResponseEntity.ok().build();
-    }
+
 }
