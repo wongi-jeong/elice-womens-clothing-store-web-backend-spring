@@ -75,7 +75,6 @@ public class UserDTO {
     @AllArgsConstructor
     public static class LoginRequest {
 
-        @NotNull(message = "아이디를 입력해 주세요.")
         @NotEmpty(message = "아이디를 입력해 주세요.")
         private String username;
 

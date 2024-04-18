@@ -30,3 +30,8 @@ spring:
 
     jackson:
       default-property-inclusion: non_null
+
+logging:
+  level:
+    org:
+      springframework: debug
