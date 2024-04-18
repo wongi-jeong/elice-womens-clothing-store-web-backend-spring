@@ -218,6 +218,15 @@ public class ProductService {
         }
         product.setProductBodies(new ArrayList<>());
         productBodyRepository.deleteAll(productBodies);
+
+        List<ProductImage> productImages = productImageRepository.findByProduct_Id(id);
+        for (ProductImage productImage : productImages) {
+            productImage.setProduct(null);
+
+        }
+        product.setProductImages(new ArrayList<>());
+        productImageRepository.deleteAll(productImages);
+
         productRepository.deleteById(id);
 
 
