@@ -235,7 +235,13 @@ public class ProductService {
 //    }
 
     @Transactional
-    public Page<ProductDTO> searchProducts(String keyword, Pageable pageable) {
-        return productRepository.findProductsByNameContaining(keyword, pageable).map(product -> productMapper.toDto(product));
+    public Page<ProductDTO> searchProducts(String keyword, Pageable pageable, Long categoryId) {
+
+        if(categoryId == 0){
+            return productRepository.findProductsByNameContaining(keyword == null ? "" : keyword , pageable).map(product -> productMapper.toDto(product));
+
+        }
+
+        return productRepository.findProductsByNameContainingByCategoryId(keyword == null ? "" : keyword , pageable, categoryId).map(product -> productMapper.toDto(product));
     }
 }
