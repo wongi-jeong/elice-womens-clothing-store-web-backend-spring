@@ -49,14 +49,14 @@ public class CategoryService {
     }
 
     public Category saveCategory(CategoryDTO categoryDTO) {
-        if(categoryRepository.findByName(categoryDTO.getName()) != null){
+        if(categoryRepository.findByName(categoryDTO.getName()).orElse(null) != null){
             throw new CategoryException.DuplicatedNameFoundException(categoryDTO.getName());
         }
         return categoryRepository.save(categoryMapper.toEntity(categoryDTO));
     }
 
     public Category updateCategory(CategoryDTO categoryDTO) {
-        if(categoryRepository.findByName(categoryDTO.getName()) != null){
+        if(categoryRepository.findByName(categoryDTO.getName()).orElse(null) != null){
             throw new CategoryException.DuplicatedNameFoundException(categoryDTO.getName());
         }
         foundCategory = categoryRepository.findById(categoryDTO.getId())
