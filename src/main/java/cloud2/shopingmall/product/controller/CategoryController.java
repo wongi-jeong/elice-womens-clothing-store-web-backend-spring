@@ -52,11 +52,18 @@ public class CategoryController {
                 .body(categoryService.saveCategory(categoryDTO));
     }
 
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
+//        categoryDTO.setId(id);
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+//                .body(categoryService.updateCategory(categoryDTO));
+//    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity updateCategory(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setId(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(categoryService.updateCategory(categoryDTO));
+        categoryService.updateCategory(categoryDTO);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}")
