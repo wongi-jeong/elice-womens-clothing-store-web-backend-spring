@@ -54,6 +54,13 @@ public class ProductController {
                 .body(productService.getProductsDTO(page - 1, size));
     }
 
+    @GetMapping(params = "nameOrId")
+    public ResponseEntity<List<ProductDTO>> getProductsByNameOrId(@RequestParam(name = "nameOrId") String nameOrId){
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.getProductsByNameOrIdDTO(nameOrId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> getProductWithDetailsAndBodies(
             @PathVariable(name = "id") Long id) {
@@ -167,16 +174,32 @@ public class ProductController {
                 .body(productService.saveProductWithImagesAndCategoryDTO(productDTO, categoryDTO));
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO,
-                                                   @PathVariable(name = "id") Long id) {
-        productDTO.setId(id);
+    public ResponseEntity patchProduct(@RequestBody ProductDTO.ProductWithCategoryDTO productDTO){
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.updateProductDTO(productDTO));
+        productService.updateProductDTO(productDTO);
+
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
 
     }
+
+
+
+
+
+
+
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){
+//        productDTO.setId(id);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(productService.updateProductDTO(productDTO));
+//
+//    }
 
     @PutMapping("/{id}/on")
     public ResponseEntity onProduct(@PathVariable(name = "id") Long id) {
