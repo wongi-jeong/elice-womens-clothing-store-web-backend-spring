@@ -70,4 +70,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(ProductException.OrderExistsException.class)
+    public ResponseEntity<Object> OrderExistsException(ProductException.OrderExistsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
 }
