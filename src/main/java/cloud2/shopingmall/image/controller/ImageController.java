@@ -59,7 +59,7 @@ public class ImageController {
         // 서버용 이미지 경로 설정
         String uploadDir = "/home/elice/test/static/images";
         String imagePath = "/static/images/";
-        
+
         Path path = Paths.get(uploadDir + imageName);
         UrlResource resource =  new UrlResource(path.toUri());
 
@@ -70,6 +70,7 @@ public class ImageController {
 
 
     }
+
 
     @PutMapping("/api/admin/images/image")
     public ResponseEntity<ProductImageDTO> putImage(@RequestPart("productImageFile") MultipartFile productImageFile,
@@ -84,6 +85,10 @@ public class ImageController {
         // 서버용 이미지 경로 설정
         String uploadDir = "/home/elice/test/static/images";
         String imagePath = "/static/images/";
+
+        // 서버용 이미지 경로 설정
+        // String uploadDir = "/home/elice/test/static/images";
+        // String imagePath = "/static/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);

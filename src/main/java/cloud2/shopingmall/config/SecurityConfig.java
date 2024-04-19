@@ -64,8 +64,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")    // 우선순위 1등 어드민
-                        .requestMatchers("/api/user/**").authenticated()      // 우선순위 2등 사용자
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling((exceptions) -> exceptions
