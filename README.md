@@ -45,7 +45,7 @@
 
 <br/>
 
-## ERD
+## WireFrame
 
 ![ERD_portfolly](https://cdn.discordapp.com/attachments/1220663941194186782/1230782312510259231/2.png?ex=6634925a&is=66221d5a&hm=6a90296e387aaa915fdc08aa7ce79346056659557cf03af7a93db2a7bc3c57fd&)
 
