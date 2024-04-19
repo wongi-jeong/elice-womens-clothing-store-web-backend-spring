@@ -52,8 +52,16 @@ public class ImageController {
     @GetMapping(value = "/images/{imageName}")
     public ResponseEntity<UrlResource> getImage(@PathVariable("imageName") String imageName) throws IOException {
 
-        String uploadDir = System.getProperty("user.dir") + "/static/images/";
-        Path path = Paths.get(uploadDir + imageName);
+        // 로컬용 이미지 경로 설정
+        // String uploadDir = System.getProperty("user.dir") + "/static/images";
+        // String imagePath = "/images/";
+
+        // 서버용 이미지 경로 설정
+        String uploadDir = "/home/elice/test/static/images";
+        String imagePath = "/static/images/";
+
+
+
         UrlResource resource =  new UrlResource(path.toUri());
 
 
@@ -70,8 +78,13 @@ public class ImageController {
                                                     @RequestParam("productId") Long productId) {
 
 
-        String uploadDir = System.getProperty("user.dir") + "/static/images";
-        String imagePath = "/images/";
+        // 로컬용 이미지 경로 설정
+        // String uploadDir = System.getProperty("user.dir") + "/static/images";
+        // String imagePath = "/images/";
+
+        // 서버용 이미지 경로 설정
+        String uploadDir = "/home/elice/test/static/images";
+        String imagePath = "/static/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
@@ -115,13 +128,13 @@ public class ImageController {
                                                   @RequestParam("productId") Long productId) {
 
 
-        // 로컬용 이미지 경로 설정                                                    
-        // String uploadDir = System.getProperty("user.dir") + "/static/images";
-        // String imagePath = "/images/";
+        // 로컬용 이미지 경로 설정
+        String uploadDir = System.getProperty("user.dir") + "/static/images";
+        String imagePath = "/images/";
 
         // 서버용 이미지 경로 설정
-        String uploadDir = "/home/elice/test/static/images";
-        String imagePath = "/static/images/";
+        // String uploadDir = "/home/elice/test/static/images";
+        // String imagePath = "/static/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
