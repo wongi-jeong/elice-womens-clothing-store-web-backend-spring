@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/images")
+@RequestMapping
 public class ImageController {
 
     //    @Value("${app.images.path}")
@@ -49,7 +49,7 @@ public class ImageController {
         this.productBodyService = productBodyService;
     }
 
-    @GetMapping(value = "/{imageName}")
+    @GetMapping(value = "/images/{imageName}")
     public ResponseEntity<UrlResource> getImage(@PathVariable("imageName") String imageName) throws IOException {
 
         String uploadDir = System.getProperty("user.dir") + "/static/images/";
@@ -64,7 +64,7 @@ public class ImageController {
 
     }
 
-    @PutMapping("/image")
+    @PutMapping("/api/admin/images/image")
     public ResponseEntity<ProductImageDTO> putImage(@RequestPart("productImageFile") MultipartFile productImageFile,
                                                                  @RequestPart("productImageDTO") ProductImageDTO productImageDTO,
                                                     @RequestParam("productId") Long productId) {
@@ -109,7 +109,7 @@ public class ImageController {
 
 
 
-    @PutMapping("/body")
+    @PutMapping("/api/admin/images/body")
     public ResponseEntity<ProductBodyDTO> putBody(@RequestPart("productImageFile") MultipartFile productImageFile,
                                                                  @RequestPart("productBodyDTO") ProductBodyDTO productBodyDTO,
                                                   @RequestParam("productId") Long productId) {
