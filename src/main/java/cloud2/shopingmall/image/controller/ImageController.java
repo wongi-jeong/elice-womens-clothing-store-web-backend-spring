@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping
+@RequestMapping("/images")
 public class ImageController {
 
     //    @Value("${app.images.path}")
@@ -49,19 +49,18 @@ public class ImageController {
         this.productBodyService = productBodyService;
     }
 
-    @GetMapping(value = "/images/{imageName}")
+    @GetMapping(value = "/{imageName}")
     public ResponseEntity<UrlResource> getImage(@PathVariable("imageName") String imageName) throws IOException {
 
-        // 로컬용 이미지 경로 설정
+        // 로컬용 이미지 경로 설정                                                    
         // String uploadDir = System.getProperty("user.dir") + "/static/images";
         // String imagePath = "/images/";
 
         // 서버용 이미지 경로 설정
         String uploadDir = "/home/elice/test/static/images";
         String imagePath = "/static/images/";
-
-
-
+        
+        Path path = Paths.get(uploadDir + imageName);
         UrlResource resource =  new UrlResource(path.toUri());
 
 
@@ -72,13 +71,13 @@ public class ImageController {
 
     }
 
-    @PutMapping("/api/admin/images/image")
+    @PostMapping("/image")
     public ResponseEntity<ProductImageDTO> putImage(@RequestPart("productImageFile") MultipartFile productImageFile,
                                                                  @RequestPart("productImageDTO") ProductImageDTO productImageDTO,
                                                     @RequestParam("productId") Long productId) {
 
 
-        // 로컬용 이미지 경로 설정
+        // 로컬용 이미지 경로 설정                                                    
         // String uploadDir = System.getProperty("user.dir") + "/static/images";
         // String imagePath = "/images/";
 
@@ -122,19 +121,19 @@ public class ImageController {
 
 
 
-    @PutMapping("/api/admin/images/body")
+    @PostMapping("/body")
     public ResponseEntity<ProductBodyDTO> putBody(@RequestPart("productImageFile") MultipartFile productImageFile,
                                                                  @RequestPart("productBodyDTO") ProductBodyDTO productBodyDTO,
                                                   @RequestParam("productId") Long productId) {
 
 
-        // 로컬용 이미지 경로 설정
-        String uploadDir = System.getProperty("user.dir") + "/static/images";
-        String imagePath = "/images/";
+        // 로컬용 이미지 경로 설정                                                    
+        // String uploadDir = System.getProperty("user.dir") + "/static/images";
+        // String imagePath = "/images/";
 
         // 서버용 이미지 경로 설정
-        // String uploadDir = "/home/elice/test/static/images";
-        // String imagePath = "/static/images/";
+        String uploadDir = "/home/elice/test/static/images";
+        String imagePath = "/static/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
