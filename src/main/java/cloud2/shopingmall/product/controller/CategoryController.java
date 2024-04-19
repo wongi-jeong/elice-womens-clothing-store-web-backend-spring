@@ -46,30 +46,5 @@ public class CategoryController {
                 .body(categoryService.findCategory(id));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(categoryService.saveCategory(categoryDTO));
-    }
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Category> updateCategory(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
-//        categoryDTO.setId(id);
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-//                .body(categoryService.updateCategory(categoryDTO));
-//    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity updateCategory(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
-        categoryDTO.setId(id);
-        categoryService.updateCategory(categoryDTO);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteCategory(@PathVariable(name = "id") Long id) {
-        categoryService.deleteCategory(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
 
 }

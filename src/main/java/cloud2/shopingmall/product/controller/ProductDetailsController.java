@@ -34,30 +34,5 @@ public class ProductDetailsController {
                 .body(productDetailsService.getProductDetailsDTOByProductId(productId));
     }
 
-    @PostMapping("/{productId}/details")
-    public ResponseEntity<ProductDetailsDTO> postProductDetails(@RequestBody ProductDetailsDTO productDetailsDTO, @PathVariable(name = "productId") Long productId){
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productDetailsService.saveProductDetailsDTO(productDetailsDTO, productId));
-
-    }
-
-
-
-    @PutMapping("/{productId}/details")
-    public ResponseEntity<ProductDetailsDTO> patchProductDetails(@RequestBody ProductDetailsDTO productDetailsDTO, @PathVariable(name = "productId") Long productId){
-        productDetailsDTO.setId(productId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productDetailsService.updateProductDetailsDTO(productDetailsDTO));
-
-    }
-
-    @DeleteMapping("/{productId}/details/{id}")
-    public ResponseEntity deleteProductDetails(@PathVariable(name = "id") Long id){
-        productDetailsService.deleteProductDetails(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
-    }
-
 
 }

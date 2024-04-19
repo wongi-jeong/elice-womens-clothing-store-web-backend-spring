@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryProductRepository extends JpaRepository<CategoryProduct,Long> {
 
-    List<CategoryProduct> findByProduct_Id(Long productId);
+    CategoryProduct findByProduct_Id(Long productId);
 }
