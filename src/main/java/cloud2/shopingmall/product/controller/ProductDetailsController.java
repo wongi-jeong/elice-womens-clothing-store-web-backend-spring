@@ -34,28 +34,5 @@ public class ProductDetailsController {
                 .body(productDetailsService.getProductDetailsDTOByProductId(productId));
     }
 
-    @PostMapping("/{productId}/details")
-    public ResponseEntity<ProductDetailsDTO> postProductDetails(@RequestBody ProductDetailsDTO productDetailsDTO, @PathVariable(name = "productId") Long productId){
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productDetailsService.saveProductDetailsDTO(productDetailsDTO, productId));
-
-    }
-
-    @PutMapping("/{productId}/details")
-    public ResponseEntity<ProductDetailsDTO> patchProductDetails(@RequestBody ProductDetailsDTO productDetailsDTO, @RequestParam(name = "id") Long id){
-        productDetailsDTO.setId(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productDetailsService.updateProductDetailsDTO(productDetailsDTO));
-
-    }
-
-    @DeleteMapping("/{productId}/details")
-    public ResponseEntity deleteProductDetails(@RequestParam(name = "id") Long id){
-        productDetailsService.deleteProductDetails(id);
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
-
-    }
-
 
 }

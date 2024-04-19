@@ -18,17 +18,14 @@ public class UserProfileDTO {
     @AllArgsConstructor
     public static class Join {
 
-        @NotNull(message = "이름을 입력해 주세요.")
         @NotEmpty(message = "이름을 입력해 주세요.")
         @Pattern(regexp = "^[가-힣]*$", message = "한글만 입력 가능합니다.")
         private String name;
 
-        @NotNull(message = "이메일을 입력해 주세요.")
         @NotEmpty(message = "이메일을 입력해 주세요.")
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "올바른 이메일 주소 형식이 아닙니다.")
         private String email;
 
-        @NotNull(message = "핸드폰 번호를 입력해 주세요.")
         @NotEmpty(message = "핸드폰 번호를 입력해 주세요.")
         @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "올바른 핸드폰 번호 형식이 아닙니다.")
         private String phoneNumber;
@@ -36,18 +33,15 @@ public class UserProfileDTO {
         @NotNull(message = "우편번호를 입력해 주세요.")
         private Integer postNumber;
 
-        @NotNull(message = "주소를 입력해 주세요.")
         @NotEmpty(message = "주소를 입력해 주세요.")
         private String address;
 
-        @NotNull(message = "상세주소를 입력해 주세요.")
         @NotEmpty(message = "상세주소를 입력해 주세요.")
         private String addressDetail;
 
-        @NotNull(message = "성별을 선택해 주세요.")
-        private Gender gender;
+        @NotEmpty(message = "성별을 선택해 주세요.")
+        private String gender;
 
-        @NotNull(message = "생년월일을 입력해 주세요.")
         @NotEmpty(message = "생년월일을 입력해 주세요.")
         private String birthDate;
     }
@@ -113,17 +107,14 @@ public class UserProfileDTO {
     @AllArgsConstructor
     public static class ChangeInfo {
 
-        @NotNull(message = "이름을 입력해 주세요.")
         @NotEmpty(message = "이름을 입력해 주세요.")
         @Pattern(regexp = "^[가-힣]*$", message = "한글만 입력 가능합니다.")
         private String name;
 
-        @NotNull(message = "이메일을 입력해 주세요.")
         @NotEmpty(message = "이메일을 입력해 주세요.")
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "올바른 이메일 주소 형식이 아닙니다.")
         private String email;
 
-        @NotNull(message = "핸드폰 번호를 입력해 주세요.")
         @NotEmpty(message = "핸드폰 번호를 입력해 주세요.")
         @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "올바른 핸드폰 번호 형식이 아닙니다.")
         private String phoneNumber;
@@ -131,18 +122,15 @@ public class UserProfileDTO {
         @NotNull(message = "우편번호를 입력해 주세요.")
         private Integer postNumber;
 
-        @NotNull(message = "주소를 입력해 주세요.")
         @NotEmpty(message = "주소를 입력해 주세요.")
         private String address;
 
-        @NotNull(message = "상세주소를 입력해 주세요.")
         @NotEmpty(message = "상세주소를 입력해 주세요.")
         private String addressDetail;
 
-        @NotNull(message = "성별을 선택해 주세요.")
-        private Gender gender;
+        @NotEmpty(message = "성별을 선택해 주세요.")
+        private String gender;
 
-        @NotNull(message = "생년월일을 입력해 주세요.")
         @NotEmpty(message = "생년월일을 입력해 주세요.")
         private String birthDate;
     }
@@ -151,6 +139,7 @@ public class UserProfileDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddPoint {
+
         @NotNull(message = "충전할 포인트를 선택해주세요.")
         private Integer point;
     }

@@ -21,6 +21,9 @@ public interface OrderMainMapper {
     }
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
     interface OrderProductMapper extends EntityMapper<OrderProduct, OrderProductDTO> {
+        @Mapping(target = "id", ignore = true)
+        @Override
+        OrderProduct toEntity(OrderProductDTO dto);
     }
     @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
     interface OrderMapper extends EntityMapper<Orders, OrderDTO> {

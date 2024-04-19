@@ -51,12 +51,6 @@ public class ProductImageController {
 
     }
 
-    @DeleteMapping("/{productId}/image")
-    public ResponseEntity deleteProductImages(@PathVariable(name = "productId") Long productId){
-        productImageService.deleteProductImages(productId);
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
-
-    }
 
 
 }
