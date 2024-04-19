@@ -3,13 +3,24 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/shoppingmall # 자신의 환경에 맞게 변경 가능
+<<<<<<< HEAD
     username: root # 자신의 환경에 맞게 변경 가능
     password: 1234 # 자신의 환경에 맞게 변경 가능
+=======
+    username: team1 # 자신의 환경에 맞게 변경 가능
+    password: team111 # 자신의 환경에 맞게 변경 가능
+>>>>>>> 7470e00267538f45d23cfd97e5bc07067fc12c82
   mvc:
     static-path-pattern: /images/**
   web:
     resources:
       static-locations: classpath:/static/images/
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+
+
 
   jackson:
     default-property-inclusion: non_null # DTO에서 null 값인 필드 전송 안됨
@@ -23,7 +34,7 @@ spring:
   # spring data jpa 설정
   jpa:
     hibernate:
-      ddl-auto: update # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
+      ddl-auto: create # create 처음 실행시 sql 테이블 생성 이후에는 none 으로 설정
     show-sql: true
     defer-datasource-initialization: true
     open-in-view: false

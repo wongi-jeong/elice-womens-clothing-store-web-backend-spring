@@ -1,5 +1,8 @@
 package cloud2.shopingmall.product.service;
 
+import cloud2.shopingmall.common.exception.ProductException;
+import cloud2.shopingmall.order.entity.OrderProduct;
+import cloud2.shopingmall.order.repository.OrderProductRepository;
 import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.dto.ProductDTO;
 import cloud2.shopingmall.product.dto.ProductDetailsDTO;
@@ -25,6 +28,7 @@ public class ProductService {
     private final ProductBodyRepository productBodyRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductDetailsRepository productDetailsRepository;
+    private final OrderProductRepository orderProductRepository;
 
     private final ProductMainMapper.ProductMapper productMapper;
     private final ProductMainMapper.CategoryMapper categoryMapper;
@@ -36,6 +40,7 @@ public class ProductService {
     public ProductService(ProductRepository productRepository, ProductImageRepository productImageRepository,
                           ProductBodyRepository productBodyRepository,
                           ProductDetailsRepository productDetailsRepository,
+                          OrderProductRepository orderProductRepository,
                           ProductMainMapper.ProductMapper productMapper,
                           ProductMainMapper.ProductWithDetailsAndBodiesMapper productWithDetailsAndBodiesMapper,
                           ProductMainMapper.CategoryMapper categoryMapper,
@@ -44,6 +49,7 @@ public class ProductService {
         this.productImageRepository = productImageRepository;
         this.productDetailsRepository = productDetailsRepository;
         this.productBodyRepository = productBodyRepository;
+        this.orderProductRepository = orderProductRepository;
         this.productMapper = productMapper;
         this.categoryMapper = categoryMapper;
         this.productWithDetailsAndBodiesMapper = productWithDetailsAndBodiesMapper;
@@ -208,9 +214,14 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         Product product = productRepository.getReferenceById(id);
-        if (product.getProductDetails().size() != 0) {
+        if (!product.getProductDetails().isEmpty()) {
             throw new RuntimeException();
         }
+        List<OrderProduct> orderProducts = orderProductRepository.findByProduct_Id(id);
+        if (!product.getProductDetails().isEmpty()) {
+            throw new ProductException.OrderExistsException();
+        }
+
         List<ProductBody> productBodies = productBodyRepository.findByProduct_Id(id);
         for (ProductBody productBody : productBodies) {
             productBody.setProduct(null);
@@ -218,6 +229,22 @@ public class ProductService {
         }
         product.setProductBodies(new ArrayList<>());
         productBodyRepository.deleteAll(productBodies);
+
+        List<ProductImage> productImages = productImageRepository.findByProduct_Id(id);
+        for (ProductImage productImage : productImages) {
+            productImage.setProduct(null);
+
+        }
+        product.setProductImages(new ArrayList<>());
+        productImageRepository.deleteAll(productImages);
+
+        CategoryProduct categoryProduct = categoryProductRepository.findByProduct_Id(id);
+
+        categoryProduct.setProduct(null);
+
+
+        productImageRepository.deleteAll(productImages);
+
         productRepository.deleteById(id);
 
 

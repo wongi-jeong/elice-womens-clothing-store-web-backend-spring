@@ -1,5 +1,6 @@
 package cloud2.shopingmall.product.service;
 
+import cloud2.shopingmall.common.exception.CategoryException;
 import cloud2.shopingmall.product.dto.CategoryDTO;
 import cloud2.shopingmall.product.dto.CategoryProductDTO;
 import cloud2.shopingmall.product.entity.Category;
@@ -48,10 +49,16 @@ public class CategoryService {
     }
 
     public Category saveCategory(CategoryDTO categoryDTO) {
+        if(categoryRepository.findByName(categoryDTO.getName()).orElse(null) != null){
+            throw new CategoryException.DuplicatedNameFoundException(categoryDTO.getName());
+        }
         return categoryRepository.save(categoryMapper.toEntity(categoryDTO));
     }
 
     public Category updateCategory(CategoryDTO categoryDTO) {
+        if(categoryRepository.findByName(categoryDTO.getName()).orElse(null) != null){
+            throw new CategoryException.DuplicatedNameFoundException(categoryDTO.getName());
+        }
         foundCategory = categoryRepository.findById(categoryDTO.getId())
                 .orElseThrow(NoSuchElementException::new);
 
