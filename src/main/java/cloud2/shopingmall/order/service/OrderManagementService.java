@@ -7,6 +7,8 @@ import cloud2.shopingmall.order.mapper.OrderMainMapper;
 import cloud2.shopingmall.order.repository.DeliveryRepository;
 import cloud2.shopingmall.order.repository.OrderProductRepository;
 import cloud2.shopingmall.order.repository.OrderRepository;
+import cloud2.shopingmall.product.entity.ProductDetails;
+import cloud2.shopingmall.product.repository.ProductDetailsRepository;
 import cloud2.shopingmall.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ public class OrderManagementService {
     private final OrderMainMapper.OrderMapper orderMapper;
     private final OrderProductRepository orderProductRepository;
     private final PaymentService paymentService;
+    private final ProductDetailsRepository productDetailsRepository;
 
     @Transactional
     public OrderDTO createOrderForProduct(String userName,Integer totalPrice){
@@ -94,6 +97,14 @@ public class OrderManagementService {
         }
         Orders orders = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+        orderProductDTOS.stream().forEach((orderProductDTO -> {
+            List<ProductDetails> byProductIds = productDetailsRepository.findByProduct_Id(orderProductDTO.getId());
+            byProductIds.stream().forEach((byProductId) ->
+            { if(byProductId.getSize() == orderProductDTO.getSize() && byProductId.getColor() == orderProductDTO.getColor()){
+                byProductId.setQuantity(byProductId.getQuantity()- orderProductDTO.getCount());
+                productDetailsRepository.save(byProductId);
+            }});
+        }));
 
         List<OrderProduct> orderProducts = orderProductDTOS.stream()
                 .map(orderProductMapper::toEntity)
@@ -116,6 +127,12 @@ public class OrderManagementService {
         OrderProduct orderProduct = orderProductMapper.toEntity(orderProductDTO);
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderException.OrderNotFoundException(orderId));
+        List<ProductDetails> byProductIds = productDetailsRepository.findByProduct_Id(orderProductDTO.getId());
+        byProductIds.stream().forEach((byProductId) ->
+        { if(byProductId.getSize() == orderProductDTO.getSize() && byProductId.getColor() == orderProductDTO.getColor()){
+                byProductId.setQuantity(byProductId.getQuantity()- orderProductDTO.getCount());
+                productDetailsRepository.save(byProductId);
+        }});
         orderProduct.setOrders(order);
         if (order.getOrderProducts() == null) {
             order.setOrderProducts(new ArrayList<>());
