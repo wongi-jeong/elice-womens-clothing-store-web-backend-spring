@@ -1,8 +1,10 @@
 package cloud2.shopingmall.product.service;
 
 import cloud2.shopingmall.product.dto.ProductBodyDTO;
+import cloud2.shopingmall.product.dto.ProductImageDTO;
 import cloud2.shopingmall.product.entity.Product;
 import cloud2.shopingmall.product.entity.ProductBody;
+import cloud2.shopingmall.product.entity.ProductImage;
 import cloud2.shopingmall.product.mapper.ProductMainMapper;
 import cloud2.shopingmall.product.repository.ProductBodyRepository;
 import cloud2.shopingmall.product.repository.ProductRepository;
@@ -51,6 +53,22 @@ public class ProductBodyService {
         return productBodyRepository.saveAll(productBodies);
     }
 
+    public ProductBodyDTO saveProductBodyDTO(ProductBodyDTO productBodyDTO, Long productId) {
+        if(productBodyDTO.getId() == null){
+            Product product = productRepository.getReferenceById(productId);
+            ProductBody productBody = productBodyMapper.toEntity(productBodyDTO);
+            product.getProductBodies().add(productBody);
+            productBody.setProduct(product);
+
+
+            return productBodyMapper.toDto(productBodyRepository.save(productBody));
+        }
+        ProductBody productBody = productBodyRepository.getReferenceById(productBodyDTO.getId());
+        productBodyMapper.updateFromDto(productBodyDTO, productBody);
+
+        return productBodyMapper.toDto(productBody);
+    }
+
     public List<ProductBodyDTO> saveProductBodiesDTO(List<ProductBodyDTO> productBodiesDTO, Long productId) {
         Product product = productRepository.getReferenceById(productId);
         List<ProductBody> productBodies = productBodyMapper.toEntity(productBodiesDTO);
@@ -74,6 +92,14 @@ public class ProductBodyService {
         return productBodyRepository.saveAll(productBodies);
     }
 
+    public void deleteLastProductBody(Long productId) {
+        Product product = productRepository.getReferenceById(productId);
+        ProductBody productBody = product.getProductBodies().get(product.getProductBodies().size() - 1);
+        product.getProductBodies().remove(product.getProductBodies().size() - 1);
+        productBody.setProduct(null);
+
+        productBodyRepository.delete(productBody);
+    }
 
     public void deleteProductBodies(Long productId) {
         List<ProductBody> productBodies = productBodyRepository.findByProduct_Id(productId);

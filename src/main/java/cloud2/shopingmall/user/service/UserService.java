@@ -31,10 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,6 +99,10 @@ public class UserService {
 
         if (userData == null) {
             throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
+        }
+
+        if (userData.getStatus() == User.Status.DELETED ){
+            throw new UsernameNotFoundException("삭제된 계정입니다.");
         }
 
         // DB에 사용자가 존재해 데이터가 있을 경우 '사용자의 인증 및 권한 정보를 제공하는 역할'을 하는 UserDetails 객체 반환
@@ -177,7 +178,7 @@ public class UserService {
 
         // UserProfile DB에 생성
         userProfile.setUser(savedUser); // user Entity 맵핑
-        userProfile.setGender(userProfileDTO.getGender().getKey());
+        userProfile.setGender(userProfileDTO.getGender());
         userProfile.setPoint(100000); // 처음 가입 시 10만 포인트 증정
         userProfileRepository.save(userProfile);
 
@@ -193,8 +194,6 @@ public class UserService {
         String email = findIdUserDTO.getEmail();
         String phoneNumber = findIdUserDTO.getPhoneNumber();
         String source = findIdUserDTO.getSource().getKey();
-
-
 
         if (source.equals("phone")) {
             if (phoneNumber == null) {
@@ -337,7 +336,7 @@ public class UserService {
         targetUserProfile.setName(userProfileDTO.getName());
         targetUserProfile.setEmail(userProfileDTO.getEmail());
         targetUserProfile.setPhoneNumber(userProfileDTO.getPhoneNumber());
-        targetUserProfile.setGender(userProfileDTO.getGender().getKey());
+        targetUserProfile.setGender(userProfileDTO.getGender());
         targetUserProfile.setBirthDate(userProfileDTO.getBirthDate());
         targetUserProfile.setPostNumber(userProfileDTO.getPostNumber());
         targetUserProfile.setAddress(userProfileDTO.getAddress());
@@ -377,6 +376,37 @@ public class UserService {
         return true;
     }
 
+    public Boolean deleteUser(CustomUserDetails userInfo, UserDTO.DeleteUser deleteUserDTO) throws PasswordMismatchException {
+        if(userInfo == null){
+            throw new AuthenticationCredentialsNotFoundException("Token is null");
+        }
+
+        // 현재 인증된 사용자의 정보 가져오기 (클라이언트쪽에서 JWT 토큰을 넣어줘야 인증이 됨)
+        String username = userInfo.getUsername();
+
+        // 현재 인증된 사용자의 정보 담기
+        User target = userRepository.findByUsername(username);
+
+        String password = deleteUserDTO.getPassword();
+        String secondPassword = deleteUserDTO.getSecondPassword();
+
+        // 비밀번호를 제대로 두 번 입력했는지 확인
+        if(!password.equals(secondPassword)){
+            throw new PasswordMismatchException("입력한 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 입력한 비밀번호가 DB에 저장된 비밀번호와 같은지 확인하기
+        if (!bCryptPasswordEncoder.matches(password, target.getPassword())) {
+            throw new PasswordMismatchException("입력한 비밀번호가 현재 비밀번호와 같지 않습니다");
+        }
+
+        target.setStatus(User.Status.DELETED);
+
+        userRepository.save(target);
+
+        return true;
+    }
+
     /////////////////////////////////// 관리자 기능 /////////////////////////////////////
     // 사용자 정보 조회 기능
     public List<UserDTO.ShowAllUser> showUserList() {
@@ -397,8 +427,43 @@ public class UserService {
 
     private UserDTO.ShowAllUser convertToDto(User user) {
         UserDTO.ShowAllUser userDTO = new UserDTO.ShowAllUser();
+        userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
+        userDTO.setStatus(user.getStatus());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setRole(user.getUserRole());
         userDTO.setUserProfileDTO(userProfileShowMapper.toDto(user.getUserProfile()));
         return userDTO;
+    }
+
+
+    public boolean adminChangeStatus(UserDTO.adminChangeStatus dto) {
+        // DTO 에서 데이터 담기
+        Long id = dto.getId();
+        String status = dto.getStatus();
+
+        // Id 로 유저 정보 가져오기
+        User user = userRepository.findById(id).orElse(null);
+
+        // 유저 정보가 없으면 예외처리 진행
+        if(user == null){
+            throw new NoSuchElementException("사용자를 찾을 수 없습니다.");
+        }
+
+        // 상태 업데이트
+        if(status.equals("ACTIVE")) {
+            user.setStatus(User.Status.ACTIVE);
+        } else if (status.equals("DEACTIVE")) {
+            user.setStatus(User.Status.DEACTIVE);
+        } else if (status.equals("DELETED")) {
+            user.setStatus(User.Status.DELETED);
+        } else {
+            throw new IllegalArgumentException("상태 업데이트 에러 발생");
+        }
+
+        // DB에 저장
+        userRepository.save(user);
+
+        return true;
     }
 }

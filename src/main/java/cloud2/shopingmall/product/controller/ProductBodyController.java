@@ -49,12 +49,7 @@ public class ProductBodyController {
 
     }
 
-    @DeleteMapping("/{productId}/body")
-    public ResponseEntity deleteProductBodies(@PathVariable(name = "productId") Long productId){
-        productBodyService.deleteProductBodies(productId);
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).build();
 
-    }
 
 
 }
