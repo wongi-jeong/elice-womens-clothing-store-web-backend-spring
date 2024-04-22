@@ -93,6 +93,7 @@ public class UserService {
 
     // 회원 로그인 기능
     public String login(String username, String password) throws UsernameNotFoundException, PasswordMismatchException {
+
         // 1. 사용자 DB에서 사용자 조회
         // 주어진 사용자의 이름으로 DB에서 사용자 정보 조회
         User userData = userRepository.findByUsername(username);
@@ -112,6 +113,7 @@ public class UserService {
         if (!bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
             throw new PasswordMismatchException("입력한 비밀번호가 틀립니다.");
         }
+
         // Authentication의 구현체, 사용자 이름과 비밀번호를 저장
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
@@ -125,8 +127,10 @@ public class UserService {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
+        String name = userData.getUserProfile().getName();
+        String email = userData.getUserProfile().getEmail();
 
-        String token = jwtUtil.createJwt(username, role, 6000*6000*1L);
+        String token = jwtUtil.createJwt(username, role, name, email, 6000*6000*1L);
 
         return token;
     }
@@ -174,6 +178,7 @@ public class UserService {
         user.setStatus(User.Status.ACTIVE); // 처음 가입시 계정상태 활성화 상태
         user.setPassword(bCryptPasswordEncoder.encode(password)); // 비밀번호를 암호화하여 저장
         user.setUserRole("ROLE_USER"); // Role 부여
+        user.setOauth2(0);
         User savedUser = userRepository.save(user); // DB에 저장
 
         // UserProfile DB에 생성

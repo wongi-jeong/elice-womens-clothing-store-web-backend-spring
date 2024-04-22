@@ -48,6 +48,14 @@ public class CustomUserDetails  implements UserDetails {
         return user.getUsername();
     }
 
+    public String getName() {
+        return user.getUserProfile().getName();
+    }
+
+    public String getEmail() {
+        return user.getUserProfile().getEmail();
+    }
+
     // 계정이 만료 되었는지 나타내는 메서드
     @Override
     public boolean isAccountNonExpired() {

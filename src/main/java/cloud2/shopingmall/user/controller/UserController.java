@@ -34,30 +34,6 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDTO.LoginRequest request) throws PasswordMismatchException {
-
-        // 사용자 아이디 담기
-        String username = request.getUsername();
-
-        // 사용자 비밀번호 담기
-        String password = request.getPassword();
-
-        // 토큰 생성
-        String token = userService.login(username, password);
-
-        // 응답 헤더 설정
-        HttpHeaders headers = new HttpHeaders();
-
-        // 헤더에 jwt 토큰 생성하여 발급
-        headers.add("Authorization", "Bearer " + token);
-
-        // ResponseEntity 생성
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("로그인에 성공했습니다.", headers, HttpStatus.OK);
-
-        return responseEntity;
-    }
-
     // 회원가입 기능
     // 하나의 메서드에서는 하나의 @RequestBody만 사용 가능하다
     @PostMapping("/join")
@@ -86,6 +62,30 @@ public class UserController {
 
         // 정상적인 응답 반환
         return ResponseEntity.ok("회원가입 성공");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserDTO.LoginRequest request) throws PasswordMismatchException {
+
+        // 사용자 아이디 담기
+        String username = request.getUsername();
+
+        // 사용자 비밀번호 담기
+        String password = request.getPassword();
+
+        // 토큰 생성
+        String token = userService.login(username, password);
+
+        // 응답 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+
+        // 헤더에 jwt 토큰 생성하여 발급
+        headers.add("Authorization", "Bearer " + token);
+
+        // ResponseEntity 생성
+        ResponseEntity<String> responseEntity = new ResponseEntity<>("로그인에 성공했습니다.", headers, HttpStatus.OK);
+
+        return responseEntity;
     }
 
     // 아이디 찾기 기능
@@ -218,4 +218,7 @@ public class UserController {
         boolean result = userService.adminChangeStatus(dto);
         return ResponseEntity.status(HttpStatus.OK).body("상태 변경이 완료되었습니다.");
     }
+
+
+
 }

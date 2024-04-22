@@ -33,6 +33,9 @@ public class User extends BaseEntity {
     @Column
     private Status Status;
 
+    @Column
+    private Integer oauth2;
+
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserProfile userProfile;

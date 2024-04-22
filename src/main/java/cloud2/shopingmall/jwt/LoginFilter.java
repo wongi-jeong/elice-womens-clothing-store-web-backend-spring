@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.Collection;
 import java.util.Iterator;
 
-// ('/login') 엔드포인트의 요청을 중간에 가로챔
+
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     // 사용자의 인증 처리 객체, 사용자가 제공한 자격 증명을 검증하고, 이를 기반으로 사용자의 인증 객체 생성
@@ -25,6 +25,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.authenticationManager = authenticationManager;
 
         this.jwtUtil = jwtUtil;
+
+        // 원하는 로그인 경로로 변경
+        this.setFilterProcessesUrl("/api/v1/login");
     }
 
     // 사용자의 인증을 시도
@@ -50,6 +53,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
+        String name = customUserDetails.getName();
+        String email = customUserDetails.getEmail();
+
 
         // 사용자의 권한 목록을 Collection 형태로 바꾼 후, 권한을 반복자를 통해 가져온다
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -58,7 +64,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 6000*6000*1L);
+        String token = jwtUtil.createJwt(username, role, name, email, 6000*6000*1L);
 
         response.addHeader("Authorization", "Bearer " + token);
     }
