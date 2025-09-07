@@ -3,7 +3,6 @@ package cloud2.shopingmall.order.controller;
 import cloud2.shopingmall.common.exception.OrderException;
 import cloud2.shopingmall.jwt.CustomUserDetails;
 import cloud2.shopingmall.order.dto.*;
-import cloud2.shopingmall.order.entity.Orders;
 import cloud2.shopingmall.order.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,22 +18,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Slf4j
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/user/order")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderQueryService orderQueryService;
     private final OrderManagementService orderManagementService;
     private final PaymentService paymentService;
     private final DeliveryService deliveryService;
-
-    @GetMapping("")
-    public ResponseEntity<Page<OrderInfoDTO>> findAllOrder(@PageableDefault(size = 20) Pageable pageable){
-        Page<OrderInfoDTO> allOrder = orderQueryService.findAllOrder(pageable);
-        return ResponseEntity.ok(allOrder);
-    }
+    private final OrderUpdateService orderUpdateService;
     @GetMapping("/user")
-    public ResponseEntity<List<OrderInfoDTO.OrderDetailInfo>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
-        List<OrderInfoDTO.OrderDetailInfo> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
+    public ResponseEntity<List<OrderInfoDTO>> findOrderByUser (@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        List<OrderInfoDTO> orderDetailList = orderQueryService.findByUser(customUserDetails.getUsername());
         return ResponseEntity.ok(orderDetailList);
     }
     @GetMapping("/{orderId}")
@@ -43,7 +37,7 @@ public class OrderController {
         return ResponseEntity.ok(orderDetail);
     }
 
-    @PostMapping("/{orderId}/cancel")
+    @GetMapping("/{orderId}/cancel")
     public ResponseEntity<OrderDTO> cancelOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @PathVariable Long orderId){
 
@@ -105,13 +99,6 @@ public class OrderController {
     public ResponseEntity<DeliveryDTO> findDelivery(@PathVariable("orderId") Long orderId){
         DeliveryDTO delivery = deliveryService.findDelivery(orderId);
         return ResponseEntity.ok(delivery);
-    }
-    @PostMapping("/{orderId}/update")
-    public ResponseEntity<Void> update(@PathVariable("orderId") Long orderId,
-                                   @RequestBody int status){
-        log.info("status = {}",status);
-        orderManagementService.updateOrder(orderId,status);
-        return ResponseEntity.ok().build();
     }
 
 }

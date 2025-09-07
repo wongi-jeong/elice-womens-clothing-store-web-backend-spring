@@ -1,11 +1,8 @@
 package cloud2.shopingmall.config;
 
 
-import cloud2.shopingmall.jwt.ExceptionHandlerFilter;
-import cloud2.shopingmall.jwt.JWTFilter;
-import cloud2.shopingmall.jwt.JWTUtil;
-import cloud2.shopingmall.jwt.LoginFilter;
-import jakarta.servlet.http.HttpServletResponse;
+import cloud2.shopingmall.jwt.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,22 +12,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
+
 import org.springframework.security.web.SecurityFilterChain;
+
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-
     private final JWTUtil jwtUtil;
+
 
     @Autowired
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 
         this.authenticationConfiguration = authenticationConfiguration;
+
         this.jwtUtil = jwtUtil;
+
+
     }
 
     @Bean
@@ -63,22 +64,19 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        // .anyRequest().authenticated()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")    // 우선순위 1등 어드민
+                        .requestMatchers("/api/user/**").authenticated()      // 우선순위 2등 사용자
+                        .anyRequest().permitAll()
+                )
+                .exceptionHandling((exceptions) -> exceptions
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                        .accessDeniedHandler(new JwtAccessDeniedHandler())
+                );
 
         // 사용자 정의 JWT 필터를 LoginFilter 전에 추가, JWT를 사용하여 인증 및 권한 부여를 수행합니다.
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
                 .addFilterBefore(new ExceptionHandlerFilter(), JWTFilter.class);
-
-
-
-        // 사용자 정의 로그인 필터를 UsernamePasswordAuthenticationFilter 위치에 추가
-        // 사용자가 제공한 자격 증명을 사용하여 인증을 시도하고, 성공하면 JWT 토큰을 생성하여 반환
-//        http
-//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http
