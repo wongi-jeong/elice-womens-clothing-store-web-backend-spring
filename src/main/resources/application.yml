@@ -22,8 +22,8 @@ spring:
 
   # 임의로 설정한 변수
   # spring security에서 JWT 토큰 만들때 사용
-  jwt:
-    secret: eliceproject2eliceproject2eliceproject2eliceproject2
+  # jwt:
+  #  secret: eliceproject2eliceproject2eliceproject2eliceproject2
 
 
   # spring data jpa 설정
