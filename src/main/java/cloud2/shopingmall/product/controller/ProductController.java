@@ -1,13 +1,12 @@
 package cloud2.shopingmall.product.controller;
 
 
-import cloud2.shopingmall.product.dto.ProductBodyDTO;
-import cloud2.shopingmall.product.dto.ProductDTO;
-import cloud2.shopingmall.product.dto.ProductImageDTO;
+import cloud2.shopingmall.product.dto.*;
 import cloud2.shopingmall.product.entity.ProductBody;
 import cloud2.shopingmall.product.entity.ProductImage;
 import cloud2.shopingmall.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+//
+//    @Value("${app.images.path}")
+//    private String uploadDir;
+//
+//    @Value("${app.images.path}")
+//    private String imagePath;
 
     private final ProductService productService;
 
@@ -49,6 +54,13 @@ public class ProductController {
                 .body(productService.getProductsDTO(page - 1, size));
     }
 
+    @GetMapping(params = "nameOrId")
+    public ResponseEntity<List<ProductDTO>> getProductsByNameOrId(@RequestParam(name = "nameOrId") String nameOrId){
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.getProductsByNameOrIdDTO(nameOrId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> getProductWithDetailsAndBodies(@PathVariable(name = "id") Long id){
         return ResponseEntity.status(HttpStatus.OK)
@@ -67,12 +79,14 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO.ProductWithDetailsAndImagesDTO> postProductWithImages(@RequestParam("title") String title,
                                                         @RequestParam("price") Integer price,
+                                                                                           @RequestPart("categoryDTO") CategoryDTO categoryDTO,
+                                                                                           @RequestPart("productDetails") List<ProductDetailsDTO> productDetailsDTOList,
                                               @RequestPart("productImages") List<MultipartFile> productImagesFile,
                                               @RequestPart("productBodies") List<MultipartFile> productBodiesFile) {
 
 
-        String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/images";
-        String baseUrl = "http://localhost:8080/files/";
+        String uploadDir = System.getProperty("user.dir") + "/static/images";
+        String imagePath = "/images/";
 
         // 제목 디렉토리 생성
         File titleDir = new File(uploadDir);
@@ -87,7 +101,7 @@ public class ProductController {
         for (MultipartFile file : productImagesFile) {
             String fileName = file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
-            String imageUrl = "/images/" + fileName;
+            String imageUrl = imagePath + fileName;
 
             try {
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -112,7 +126,7 @@ public class ProductController {
         for (MultipartFile file : productBodiesFile) {
             String fileName = file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, fileName);
-            String imageUrl = "/images/" + fileName;
+            String imageUrl = imagePath + fileName;
 
             try {
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -136,6 +150,7 @@ public class ProductController {
         ProductDTO.ProductWithDetailsAndImagesDTO productDTO = ProductDTO.ProductWithDetailsAndImagesDTO.builder()
                 .productBodyDTOList(productBodyDTOList)
                 .productImageDTOList(productImageDTOList)
+                .productDetailsDTOList(productDetailsDTOList)
                 .name(title)
                 .price(price)
                 .imageUrl(productImageDTOList.get(0).getUrl())
@@ -143,29 +158,38 @@ public class ProductController {
         System.out.println(productDTO);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.saveProductWithImagesDTO(productDTO));
+                .body(productService.saveProductWithImagesAndCategoryDTO(productDTO, categoryDTO));
     }
-
-
-
-
-
-
-
-
-
 
 
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){
-        productDTO.setId(id);
+    public ResponseEntity patchProduct(@RequestBody ProductDTO.ProductWithCategoryDTO productDTO){
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productService.updateProductDTO(productDTO));
+        productService.updateProductDTO(productDTO);
+
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
 
     }
+
+
+
+
+
+
+
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ProductDTO> patchProduct(@RequestBody ProductDTO productDTO, @PathVariable(name = "id") Long id){
+//        productDTO.setId(id);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(productService.updateProductDTO(productDTO));
+//
+//    }
 
     @PutMapping("/{id}/on")
     public ResponseEntity onProduct(@PathVariable(name = "id") Long id){
